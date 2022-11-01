@@ -1,0 +1,6 @@
+{
+  "appId": "fm.joyride.nyaa",
+  "appName": "Nyaa",
+  "webDir": "dist",
+  "bundledWebRuntime": false
+}
