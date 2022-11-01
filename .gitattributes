@@ -23,3 +23,4 @@ assets/storm3.mp4 filter=lfs diff=lfs merge=lfs -text
 assets/mmm1.1.ffmpeg.v8.mp3 filter=lfs diff=lfs merge=lfs -text
 assets/Creepster-Regular.ttf filter=lfs diff=lfs merge=lfs -text
 assets/Creepster.woff2 filter=lfs diff=lfs merge=lfs -text
+assets/cat.webp filter=lfs diff=lfs merge=lfs -text
