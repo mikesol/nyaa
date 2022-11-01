@@ -11,6 +11,6 @@ import os
 
 for key,val in DIMS.items():
     size = f'{val[0]}x{val[1]}'
-    cmd = f'convert assets/mansion.jpeg -resize {size}^ -gravity Center -extent {size} android/app/src/main/res/{key}/splash.png'
+    cmd = f'convert assets/manyCats.png -resize {size}^ -gravity Center -extent {size} android/app/src/main/res/{key}/splash.png'
     print(cmd)
     subprocess.call(cmd,shell=True)
