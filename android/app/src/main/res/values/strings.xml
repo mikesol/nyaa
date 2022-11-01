@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Nyaa</string>
+    <string name="title_activity_main">Nyaa</string>
+    <string name="package_name">fm.joyride.nyaa</string>
+    <string name="custom_url_scheme">fm.joyride.nyaa</string>
+</resources>
