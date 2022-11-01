@@ -1,0 +1,5 @@
+export const JUDGEMENT_CONSTANTS = {
+    PERFECTION: 0.04,
+    ALMOST: 0.14,
+    CONSIDERATION_WINDOW: 0.25,
+};
