@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "rm -rf dist && mkdir dist && vite build && cap sync",
-    "lint": "htmlhint index.html && eslint \"io/**\" \"players/**\" \"core/**\" \"firebase/**\" index.js",
+    "lint": "htmlhint index.html && eslint \"src/**\" index.js",
     "preview": "vite preview"
   },
   "devDependencies": {
