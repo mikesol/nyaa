@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "339754466261",
+    "firebase_url": "https://nyaa-game-default-rtdb.firebaseio.com",
+    "project_id": "nyaa-game",
+    "storage_bucket": "nyaa-game.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:339754466261:android:92afc969bc1cda82b61b5c",
+        "android_client_info": {
+          "package_name": "fm.joyride.nyaa"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "339754466261-lvp7v27bpvv3nvcghd5s4kkh7lf39uo8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAImbtuzCLIzuBiY6jhbFb0REOy51NfaeY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "339754466261-lvp7v27bpvv3nvcghd5s4kkh7lf39uo8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
