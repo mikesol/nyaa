@@ -1,0 +1,1 @@
+export const prod = () => import.meta.env.PROD;

@@ -33,6 +33,7 @@ type SignInResult =
   , credential :: Nullable AuthCredential
   }
 
+foreign import useEmulator :: Effect (Promise Unit)
 foreign import getCurrentUser :: Effect (Promise (Nullable User))
 foreign import signInWithApple :: Effect (Promise SignInResult)
 foreign import signInWithGoogle :: Effect (Promise SignInResult)

@@ -2,5 +2,11 @@
   "appId": "fm.joyride.nyaa",
   "appName": "Nyaa",
   "webDir": "dist",
-  "bundledWebRuntime": false
+  "bundledWebRuntime": false,
+  "plugins": {
+    "FirebaseAuthentication": {
+      "skipNativeAuth": false,
+      "providers": ["apple.com", "google.com", "playgames.google.com"]
+    }
+  }
 }

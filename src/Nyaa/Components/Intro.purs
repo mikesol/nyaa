@@ -37,6 +37,5 @@ introScreen opts = (Proxy :: Proxy IntroHTML) ~~
       , flip switcher opts.authState $ _.user >>> toMaybe >>> case _ of
           Nothing -> mainButton { text: "Sign In", click: pure unit }
           Just user -> mainButton { text: "Profile", click: pure unit }
-
       ]
   }

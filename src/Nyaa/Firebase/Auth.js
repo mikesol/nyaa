@@ -1,6 +1,12 @@
 import { FirebaseAuthentication } from "@capacitor-firebase/authentication";
 
-
+export const useEmulator = async () => {
+  const result = await FirebaseAuthentication.useEmulator({
+    host: "http://127.0.0.1",
+    port: 9099,
+  });
+  return result;
+};
 export const getCurrentUser = async () => {
   const result = await FirebaseAuthentication.getCurrentUser();
   return result;
@@ -20,4 +26,5 @@ export const signInWithPlayGames = async () => {
   return result;
 };
 
-export const listenToAuthStateChange = (listener) => () => FirebaseAuthentication.addListener('authStateChange', listener);
+export const listenToAuthStateChange = (listener) => () =>
+  FirebaseAuthentication.addListener("authStateChange", listener);
