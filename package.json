@@ -29,6 +29,7 @@
   "dependencies": {
     "@awesome-cordova-plugins/android-full-screen": "^6.0.1",
     "@awesome-cordova-plugins/core": "^6.0.1",
+    "@capacitor-firebase/authentication": "^1.2.0",
     "@capacitor/android": "^4.3.0",
     "@capacitor/core": "^4.3.0",
     "@capacitor/ios": "^4.3.0",
