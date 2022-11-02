@@ -1,25 +1,33 @@
 module Nyaa.Components.Intro where
 
+import Prelude
 
+import Data.Foldable (oneOf)
+import Deku.Attributes (klass_)
 import Deku.Core (Domable)
-import Deku.Pursx ((~~))
+import Deku.DOM as D
+import Deku.Pursx (nut, (~~))
+import Nyaa.Atoms.Buttons.Main (mainButton)
 import Type.Proxy (Proxy(..))
 
-type IntroHTML = """
-<div class="bg-splash absolute w-screen h-screen grid grid-cols-1 grid-rows-1">
+type IntroHTML =
+  """
+<div class="bg-spacecat absolute w-screen h-screen grid grid-cols-1 grid-rows-1">
   <div class="col-start-1 col-span-1 row-start-1 row-span-1 place-self-center">
-    <div class="font-fillmein text-center text-white text-4xl">
+    <div class="font-fillmein text-center text-white p-4 text-4xl">
       Nyaa
     </div>
-    <div class="flex justify-around">
-      <button
-        class="text-gray-900 bg-gradient-to-r from-red-200 via-red-300 to-yellow-200 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-red-100 dark:focus:ring-red-400 font-medium rounded-lg text-lg px-5 py-2.5 text-center mr-2 mb-2">
-        Play Now!
-      </button>
-    </div>
+    ~buttons~
   </div>
 </div>
 """
 
 introScreen :: forall lock payload. Domable lock payload
-introScreen = (Proxy :: Proxy IntroHTML) ~~ {}
+introScreen = (Proxy :: Proxy IntroHTML) ~~
+  { buttons: nut
+      ( D.div (oneOf [ klass_ "flex justify-around" ])
+          [ mainButton { text: "Play now!", click: pure unit }
+          , mainButton { text: "Profile", click: pure unit }
+          ]
+      )
+  }

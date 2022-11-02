@@ -8,6 +8,7 @@ module.exports = {
     extend: {
       backgroundImage: {
         splash: "url('/assets/splash.png')",
+        spacecat: "url('/assets/spaceCat.png')",
       },
     },
   },
