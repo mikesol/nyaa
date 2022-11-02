@@ -5,19 +5,25 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "rm -rf dist && mkdir dist && vite build && cap sync",
-    "lint": "htmlhint index.html && eslint \"src/**\" index.js",
+    "build": "rm -rf dist && mkdir dist && spago -x prod.dhall build && vite build && cap sync",
     "preview": "vite preview"
   },
   "devDependencies": {
+    "@capacitor/assets": "^1.0.14",
     "@capacitor/cli": "^4.3.0",
+    "@types/node": "^18.11.9",
     "autoprefixer": "^10.4.12",
     "eslint": "^8.25.0",
     "htmlhint": "^1.1.4",
     "postcss": "^8.4.18",
     "prettier": "^2.7.1",
+    "purescript": "^0.15.6",
+    "purs-backend-es": "^1.2.0",
+    "purs-tidy": "^0.9.2",
+    "spago": "^0.20.9",
     "stats.js": "^0.17.0",
     "tailwindcss": "^3.1.8",
+    "typescript": "^4.8.4",
     "vite": "^3.1.0"
   },
   "dependencies": {

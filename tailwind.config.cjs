@@ -1,17 +1,15 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
-    "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx}",
-    "./node_modules/flowbite/**/*.js"
+    "./src/**/*.{js,ts,jsx,tsx,purs}",
+    "./node_modules/flowbite/**/*.js",
   ],
   theme: {
     extend: {
-      fontFamily: {
-        'creepster': ['Creepster', 'cursive'],
+      backgroundImage: {
+        splash: "url('/assets/splash.png')",
       },
-    },  },
-  plugins: [
-    require('flowbite/plugin'),
-]
-}
+    },
+  },
+  plugins: [require("flowbite/plugin")],
+};

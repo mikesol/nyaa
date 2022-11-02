@@ -22,3 +22,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+output
+output-es
+.spago
+.psc-ide-port

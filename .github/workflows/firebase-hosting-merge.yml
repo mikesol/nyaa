@@ -16,6 +16,17 @@ jobs:
           lfs: true
       - name: Checkout LFS objects
         run: git lfs checkout
+      - name: Cache purescript dependencies
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.npm
+            .spago
+            ${{ env.spago_global_cache }}
+          key: >-
+            ${{ hashFiles('package-lock.json') }}-
+            ${{ hashFiles('spago.dhall') }}-
+            ${{ hashFiles('packages.dhall') }}
       - uses: pnpm/action-setup@v2.2.4
         name: Install pnpm
         id: pnpm-install
@@ -36,6 +47,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
       - run: pnpm i && pnpm run build
+
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
