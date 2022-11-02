@@ -3,6 +3,13 @@ let upstream =
         sha256:19a962fbb4c04111c06bbb03b5ed58412dcb3beccbfd59ace970b73fdbaea20d
 
 in  upstream
+with hyrule =
+    { dependencies =
+      [ "st"
+      ]
+    , repo = "https://github.com/mikesol/purescript-hyrule.git"
+    , version = "v2.3.3"
+    }
   with deku =
     { dependencies =
       [ "aff"

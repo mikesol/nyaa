@@ -3,11 +3,14 @@ module Nyaa.Components.Intro where
 import Prelude
 
 import Data.Foldable (oneOf)
+import Data.Nullable (Nullable)
 import Deku.Attributes (klass_)
 import Deku.Core (Domable)
 import Deku.DOM as D
 import Deku.Pursx ((~~))
+import FRP.Event (Event)
 import Nyaa.Atoms.Buttons.Main (mainButton)
+import Nyaa.Firebase.Auth (User)
 import Type.Proxy (Proxy(..))
 
 type IntroHTML =
@@ -22,8 +25,11 @@ type IntroHTML =
 </div>
 """
 
-introScreen :: forall lock payload. Domable lock payload
-introScreen = (Proxy :: Proxy IntroHTML) ~~
+introScreen
+  :: forall lock payload
+   . { authState :: Event { user :: Nullable User } }
+  -> Domable lock payload
+introScreen _ = (Proxy :: Proxy IntroHTML) ~~
   { buttons: D.div (oneOf [ klass_ "flex justify-around" ])
       [ mainButton { text: "Play now!", click: pure unit }
       , mainButton { text: "Profile", click: pure unit }

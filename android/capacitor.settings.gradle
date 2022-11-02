@@ -2,6 +2,9 @@
 include ':capacitor-android'
 project(':capacitor-android').projectDir = new File('../node_modules/.pnpm/@capacitor+android@4.3.0_@capacitor+core@4.3.0/node_modules/@capacitor/android/capacitor')
 
+include ':capacitor-firebase-authentication'
+project(':capacitor-firebase-authentication').projectDir = new File('../node_modules/.pnpm/@capacitor-firebase+authentication@1.2.0_242wq2marvrefiositiueop2uq/node_modules/@capacitor-firebase/authentication/android')
+
 include ':capacitor-push-notifications'
 project(':capacitor-push-notifications').projectDir = new File('../node_modules/.pnpm/@capacitor+push-notifications@4.1.1_@capacitor+core@4.3.0/node_modules/@capacitor/push-notifications/android')
 

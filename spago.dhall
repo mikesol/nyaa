@@ -22,6 +22,7 @@
   , "lists"
   , "maybe"
   , "newtype"
+  , "nullable"
   , "numbers"
   , "ordered-collections"
   , "prelude"
