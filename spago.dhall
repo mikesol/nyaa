@@ -3,6 +3,7 @@
   [ "aff"
   , "aff-promise"
   , "arraybuffer-types"
+  , "arrays"
   , "bolson"
   , "control"
   , "convertable-options"
