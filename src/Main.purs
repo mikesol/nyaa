@@ -15,6 +15,7 @@ import Effect.Class (liftEffect)
 import Effect.Uncurried (runEffectFn1)
 import FRP.Event (burning, create, createO)
 import Nyaa.Components.Intro (introScreen)
+import Nyaa.FRP.Dedup (dedup)
 import Nyaa.Firebase.Auth (getCurrentUser, listenToAuthStateChange)
 import Nyaa.Routing (Route(..), route)
 import Routing.Duplex (parse)
@@ -31,7 +32,7 @@ main = do
   runInBody
     ( switcher
         ( snd >>> case _ of
-            Home -> introScreen { authState: authState.event }
+            Home -> introScreen { authState: dedup authState.event }
         )
         routing.event
     )

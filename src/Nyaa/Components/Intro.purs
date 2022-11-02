@@ -3,8 +3,10 @@ module Nyaa.Components.Intro where
 import Prelude
 
 import Data.Foldable (oneOf)
-import Data.Nullable (Nullable)
+import Data.Maybe (Maybe(..))
+import Data.Nullable (Nullable, toMaybe)
 import Deku.Attributes (klass_)
+import Deku.Control (switcher)
 import Deku.Core (Domable)
 import Deku.DOM as D
 import Deku.Pursx ((~~))
@@ -29,9 +31,12 @@ introScreen
   :: forall lock payload
    . { authState :: Event { user :: Nullable User } }
   -> Domable lock payload
-introScreen _ = (Proxy :: Proxy IntroHTML) ~~
+introScreen opts = (Proxy :: Proxy IntroHTML) ~~
   { buttons: D.div (oneOf [ klass_ "flex justify-around" ])
       [ mainButton { text: "Play now!", click: pure unit }
-      , mainButton { text: "Profile", click: pure unit }
+      , flip switcher opts.authState $ _.user >>> toMaybe >>> case _ of
+          Nothing -> mainButton { text: "Sign In", click: pure unit }
+          Just user -> mainButton { text: "Profile", click: pure unit }
+
       ]
   }
