@@ -11,6 +11,7 @@
   , "deku"
   , "effect"
   , "fast-vect"
+  , "filterable"
   , "foldable-traversable"
   , "foreign"
   , "foreign-object"
