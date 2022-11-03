@@ -2,20 +2,17 @@ module Nyaa.Ionic.Button where
 
 import Prelude
 
-import Bolson.Core (Entity(..), fixed)
 import Control.Plus (empty)
-import Data.Array (mapWithIndex)
 import Data.Foldable (oneOf)
 import Deku.Attribute (class Attr, Attribute, Cb(..), cb', prop', unsafeAttribute)
-import Deku.Control (elementify, text_)
-import Deku.Core (Domable(..), Domable', unsafeSetPos)
+import Deku.Control (text_)
+import Deku.Core (Domable)
 import Deku.DOM (unsafeCustomElement)
 import Deku.DOM as D
 import Deku.Listeners (click_)
 import Effect (Effect)
 import FRP.Event (Event)
 import Nyaa.Ionic.Attributes as I
-import Safe.Coerce (coerce)
 import Type.Proxy (Proxy(..))
 
 data IonButton_

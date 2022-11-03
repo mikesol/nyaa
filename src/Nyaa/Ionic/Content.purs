@@ -2,19 +2,15 @@ module Nyaa.Ionic.Content where
 
 import Prelude
 
-import Bolson.Core (Entity(..), fixed)
 import Control.Plus (empty)
 import Control.Promise (Promise)
-import Data.Array (mapWithIndex)
 import Deku.Attribute (class Attr, Attribute, Cb(..), cb', prop', unsafeAttribute)
-import Deku.Control (elementify)
-import Deku.Core (Domable(..), Domable', unsafeSetPos)
+import Deku.Core (Domable)
 import Deku.DOM (SelfT(..), unsafeCustomElement)
 import Deku.DOM as D
 import Effect (Effect)
 import FRP.Event (Event)
 import Nyaa.Ionic.Attributes as I
-import Safe.Coerce (coerce)
 import Type.Proxy (Proxy(..))
 import Unsafe.Coerce (unsafeCoerce)
 import Web.HTML (HTMLElement)
