@@ -6,13 +6,14 @@ import Bolson.Core (Entity(..), fixed)
 import Control.Plus (empty)
 import Data.Array (mapWithIndex)
 import Data.Foldable (oneOf)
-import Deku.Attribute (class Attr, Attribute, prop', unsafeAttribute)
+import Deku.Attribute (class Attr, Attribute, Cb(..), cb', prop', unsafeAttribute)
 import Deku.Control (elementify, text_)
 import Deku.Core (Domable(..), Domable', unsafeSetPos)
 import Deku.DOM as D
 import Deku.Listeners (click_)
 import Effect (Effect)
 import FRP.Event (Event)
+import Nyaa.Ionic.Attributes as I
 import Safe.Coerce (coerce)
 
 data IonButton_
@@ -42,6 +43,28 @@ instance Attr IonButton_ D.Class String where
 
 instance Attr IonButton_ D.Style String where
   attr D.Style value = unsafeAttribute { key: "style", value: prop' value }
+
+instance Attr IonButton_ I.OnIonBlur Cb where
+  attr I.OnIonBlur value = unsafeAttribute { key: "ionBlur", value: cb' value }
+
+instance Attr IonButton_ I.OnIonBlur (Effect Unit) where
+  attr I.OnIonBlur value = unsafeAttribute
+    { key: "ionBlur", value: cb' (Cb (const (value $> true))) }
+
+instance Attr IonButton_ I.OnIonBlur (Effect Boolean) where
+  attr I.OnIonBlur value = unsafeAttribute
+    { key: "ionBlur", value: cb' (Cb (const value)) }
+
+instance Attr IonButton_ I.OnIonFocus Cb where
+  attr I.OnIonFocus value = unsafeAttribute { key: "ionFocus", value: cb' value }
+
+instance Attr IonButton_ I.OnIonFocus (Effect Unit) where
+  attr I.OnIonFocus value = unsafeAttribute
+    { key: "ionFocus", value: cb' (Cb (const (value $> true))) }
+
+instance Attr IonButton_ I.OnIonFocus (Effect Boolean) where
+  attr I.OnIonFocus value = unsafeAttribute
+    { key: "ionFocus", value: cb' (Cb (const value)) }
 
 simpleButton
   :: forall lock payload

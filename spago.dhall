@@ -44,6 +44,7 @@
   , "typelevel-prelude"
   , "unsafe-coerce"
   , "unsafe-reference"
+  , "untagged-union"
   , "variant"
   , "web-events"
   , "web-file"

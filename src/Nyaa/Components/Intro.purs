@@ -16,7 +16,6 @@ import Effect.Aff (launchAff_)
 import Effect.Class (liftEffect)
 import FRP.Event (Event)
 import Nyaa.Assets (testURL)
-import Nyaa.Atoms.Buttons.Main (mainButton)
 import Nyaa.Capacitor.GameCenterAuthPlugin (signInWithGameCenter)
 import Nyaa.Capacitor.Utils (Platform(..), getPlatform)
 import Nyaa.Firebase.Auth (User, signInWithGoogle, signInWithPlayGames, signOut)
@@ -57,7 +56,7 @@ introScreen opts = (Proxy :: Proxy IntroHTML) ~~
   { buttons: D.div (oneOf [ klass_ "flex justify-around" ])
       [ simpleButton { text: "Play now!", click: pure unit }
       , flip switcher opts.authState $ _.user >>> toMaybe >>> case _ of
-          Nothing -> fixed [ simpleButton { text: "Sign In", click: signInFlow }, mainButton { text: "Audio test", click: audioTest } ]
+          Nothing -> fixed [ simpleButton { text: "Sign In", click: signInFlow }, simpleButton { text: "Audio test", click: audioTest } ]
           Just user -> fixed
             [ simpleButton { text: "Profile", click: pure unit }
             , simpleButton { text: "Sign Out", click: signOutFlow }
