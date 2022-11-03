@@ -1,14 +1,12 @@
 module Nyaa.Ionic.App where
 
 
-import Bolson.Core (Entity(..), fixed)
 import Control.Plus (empty)
-import Data.Array (mapWithIndex)
 import Deku.Attribute (Attribute)
-import Deku.Control (elementify)
-import Deku.Core (Domable(..), Domable', unsafeSetPos)
+import Deku.Core (Domable)
+import Deku.DOM (unsafeCustomElement)
 import FRP.Event (Event)
-import Safe.Coerce (coerce)
+import Type.Proxy (Proxy(..))
 
 data IonApp_
 
@@ -17,14 +15,7 @@ ionApp
    . Event (Attribute IonApp_)
   -> Array (Domable lock payload)
   -> Domable lock payload
-ionApp attributes kids = Domable
-  ( Element'
-      ( elementify "ion-app" attributes
-          ( (coerce :: Domable' lock payload -> Domable lock payload)
-              (fixed (coerce (mapWithIndex unsafeSetPos kids)))
-          )
-      )
-  )
+ionApp = unsafeCustomElement "ion-app" (Proxy :: Proxy IonApp_)
 
 ionApp_
   :: forall lock payload

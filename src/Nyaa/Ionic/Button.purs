@@ -9,12 +9,14 @@ import Data.Foldable (oneOf)
 import Deku.Attribute (class Attr, Attribute, Cb(..), cb', prop', unsafeAttribute)
 import Deku.Control (elementify, text_)
 import Deku.Core (Domable(..), Domable', unsafeSetPos)
+import Deku.DOM (unsafeCustomElement)
 import Deku.DOM as D
 import Deku.Listeners (click_)
 import Effect (Effect)
 import FRP.Event (Event)
 import Nyaa.Ionic.Attributes as I
 import Safe.Coerce (coerce)
+import Type.Proxy (Proxy(..))
 
 data IonButton_
 
@@ -23,14 +25,8 @@ ionButton
    . Event (Attribute IonButton_)
   -> Array (Domable lock payload)
   -> Domable lock payload
-ionButton attributes kids = Domable
-  ( Element'
-      ( elementify "ion-button" attributes
-          ( (coerce :: Domable' lock payload -> Domable lock payload)
-              (fixed (coerce (mapWithIndex unsafeSetPos kids)))
-          )
-      )
-  )
+ionButton = unsafeCustomElement "ion-button" (Proxy :: Proxy IonButton_)
+
 
 ionButton_
   :: forall lock payload

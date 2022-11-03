@@ -1,15 +1,12 @@
-module Nyaa.Ionic.Router
+module Nyaa.Ionic.Route
   ( AnimationBuilder(..)
-  , IonRouter(..)
-  , IonRouter_(..)
+  , IonRoute(..)
+  , IonRoute_(..)
   , back
-  , ionRouter
-  , ionRouter_
+  , ionRoute
+  , ionRoute_
   , push
-  , routerBack
-  , routerForward
-  , routerRoot
-  , RouterDirection
+  , RouteDirection
   )
   where
 
@@ -27,66 +24,58 @@ import Nyaa.Ionic.Attributes as I
 import Type.Proxy (Proxy(..))
 import Unsafe.Coerce (unsafeCoerce)
 
-data IonRouter_
-data IonRouter
+data IonRoute_
+data IonRoute
 
 -- ionic doesn't really document this, so we make it an opaque blob for now
 -- and folks can `unsafeCoerce` something to this if they really need it
 data AnimationBuilder
 
-ionRouter
+ionRoute
   :: forall lock payload
-   . Event (Attribute IonRouter_)
+   . Event (Attribute IonRoute_)
   -> Array (Domable lock payload)
   -> Domable lock payload
-ionRouter = unsafeCustomElement "ion-router" (Proxy :: Proxy IonRouter_)
-
-ionRouter_
+ionRoute = unsafeCustomElement "ion-route" (Proxy :: Proxy IonRoute_)
+ionRoute_
   :: forall lock payload
    . Array (Domable lock payload)
   -> Domable lock payload
-ionRouter_ = ionRouter empty
+ionRoute_ = ionRoute empty
 
-instance Attr IonRouter_ I.Root String where
+instance Attr IonRoute_ I.Root String where
   attr I.Root value = unsafeAttribute { key: "root", value: prop' value }
 
-instance Attr IonRouter_ I.UseHash String where
+instance Attr IonRoute_ I.UseHash String where
   attr I.UseHash value = unsafeAttribute { key: "use-hash", value: prop' value }
 
-instance Attr IonRouter_ I.OnIonRouteDidChange Cb where
+instance Attr IonRoute_ I.OnIonRouteDidChange Cb where
   attr I.OnIonRouteDidChange value = unsafeAttribute { key: "ionRouteDidChange", value: cb' value }
 
-instance Attr IonRouter_ I.OnIonRouteDidChange (Effect Unit) where
+instance Attr IonRoute_ I.OnIonRouteDidChange (Effect Unit) where
   attr I.OnIonRouteDidChange value = unsafeAttribute
     { key: "ionRouteDidChange", value: cb' (Cb (const (value $> true))) }
 
-instance Attr IonRouter_ I.OnIonRouteDidChange (Effect Boolean) where
+instance Attr IonRoute_ I.OnIonRouteDidChange (Effect Boolean) where
   attr I.OnIonRouteDidChange value = unsafeAttribute
     { key: "ionRouteDidChange", value: cb' (Cb (const value)) }
   
-instance Attr IonRouter_ I.OnIonRouteWillChange Cb where
+instance Attr IonRoute_ I.OnIonRouteWillChange Cb where
   attr I.OnIonRouteWillChange value = unsafeAttribute { key: "ionRouteWillChange", value: cb' value }
 
-instance Attr IonRouter_ I.OnIonRouteWillChange (Effect Unit) where
+instance Attr IonRoute_ I.OnIonRouteWillChange (Effect Unit) where
   attr I.OnIonRouteWillChange value = unsafeAttribute
     { key: "ionRouteWillChange", value: cb' (Cb (const (value $> true))) }
 
-instance Attr IonRouter_ I.OnIonRouteWillChange (Effect Boolean) where
+instance Attr IonRoute_ I.OnIonRouteWillChange (Effect Boolean) where
   attr I.OnIonRouteWillChange value = unsafeAttribute
     { key: "ionRouteWillChange", value: cb' (Cb (const value)) }
 
-instance Attr IonRouter_ SelfT (IonRouter -> Effect Unit) where
+instance Attr IonRoute_ SelfT (IonRoute -> Effect Unit) where
   attr SelfT value = unsafeAttribute
     { key: "@self@", value: cb' (Cb (unsafeCoerce value)) }
 
-newtype RouterDirection = RouterDirection String
+newtype RouteDirection = RouteDirection String
 
-routerForward :: RouterDirection
-routerForward = RouterDirection "forward"
-routerBack :: RouterDirection
-routerBack = RouterDirection "back"
-routerRoot :: RouterDirection
-routerRoot = RouterDirection "root"
-
-foreign import back :: IonRouter -> Effect Unit
-foreign import push :: IonRouter -> String -> Nullable RouterDirection -> Nullable AnimationBuilder -> Effect Unit
+foreign import back :: IonRoute -> Effect Unit
+foreign import push :: IonRoute -> String -> Nullable RouteDirection -> Nullable AnimationBuilder -> Effect Unit
