@@ -19,8 +19,9 @@ import Nyaa.Assets (testURL)
 import Nyaa.Atoms.Buttons.Main (mainButton)
 import Nyaa.Capacitor.GameCenterAuthPlugin (signInWithGameCenter)
 import Nyaa.Capacitor.Utils (Platform(..), getPlatform)
-import Nyaa.Firebase.Auth (User, signInWithApple, signInWithGoogle, signInWithPlayGames, signOut)
-import Ocarina.Control (gain_, playBuf, sinOsc)
+import Nyaa.Firebase.Auth (User, signInWithGoogle, signInWithPlayGames, signOut)
+import Nyaa.Ionic.Button (simpleButton)
+import Ocarina.Control (gain_, playBuf)
 import Ocarina.Core (bangOn)
 import Ocarina.Interpret (constant0Hack_, context_, decodeAudioDataFromUri)
 import Ocarina.Run (run2)
@@ -54,12 +55,12 @@ introScreen
   -> Domable lock payload
 introScreen opts = (Proxy :: Proxy IntroHTML) ~~
   { buttons: D.div (oneOf [ klass_ "flex justify-around" ])
-      [ mainButton { text: "Play now!", click: pure unit }
+      [ simpleButton { text: "Play now!", click: pure unit }
       , flip switcher opts.authState $ _.user >>> toMaybe >>> case _ of
-          Nothing -> fixed [ mainButton { text: "Sign In", click: signInFlow }, mainButton { text: "Audio test", click: audioTest } ]
+          Nothing -> fixed [ simpleButton { text: "Sign In", click: signInFlow }, mainButton { text: "Audio test", click: audioTest } ]
           Just user -> fixed
-            [ mainButton { text: "Profile", click: pure unit }
-            , mainButton { text: "Sign Out", click: signOutFlow }
+            [ simpleButton { text: "Profile", click: pure unit }
+            , simpleButton { text: "Sign Out", click: signOutFlow }
             ]
       ]
   }
