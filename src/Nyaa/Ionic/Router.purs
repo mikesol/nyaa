@@ -9,6 +9,7 @@ module Nyaa.Ionic.Router
   , routerBack
   , routerForward
   , routerRoot
+  , unRouterDirection
   , RouterDirection
   )
   where
@@ -80,6 +81,9 @@ instance Attr IonRouter_ SelfT (IonRouter -> Effect Unit) where
     { key: "@self@", value: cb' (Cb (unsafeCoerce value)) }
 
 newtype RouterDirection = RouterDirection String
+
+unRouterDirection :: RouterDirection -> String
+unRouterDirection (RouterDirection rd) = rd
 
 routerForward :: RouterDirection
 routerForward = RouterDirection "forward"

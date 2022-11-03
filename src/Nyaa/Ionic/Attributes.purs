@@ -7,6 +7,10 @@ data Fullscren = Fullscren
 data ScrollEvents = ScrollEvents
 data ScrollX = ScrollX
 data ScrollY = ScrollY
+data Component = Component
+data Url = Url
+data Rel = Rel
+data RouterDirection = RouterDirection
 
 --
 
@@ -17,3 +21,4 @@ data OnIonScrollEnd = OnIonScrollEnd
 data OnIonScrollStart = OnIonScrollStart
 data OnIonRouteDidChange = OnIonRouteDidChange
 data OnIonRouteWillChange = OnIonRouteWillChange
+data OnIonRouteDataChanged = OnIonRouteDataChanged
