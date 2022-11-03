@@ -12,6 +12,7 @@ def capacitor_pods
   pod 'Capacitor', :path => '../../node_modules/.pnpm/@capacitor+ios@4.3.0_@capacitor+core@4.3.0/node_modules/@capacitor/ios'
   pod 'CapacitorCordova', :path => '../../node_modules/.pnpm/@capacitor+ios@4.3.0_@capacitor+core@4.3.0/node_modules/@capacitor/ios'
   pod 'CapacitorFirebaseAuthentication', :path => '../../node_modules/.pnpm/@capacitor-firebase+authentication@1.2.0_242wq2marvrefiositiueop2uq/node_modules/@capacitor-firebase/authentication'
+  pod 'CapacitorFirebaseMessaging', :path => '../../node_modules/.pnpm/@capacitor-firebase+messaging@1.2.0_242wq2marvrefiositiueop2uq/node_modules/@capacitor-firebase/messaging'
   pod 'CapacitorPushNotifications', :path => '../../node_modules/.pnpm/@capacitor+push-notifications@4.1.1_@capacitor+core@4.3.0/node_modules/@capacitor/push-notifications'
   pod 'CapacitorStatusBar', :path => '../../node_modules/.pnpm/@capacitor+status-bar@4.0.1_@capacitor+core@4.3.0/node_modules/@capacitor/status-bar'
 end
@@ -19,6 +20,7 @@ end
 target 'App' do
   capacitor_pods
   # Add your Pods here
+  pod 'Firebase/Messaging' # Add this line
 end
 
 post_install do |installer|

@@ -25,6 +25,7 @@
   , "newtype"
   , "nullable"
   , "numbers"
+  , "ocarina"
   , "ordered-collections"
   , "prelude"
   , "profunctor"

@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 52;
+	objectVersion = 48;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -16,10 +16,9 @@
 		50B271D11FEDC1A000F3C39B /* public in Resources */ = {isa = PBXBuildFile; fileRef = 50B271D01FEDC1A000F3C39B /* public */; };
 		A084ECDBA7D38E1E42DFC39D /* Pods_App.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AF277DCFFFF123FFC6DF26C7 /* Pods_App.framework */; };
 		D8872AC92912E63800CF6CED /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = D8872AC82912E63800CF6CED /* GoogleService-Info.plist */; };
-		D8872ACC2912E75B00CF6CED /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = D8872ACB2912E75B00CF6CED /* FirebaseAnalytics */; };
-		D8872ACE2912E75B00CF6CED /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = D8872ACD2912E75B00CF6CED /* FirebaseAuth */; };
-		D8872AD02912E75B00CF6CED /* FirebaseCrashlytics in Frameworks */ = {isa = PBXBuildFile; productRef = D8872ACF2912E75B00CF6CED /* FirebaseCrashlytics */; };
-		D8872AD22912E75B00CF6CED /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = D8872AD12912E75B00CF6CED /* FirebaseMessaging */; };
+		D8872AD72913BC2500CF6CED /* GameCenterAuthPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8872AD62913BC2500CF6CED /* GameCenterAuthPlugin.swift */; };
+		D8872ADA2913BC8C00CF6CED /* GameCenterAuthPlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = D8872AD92913BC8C00CF6CED /* GameCenterAuthPlugin.m */; };
+		D8872ADC2913C0F300CF6CED /* FirebaseAuthenticationHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8872ADB2913C0F300CF6CED /* FirebaseAuthenticationHelper.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -35,6 +34,11 @@
 		AF277DCFFFF123FFC6DF26C7 /* Pods_App.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_App.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		AF51FD2D460BCFE21FA515B2 /* Pods-App.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-App.release.xcconfig"; path = "Pods/Target Support Files/Pods-App/Pods-App.release.xcconfig"; sourceTree = "<group>"; };
 		D8872AC82912E63800CF6CED /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../GoogleService-Info.plist"; sourceTree = "<group>"; };
+		D8872AD32912F8E100CF6CED /* App.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = App.entitlements; sourceTree = "<group>"; };
+		D8872AD62913BC2500CF6CED /* GameCenterAuthPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameCenterAuthPlugin.swift; sourceTree = "<group>"; };
+		D8872AD82913BC8B00CF6CED /* App-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "App-Bridging-Header.h"; sourceTree = "<group>"; };
+		D8872AD92913BC8C00CF6CED /* GameCenterAuthPlugin.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GameCenterAuthPlugin.m; sourceTree = "<group>"; };
+		D8872ADB2913C0F300CF6CED /* FirebaseAuthenticationHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseAuthenticationHelper.swift; sourceTree = "<group>"; };
 		FC68EB0AF532CFC21C3344DD /* Pods-App.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-App.debug.xcconfig"; path = "Pods/Target Support Files/Pods-App/Pods-App.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -43,10 +47,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D8872ACC2912E75B00CF6CED /* FirebaseAnalytics in Frameworks */,
-				D8872AD02912E75B00CF6CED /* FirebaseCrashlytics in Frameworks */,
-				D8872AD22912E75B00CF6CED /* FirebaseMessaging in Frameworks */,
-				D8872ACE2912E75B00CF6CED /* FirebaseAuth in Frameworks */,
 				A084ECDBA7D38E1E42DFC39D /* Pods_App.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -83,6 +83,7 @@
 		504EC3061FED79650016851F /* App */ = {
 			isa = PBXGroup;
 			children = (
+				D8872AD32912F8E100CF6CED /* App.entitlements */,
 				50379B222058CBB4000EE86E /* capacitor.config.json */,
 				504EC3071FED79650016851F /* AppDelegate.swift */,
 				504EC30B1FED79650016851F /* Main.storyboard */,
@@ -92,6 +93,10 @@
 				504EC3131FED79650016851F /* Info.plist */,
 				2FAD9762203C412B000D30F8 /* config.xml */,
 				50B271D01FEDC1A000F3C39B /* public */,
+				D8872AD62913BC2500CF6CED /* GameCenterAuthPlugin.swift */,
+				D8872AD92913BC8C00CF6CED /* GameCenterAuthPlugin.m */,
+				D8872AD82913BC8B00CF6CED /* App-Bridging-Header.h */,
+				D8872ADB2913C0F300CF6CED /* FirebaseAuthenticationHelper.swift */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -124,10 +129,6 @@
 			);
 			name = App;
 			packageProductDependencies = (
-				D8872ACB2912E75B00CF6CED /* FirebaseAnalytics */,
-				D8872ACD2912E75B00CF6CED /* FirebaseAuth */,
-				D8872ACF2912E75B00CF6CED /* FirebaseCrashlytics */,
-				D8872AD12912E75B00CF6CED /* FirebaseMessaging */,
 			);
 			productName = App;
 			productReference = 504EC3041FED79650016851F /* App.app */;
@@ -144,7 +145,7 @@
 				TargetAttributes = {
 					504EC3031FED79650016851F = {
 						CreatedOnToolsVersion = 9.2;
-						LastSwiftMigration = 1100;
+						LastSwiftMigration = 1410;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -159,7 +160,6 @@
 			);
 			mainGroup = 504EC2FB1FED79650016851F;
 			packageReferences = (
-				D8872ACA2912E75B00CF6CED /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 			);
 			productRefGroup = 504EC3051FED79650016851F /* Products */;
 			projectDirPath = "";
@@ -229,6 +229,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				504EC3081FED79650016851F /* AppDelegate.swift in Sources */,
+				D8872ADA2913BC8C00CF6CED /* GameCenterAuthPlugin.m in Sources */,
+				D8872ADC2913C0F300CF6CED /* FirebaseAuthenticationHelper.swift in Sources */,
+				D8872AD72913BC2500CF6CED /* GameCenterAuthPlugin.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -356,8 +359,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
-				SWIFT_COMPILATION_MODE = wholemodule;
-				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -367,20 +369,21 @@
 			baseConfigurationReference = FC68EB0AF532CFC21C3344DD /* Pods-App.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = App/App.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = A435673ZHC;
 				INFOPLIST_FILE = App/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MARKETING_VERSION = 1.0;
 				OTHER_SWIFT_FLAGS = "$(inherited) \"-D\" \"COCOAPODS\" \"-DDEBUG\"";
 				PRODUCT_BUNDLE_IDENTIFIER = fm.joyride.nyaa;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OBJC_BRIDGING_HEADER = "App/App-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -391,19 +394,19 @@
 			baseConfigurationReference = AF51FD2D460BCFE21FA515B2 /* Pods-App.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = App/App.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = A435673ZHC;
 				INFOPLIST_FILE = App/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = fm.joyride.nyaa;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "App/App-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -431,40 +434,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCRemoteSwiftPackageReference section */
-		D8872ACA2912E75B00CF6CED /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 9.0.0;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		D8872ACB2912E75B00CF6CED /* FirebaseAnalytics */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = D8872ACA2912E75B00CF6CED /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
-			productName = FirebaseAnalytics;
-		};
-		D8872ACD2912E75B00CF6CED /* FirebaseAuth */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = D8872ACA2912E75B00CF6CED /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
-			productName = FirebaseAuth;
-		};
-		D8872ACF2912E75B00CF6CED /* FirebaseCrashlytics */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = D8872ACA2912E75B00CF6CED /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
-			productName = FirebaseCrashlytics;
-		};
-		D8872AD12912E75B00CF6CED /* FirebaseMessaging */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = D8872ACA2912E75B00CF6CED /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
-			productName = FirebaseMessaging;
-		};
-/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 504EC2FC1FED79650016851F /* Project object */;
 }

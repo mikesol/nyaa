@@ -28,3 +28,7 @@ export const signInWithPlayGames = async () => {
 
 export const listenToAuthStateChange = (listener) => () =>
   FirebaseAuthentication.addListener("authStateChange", listener);
+
+export const signOut = async () => {
+  await FirebaseAuthentication.signOut();
+};

@@ -4,6 +4,7 @@ specifiers:
   '@awesome-cordova-plugins/android-full-screen': ^6.0.1
   '@awesome-cordova-plugins/core': ^6.0.1
   '@capacitor-firebase/authentication': ^1.2.0
+  '@capacitor-firebase/messaging': ^1.2.0
   '@capacitor/android': ^4.3.0
   '@capacitor/assets': ^1.0.14
   '@capacitor/cli': ^4.3.0
@@ -40,6 +41,7 @@ dependencies:
   '@awesome-cordova-plugins/android-full-screen': 6.0.1_prnxaeyfgonofvr466v37kxfwi
   '@awesome-cordova-plugins/core': 6.0.1_rxjs@7.5.7
   '@capacitor-firebase/authentication': 1.2.0_242wq2marvrefiositiueop2uq
+  '@capacitor-firebase/messaging': 1.2.0_242wq2marvrefiositiueop2uq
   '@capacitor/android': 4.3.0_@capacitor+core@4.3.0
   '@capacitor/core': 4.3.0
   '@capacitor/ios': 4.3.0_@capacitor+core@4.3.0
@@ -119,6 +121,16 @@ packages:
 
   /@capacitor-firebase/authentication/1.2.0_242wq2marvrefiositiueop2uq:
     resolution: {integrity: sha512-N8UhC9JMde1o8V6ucF62IqTfXPospYHvzIxioAu7VxP7cs4DTOWKYVe/Xdb3q01f5YkOl2RrbBDjHTtnTbGH6A==}
+    peerDependencies:
+      '@capacitor/core': ^4.0.0
+      firebase: ^9.0.0
+    dependencies:
+      '@capacitor/core': 4.3.0
+      firebase: 9.12.1
+    dev: false
+
+  /@capacitor-firebase/messaging/1.2.0_242wq2marvrefiositiueop2uq:
+    resolution: {integrity: sha512-n1chaK4Z3vTCxiu4mgVByfTlsTtpI496cX1tavjY0Nh4RZ4ZZqWlwbBSqBQhPLm/7qtIXJ+IZ5yNrA1QUlKWvg==}
     peerDependencies:
       '@capacitor/core': ^4.0.0
       firebase: ^9.0.0
