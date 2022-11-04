@@ -1,6 +1,5 @@
 module Nyaa.Ionic.Router
-  ( AnimationBuilder(..)
-  , IonRouter(..)
+  ( IonRouter(..)
   , IonRouter_(..)
   , back
   , ionRouter
@@ -21,15 +20,12 @@ import Effect (Effect)
 import FRP.Event (Event)
 import Nyaa.Ionic.Attributes as I
 import Nyaa.Ionic.Enums as E
+import Nyaa.Ionic.Unsafe as U
 import Type.Proxy (Proxy(..))
 import Unsafe.Coerce (unsafeCoerce)
 
 data IonRouter_
 data IonRouter
-
--- ionic doesn't really document this, so we make it an opaque blob for now
--- and folks can `unsafeCoerce` something to this if they really need it
-data AnimationBuilder
 
 ionRouter
   :: forall lock payload
@@ -78,4 +74,4 @@ instance Attr IonRouter_ SelfT (IonRouter -> Effect Unit) where
 
 
 foreign import back :: IonRouter -> Effect Unit
-foreign import push :: IonRouter -> String -> Nullable E.RouterDirection -> Nullable AnimationBuilder -> Effect Unit
+foreign import push :: IonRouter -> String -> Nullable E.RouterDirection -> Nullable U.AnimationBuilder -> Effect Unit

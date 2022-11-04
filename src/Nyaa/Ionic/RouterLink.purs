@@ -19,10 +19,6 @@ import Untagged.Union (UndefinedOr)
 data IonRouterLink_
 data IonRouterLink
 
--- ionic doesn't really document this, so we make it an opaque blob for now
--- and folks can `unsafeCoerce` something to this if they really need it
-data AnimationBuilder
-
 ionRouterLink
   :: forall lock payload
    . Event (Attribute IonRouterLink_)

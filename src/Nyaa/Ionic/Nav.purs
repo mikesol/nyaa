@@ -1,6 +1,5 @@
 module Nyaa.Ionic.Nav
-  ( AnimationBuilder(..)
-  , IonNav(..)
+  ( IonNav(..)
   , IonNav_(..)
   , ionNav
   , ionNav_
@@ -8,10 +7,11 @@ module Nyaa.Ionic.Nav
   where
 
 -- todo: incomplete, add methods
+
 import Prelude
 
 import Control.Plus (empty)
-import Deku.Attribute (class Attr, Attribute, Cb(..), cb', unsafeAttribute)
+import Deku.Attribute (class Attr, Attribute, Cb(..), cb', prop', unsafeAttribute)
 import Deku.Core (Domable)
 import Deku.DOM (SelfT(..), unsafeCustomElement)
 import Effect (Effect)
@@ -22,10 +22,6 @@ import Unsafe.Coerce (unsafeCoerce)
 
 data IonNav_
 data IonNav
-
--- ionic doesn't really document this, so we make it an opaque blob for now
--- and folks can `unsafeCoerce` something to this if they really need it
-data AnimationBuilder
 
 ionNav
   :: forall lock payload
@@ -40,6 +36,15 @@ ionNav_
   -> Domable lock payload
 ionNav_ = ionNav empty
 
+instance Attr IonNav_ I.Animated Boolean where
+  attr I.Animated value = unsafeAttribute { key: "animated", value: prop' (if value then "true" else "false") }
+
+-- todo add animation
+-- todo add root
+-- todo add rootParams
+
+instance Attr IonNav_ I.SwipeGesture Boolean where
+  attr I.SwipeGesture value = unsafeAttribute { key: "swipe-gesture", value: prop' (if value then "true" else "false") }
 
 instance Attr IonNav_ I.OnIonNavDidChange (Effect Unit) where
   attr I.OnIonNavDidChange value = unsafeAttribute

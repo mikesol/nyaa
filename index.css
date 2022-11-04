@@ -1,3 +1,8 @@
+/*
+ * au cas où on en a besoin
+ * pour l'instant ionic suffit largement et
+ * la présence de tailwind n'est pas nuissive, donc on la garde
+ */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
