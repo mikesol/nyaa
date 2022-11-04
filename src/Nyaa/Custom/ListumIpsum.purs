@@ -4,6 +4,7 @@ import Prelude
 
 import Data.Foldable (oneOf)
 import Deku.Attribute ((!:=))
+import Deku.Attributes (klass_)
 import Deku.Control (text_)
 import Deku.DOM as D
 import Effect (Effect)
@@ -23,7 +24,7 @@ listumIpsum = customComponent "listum-ipsum" { } \_ -> [
             ionTitle_ [text_ "Listum"]
         ]
     ],
-    ionContent (oneOf [I.Fullscren !:= true]) [
+    ionContent (oneOf [I.Fullscren !:= true, klass_ "background-cat"]) [
       ionItem (oneOf [I.Button !:= true, D.Href !:= "/info-one"]) [ ionLabel_ [D.h3_ [text_ "Info One"]]],
       ionItem (oneOf [I.Button !:= true, D.Href !:= "/info-two"]) [ ionLabel_ [D.h3_ [text_ "Info Two"]]]
     ]
