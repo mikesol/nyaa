@@ -11,6 +11,7 @@ import Effect.Class (liftEffect)
 import Effect.Uncurried (runEffectFn1)
 import FRP.Event (burning, createO)
 import Nyaa.App (app)
+import Nyaa.Custom.QuestPage (questPage)
 import Nyaa.Custom.IntroScreen (introScreen)
 import Nyaa.Firebase.Auth (getCurrentUser, listenToAuthStateChange, useEmulator)
 import Nyaa.Firebase.Init (fbApp)
@@ -22,6 +23,7 @@ main = launchAff_ do
   -- register components
   liftEffect do
     introScreen
+    questPage { name: "tutorial-quest" }
   -- do this just for the init side effect
   _ <- liftEffect fbApp
   isProd <- liftEffect prod

@@ -3,16 +3,14 @@ module Nyaa.Ionic.Button where
 import Prelude
 
 import Control.Plus (empty)
-import Data.Foldable (oneOf)
 import Deku.Attribute (class Attr, Attribute, Cb(..), cb', prop', unsafeAttribute)
-import Deku.Control (text_)
 import Deku.Core (Domable)
 import Deku.DOM (unsafeCustomElement)
 import Deku.DOM as D
-import Deku.Listeners (click_)
 import Effect (Effect)
 import FRP.Event (Event)
 import Nyaa.Ionic.Attributes as I
+import Nyaa.Ionic.Enums as E
 import Type.Proxy (Proxy(..))
 
 data IonButton_
@@ -40,6 +38,18 @@ instance Attr IonButton_ D.Style String where
 instance Attr IonButton_ I.Slot String where
   attr I.Slot value = unsafeAttribute { key: "slot", value: prop' value }
 
+instance Attr IonButton_ D.Color E.Color where
+  attr D.Color value = unsafeAttribute { key: "color", value: prop' (E.unColor value) }
+
+instance Attr IonButton_ D.Disabled Boolean where
+  attr D.Disabled value = unsafeAttribute { key: "disabled", value: prop' (if value then "true" else "false") }
+
+instance Attr IonButton_ D.Download String where
+  attr D.Download value = unsafeAttribute { key: "download", value: prop' value }
+
+instance Attr IonButton_ D.Href String where
+  attr D.Href value = unsafeAttribute { key: "href", value: prop' value }
+
 instance Attr IonButton_ I.OnIonBlur Cb where
   attr I.OnIonBlur value = unsafeAttribute { key: "ionBlur", value: cb' value }
 
@@ -61,9 +71,3 @@ instance Attr IonButton_ I.OnIonFocus (Effect Unit) where
 instance Attr IonButton_ I.OnIonFocus (Effect Boolean) where
   attr I.OnIonFocus value = unsafeAttribute
     { key: "ionFocus", value: cb' (Cb (const value)) }
-
-simpleButton
-  :: forall lock payload
-   . { text :: String, click :: Effect Unit }
-  -> Domable lock payload
-simpleButton i = ionButton (oneOf [ click_ i.click ]) [ text_ i.text ]
