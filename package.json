@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "rm -rf dist && mkdir dist && spago -x prod.dhall build && vite build && cap sync",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "tidy": "purs-tidy format-in-place src/**/*.purs"
   },
   "devDependencies": {
     "@capacitor/assets": "^1.0.14",

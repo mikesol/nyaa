@@ -18,14 +18,14 @@ import Nyaa.Ionic.Title (ionTitle_)
 import Nyaa.Ionic.Toolbar (ionToolbar_)
 
 listumIpsum :: Effect Unit
-listumIpsum = customComponent "listum-ipsum" { } \_ -> [
-    ionHeader (oneOf [I.Translucent !:= true ]) [
-        ionToolbar_ [
-            ionTitle_ [text_ "Listum"]
-        ]
-    ],
-    ionContent (oneOf [I.Fullscren !:= true, klass_ "background-cat"]) [
-      ionItem (oneOf [I.Button !:= true, D.Href !:= "/info-one"]) [ ionLabel_ [D.h3_ [text_ "Info One"]]],
-      ionItem (oneOf [I.Button !:= true, D.Href !:= "/info-two"]) [ ionLabel_ [D.h3_ [text_ "Info Two"]]]
-    ]
-]
+listumIpsum = customComponent "listum-ipsum" {} \_ ->
+  [ ionHeader (oneOf [ I.Translucent !:= true ])
+      [ ionToolbar_
+          [ ionTitle_ [ text_ "Listum" ]
+          ]
+      ]
+  , ionContent (oneOf [ I.Fullscren !:= true, klass_ "background-cat" ])
+      [ ionItem (oneOf [ I.Button !:= true, D.Href !:= "/info-one" ]) [ ionLabel_ [ D.h3_ [ text_ "Info One" ] ] ]
+      , ionItem (oneOf [ I.Button !:= true, D.Href !:= "/info-two" ]) [ ionLabel_ [ D.h3_ [ text_ "Info Two" ] ] ]
+      ]
+  ]
