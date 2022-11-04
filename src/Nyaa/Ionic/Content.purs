@@ -40,20 +40,20 @@ instance Attr IonContent_ D.Color String where
 instance Attr IonContent_ D.Style String where
   attr D.Style value = unsafeAttribute { key: "style", value: prop' value }
 
-instance Attr IonContent_ I.ForceOverscroll String where
-  attr I.ForceOverscroll value = unsafeAttribute { key: "force-overscroll", value: prop' value }
+instance Attr IonContent_ I.ForceOverscroll Boolean where
+  attr I.ForceOverscroll value = unsafeAttribute { key: "force-overscroll", value: prop' (if value then "true" else "false") }
 
-instance Attr IonContent_ I.Fullscren String where
-  attr I.Fullscren value = unsafeAttribute { key: "fullscreen", value: prop' value }
+instance Attr IonContent_ I.Fullscren Boolean where
+  attr I.Fullscren value = unsafeAttribute { key: "fullscreen", value: prop' (if value then "true" else "false") }
 
-instance Attr IonContent_ I.ScrollEvents String where
-  attr I.ScrollEvents value = unsafeAttribute { key: "scroll-events", value: prop' value }
+instance Attr IonContent_ I.ScrollEvents Boolean where
+  attr I.ScrollEvents value = unsafeAttribute { key: "scroll-events", value: prop' (if value then "true" else "false") }
 
-instance Attr IonContent_ I.ScrollX String where
-  attr I.ScrollX value = unsafeAttribute { key: "scroll-x", value: prop' value }
+instance Attr IonContent_ I.ScrollX Boolean where
+  attr I.ScrollX value = unsafeAttribute { key: "scroll-x", value: prop' (if value then "true" else "false") }
 
-instance Attr IonContent_ I.ScrollY String where
-  attr I.ScrollY value = unsafeAttribute { key: "scroll-y", value: prop' value }
+instance Attr IonContent_ I.ScrollY Boolean where
+  attr I.ScrollY value = unsafeAttribute { key: "scroll-y", value: prop' (if value then "true" else "false") }
 
 instance Attr IonContent_ I.OnIonScroll Cb where
   attr I.OnIonScroll value = unsafeAttribute { key: "ionScroll", value: cb' value }

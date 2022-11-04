@@ -51,8 +51,8 @@ ionRouter_ = ionRouter empty
 instance Attr IonRouter_ I.Root String where
   attr I.Root value = unsafeAttribute { key: "root", value: prop' value }
 
-instance Attr IonRouter_ I.UseHash String where
-  attr I.UseHash value = unsafeAttribute { key: "use-hash", value: prop' value }
+instance Attr IonRouter_ I.UseHash Boolean where
+  attr I.UseHash value = unsafeAttribute { key: "use-hash", value: prop' (if value then "true" else "false") }
 
 instance Attr IonRouter_ I.OnIonRouteDidChange Cb where
   attr I.OnIonRouteDidChange value = unsafeAttribute { key: "ionRouteDidChange", value: cb' value }

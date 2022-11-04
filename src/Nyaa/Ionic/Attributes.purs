@@ -11,7 +11,9 @@ data Component = Component
 data Url = Url
 data Rel = Rel
 data RouterDirection = RouterDirection
-
+data Collapse = Collapse
+data Mode = Mode
+data Translucent = Translucent
 --
 
 data OnIonBlur = OnIonBlur
