@@ -6,11 +6,6 @@ module Nyaa.Ionic.Router
   , ionRouter
   , ionRouter_
   , push
-  , routerBack
-  , routerForward
-  , routerRoot
-  , unRouterDirection
-  , RouterDirection
   )
   where
 
@@ -25,6 +20,7 @@ import Deku.DOM (SelfT(..), unsafeCustomElement)
 import Effect (Effect)
 import FRP.Event (Event)
 import Nyaa.Ionic.Attributes as I
+import Nyaa.Ionic.Enums as E
 import Type.Proxy (Proxy(..))
 import Unsafe.Coerce (unsafeCoerce)
 
@@ -80,17 +76,6 @@ instance Attr IonRouter_ SelfT (IonRouter -> Effect Unit) where
   attr SelfT value = unsafeAttribute
     { key: "@self@", value: cb' (Cb (unsafeCoerce value)) }
 
-newtype RouterDirection = RouterDirection String
-
-unRouterDirection :: RouterDirection -> String
-unRouterDirection (RouterDirection rd) = rd
-
-routerForward :: RouterDirection
-routerForward = RouterDirection "forward"
-routerBack :: RouterDirection
-routerBack = RouterDirection "back"
-routerRoot :: RouterDirection
-routerRoot = RouterDirection "root"
 
 foreign import back :: IonRouter -> Effect Unit
-foreign import push :: IonRouter -> String -> Nullable RouterDirection -> Nullable AnimationBuilder -> Effect Unit
+foreign import push :: IonRouter -> String -> Nullable E.RouterDirection -> Nullable AnimationBuilder -> Effect Unit

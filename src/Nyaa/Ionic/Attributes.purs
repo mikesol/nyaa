@@ -14,6 +14,19 @@ data RouterDirection = RouterDirection
 data Collapse = Collapse
 data Mode = Mode
 data Translucent = Translucent
+data Lines = Lines
+data Inset = Inset
+data Button = Button
+data DefaultHref = DefaultHref
+data Counter = Counter
+data Detail = Detail
+data Icon = Icon
+data DetailIcon = DetailIcon
+data Fill = Fill
+data Shape = Shape
+data Slot = Slot
+data Position = Position
+data Text = Text
 --
 
 data OnIonBlur = OnIonBlur
@@ -24,3 +37,5 @@ data OnIonScrollStart = OnIonScrollStart
 data OnIonRouteDidChange = OnIonRouteDidChange
 data OnIonRouteWillChange = OnIonRouteWillChange
 data OnIonRouteDataChanged = OnIonRouteDataChanged
+data OnIonNavDidChange = OnIonNavDidChange
+data OnIonNavWillChange = OnIonNavWillChange

@@ -1,0 +1,1 @@
+export const closeSlidingItems = (list) => () => list.closeSlidingItems();

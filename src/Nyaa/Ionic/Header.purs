@@ -1,14 +1,8 @@
 module Nyaa.Ionic.Header
   ( IonHeader(..)
   , IonHeader_(..)
-  , Mode
-  , Collapse
-  , collapseCondense
-  , collapseFade
   , ionHeader
   , ionHeader_
-  , modeIOS
-  , modeMD
   )
   where
 
@@ -19,7 +13,9 @@ import Deku.Core (Domable)
 import Deku.DOM (unsafeCustomElement)
 import Deku.DOM as D
 import FRP.Event (Event)
+import Nyaa.Ionic.Enums as E
 import Nyaa.Ionic.Attributes as I
+import Nyaa.Ionic.Enums (unCollapse, unMode)
 import Type.Proxy (Proxy(..))
 
 data IonHeader_
@@ -38,27 +34,17 @@ ionHeader_
   -> Domable lock payload
 ionHeader_ = ionHeader empty
 
-newtype Collapse = Collapse String
-newtype Mode = Mode String
-modeIOS :: Mode
-modeIOS = Mode "ios"
-modeMD :: Mode
-modeMD = Mode "md"
-collapseFade :: Collapse
-collapseFade = Collapse "fade"
-collapseCondense :: Collapse
-collapseCondense = Collapse "condense" 
 instance Attr IonHeader_ D.Class String where
   attr D.Class value = unsafeAttribute { key: "class", value: prop' value }
 
 instance Attr IonHeader_ D.Style String where
   attr D.Style value = unsafeAttribute { key: "style", value: prop' value }
 
-instance Attr IonHeader_ I.Collapse Collapse where
-  attr I.Collapse (Collapse value) = unsafeAttribute { key: "collapse", value: prop' value }
+instance Attr IonHeader_ I.Collapse E.Collapse where
+  attr I.Collapse value = unsafeAttribute { key: "collapse", value: prop' (unCollapse value) }
 
-instance Attr IonHeader_ I.Mode Mode where
-  attr I.Mode (Mode value) = unsafeAttribute { key: "mode", value: prop' value }
+instance Attr IonHeader_ I.Mode E.Mode where
+  attr I.Mode value = unsafeAttribute { key: "mode", value: prop' (unMode value) }
 
 instance Attr IonHeader_ I.Translucent Boolean where
   attr I.Translucent value = unsafeAttribute { key: "translucent", value: prop' (if value then "true" else "false") }

@@ -37,6 +37,9 @@ instance Attr IonButton_ D.Class String where
 instance Attr IonButton_ D.Style String where
   attr D.Style value = unsafeAttribute { key: "style", value: prop' value }
 
+instance Attr IonButton_ I.Slot String where
+  attr I.Slot value = unsafeAttribute { key: "slot", value: prop' value }
+
 instance Attr IonButton_ I.OnIonBlur Cb where
   attr I.OnIonBlur value = unsafeAttribute { key: "ionBlur", value: cb' value }
 

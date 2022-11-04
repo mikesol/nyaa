@@ -11,6 +11,7 @@ import Deku.DOM as D
 import Effect (Effect)
 import FRP.Event (Event)
 import Nyaa.Ionic.Attributes as I
+import Nyaa.Ionic.Enums as E
 import Type.Proxy (Proxy(..))
 import Unsafe.Coerce (unsafeCoerce)
 import Web.HTML (HTMLElement)
@@ -34,8 +35,8 @@ ionContent_ = ionContent empty
 instance Attr IonContent_ D.Class String where
   attr D.Class value = unsafeAttribute { key: "class", value: prop' value }
 
-instance Attr IonContent_ D.Color String where
-  attr D.Color value = unsafeAttribute { key: "color", value: prop' value }
+instance Attr IonContent_ D.Color E.Color where
+  attr D.Color value = unsafeAttribute { key: "color", value: prop' (E.unColor value) }
 
 instance Attr IonContent_ D.Style String where
   attr D.Style value = unsafeAttribute { key: "style", value: prop' value }
