@@ -13,10 +13,7 @@ import Nyaa.Ionic.Router (ionRouter_)
 app :: forall lock payload. Domable lock payload
 app = ionApp_
   [ ionRouter_
-      [ ionRoute (oneOf [ D.Url !:= "/", I.Component !:= "listum-ipsum" ]) []
-      , ionRoute (oneOf [ D.Url !:= "/info-one", I.Component !:= "info-one" ]) []
-      , ionRoute (oneOf [ D.Url !:= "/info-two", I.Component !:= "info-two" ]) []
-
+      [ ionRoute (oneOf [ D.Url !:= "/", I.Component !:= "intro-screen" ]) []
       ]
   , ionNav_ []
   ]
