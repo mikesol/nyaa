@@ -10,9 +10,9 @@ import Effect.Aff (launchAff_)
 import Effect.Class (liftEffect)
 import Effect.Uncurried (runEffectFn1)
 import FRP.Event (burning, createO)
-import Nyaa.App (app)
-import Nyaa.Custom.QuestPage (questPage)
+import Nyaa.App (app, storybook, storybookCC)
 import Nyaa.Custom.IntroScreen (introScreen)
+import Nyaa.Custom.QuestPage (questPage)
 import Nyaa.Firebase.Auth (getCurrentUser, listenToAuthStateChange, useEmulator)
 import Nyaa.Firebase.Init (fbApp)
 import Nyaa.Vite.Env (prod)
@@ -40,7 +40,11 @@ main = launchAff_ do
     h <- getHash
     when (h == "") do
       setHash "/"
-    runInBody app
+    --
+    -- runInBody app
+    storybookCC
+    runInBody storybook
+    --
     launchAff_ do
       cu <- toAffE getCurrentUser
       liftEffect do
