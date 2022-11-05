@@ -23,7 +23,12 @@ main = launchAff_ do
   -- register components
   liftEffect do
     introScreen
-    questPage { name: "tutorial-quest" }
+    questPage
+      { name: "tutorial-quest"
+      , img: "bg-spacecat"
+      , text: "Lorem ipsum"
+      , next: pure unit
+      }
   -- do this just for the init side effect
   _ <- liftEffect fbApp
   isProd <- liftEffect prod

@@ -14,7 +14,11 @@ app :: forall lock payload. Domable lock payload
 app = ionApp_
   [ ionRouter_
       [ ionRoute (oneOf [ D.Url !:= "/", I.Component !:= "intro-screen" ]) []
-      , ionRoute (oneOf [ D.Url !:= "/tutorial-quest", I.Component !:= "tutorial-quest" ]) []
+      , ionRoute
+          ( oneOf
+              [ D.Url !:= "/tutorial-quest", I.Component !:= "tutorial-quest" ]
+          )
+          []
       ]
   , ionNav_ []
   ]

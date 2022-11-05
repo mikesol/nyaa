@@ -1,4 +1,4 @@
-module Nyaa.Custom.QuestPage where
+module Nyaa.Custom.Lounge where
 
 import Prelude
 
@@ -16,16 +16,23 @@ import Nyaa.Ionic.Buttons (ionButtons)
 import Nyaa.Ionic.Content (ionContent)
 import Nyaa.Ionic.Custom (customComponent)
 import Nyaa.Ionic.Header (ionHeader)
+import Nyaa.Ionic.Title (ionTitle_)
 import Nyaa.Ionic.Toolbar (ionToolbar_)
 
-questPage
-  :: { name :: String, img :: String, text :: String, next :: Effect Unit }
+lounge
+  :: { name :: String
+     , title :: String
+     , img :: String
+     , text :: String
+     , next :: Effect Unit
+     }
   -> Effect Unit
-questPage i = customComponent i.name {} \_ ->
+lounge i = customComponent i.name {} \_ ->
   [ ionHeader (oneOf [ I.Translucent !:= true ])
       [ ionToolbar_
           [ ionButtons (oneOf [ I.Slot !:= "start" ])
               [ ionBackButton (oneOf []) []
+              , ionTitle_ [ text_ i.title ]
               ]
           ]
       ]
@@ -33,11 +40,10 @@ questPage i = customComponent i.name {} \_ ->
       [ D.div (oneOf [ klass_ "w-full h-full grid grid-cols-3 grid-rows-3" ])
           [ D.div
               ( oneOf
-                  [ klass_ $ "row-start-1 row-span-3 col-start-1 col-span-1 " <>
-                      i.img
+                  [ klass_ $ "row-start-1 row-span-3 col-start-1 col-span-1"
                   ]
               )
-              []
+              [ ionButton (oneOf [ click_ i.next ]) [ text_ "Play now" ] ]
           , D.div
               (oneOf [ klass_ "row-start-1 row-span-2 col-start-2 col-span-2" ])
               [ text_ i.text ]
