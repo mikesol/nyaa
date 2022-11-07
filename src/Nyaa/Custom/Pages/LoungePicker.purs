@@ -45,7 +45,6 @@ loungePicker = customComponent "lounge-picker" {} \_ ->
                       [ ionRouterLink (D.Href !:= "/deity-level")
                           [ text_ "Lounge 3" ]
                       ]
-
                   ]
               ]
           ]
