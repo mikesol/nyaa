@@ -30,9 +30,6 @@ export const doThree = (canvas) => () => {
   //     '/textures/environmentMaps/0/nz.jpg'
   // ])
 
-  // Canvas
-  const canvas = document.querySelector("canvas.webgl");
-
   // Scene
   const scene = new THREE.Scene();
 

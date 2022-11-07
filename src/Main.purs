@@ -15,11 +15,14 @@ import Nyaa.Capacitor.Utils (Platform(..), getPlatform)
 import Nyaa.Custom.Pages.AmplifyQuest (amplifyQuest)
 import Nyaa.Custom.Pages.CameraQuest (cameraQuest)
 import Nyaa.Custom.Pages.DazzleQuest (dazzleQuest)
+import Nyaa.Custom.Pages.DeityLevel (deityLevel)
 import Nyaa.Custom.Pages.DeityLounge (deityLounge)
 import Nyaa.Custom.Pages.EqualizeQuest (equalizeQuest)
 import Nyaa.Custom.Pages.HideQuest (hideQuest)
 import Nyaa.Custom.Pages.IntroScreen (introScreen)
+import Nyaa.Custom.Pages.NewbLevel (newbLevel)
 import Nyaa.Custom.Pages.NewbLounge (newbLounge)
+import Nyaa.Custom.Pages.ProLevel (proLevel)
 import Nyaa.Custom.Pages.ProLounge (proLounge)
 import Nyaa.Custom.Pages.ReverseQuest (reverseQuest)
 import Nyaa.Custom.Pages.RotateQuest (rotateQuest)
@@ -48,6 +51,9 @@ main = launchAff_ do
     newbLounge
     proLounge
     deityLounge
+    newbLevel
+    proLevel
+    deityLevel
   -- do this just for the init side effect
   _ <- liftEffect fbApp
   isProd <- liftEffect prod

@@ -18,6 +18,7 @@ import Nyaa.Ionic.Custom (customComponent)
 import Nyaa.Ionic.Header (ionHeader)
 import Nyaa.Ionic.Item (ionItem)
 import Nyaa.Ionic.Label (ionLabel_)
+import Nyaa.Ionic.List (ionList_)
 import Nyaa.Ionic.Nav (ionNav_)
 import Nyaa.Ionic.Route (ionRoute)
 import Nyaa.Ionic.Router (ionRouter_)
@@ -78,6 +79,9 @@ pages =
   , "newb-lounge"
   , "pro-lounge"
   , "deity-lounge"
+  , "newb-level"
+  , "pro-level"
+  , "deity-level"
   ]
 
 storybookCC :: Effect Unit
@@ -98,7 +102,7 @@ storybookCC = do
             [ ionTitle_ [ text_ "Storybook" ]
             ]
         ]
-    , ionContent (oneOf [ I.Fullscren !:= true ]) (A.fromFoldable elts)
+    , ionContent (oneOf [ I.Fullscren !:= true ]) [ionList_ (A.fromFoldable elts)]
     ]
 
 storybook :: forall lock payload. Domable lock payload
