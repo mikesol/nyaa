@@ -7,6 +7,7 @@ module.exports = {
   theme: {
     extend: {
       backgroundImage: {
+        quest: "url('/assets/quest.png')",
         splash: "url('/assets/splash.png')",
         spacecat: "url('/assets/spaceCat.png')",
       },
