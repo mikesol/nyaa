@@ -82,6 +82,7 @@ pages =
   , "newb-level"
   , "pro-level"
   , "deity-level"
+  , "lounge-picker"
   ]
 
 storybookCC :: Effect Unit

@@ -20,6 +20,7 @@ import Nyaa.Custom.Pages.DeityLounge (deityLounge)
 import Nyaa.Custom.Pages.EqualizeQuest (equalizeQuest)
 import Nyaa.Custom.Pages.HideQuest (hideQuest)
 import Nyaa.Custom.Pages.IntroScreen (introScreen)
+import Nyaa.Custom.Pages.LoungePicker (loungePicker)
 import Nyaa.Custom.Pages.NewbLevel (newbLevel)
 import Nyaa.Custom.Pages.NewbLounge (newbLounge)
 import Nyaa.Custom.Pages.ProLevel (proLevel)
@@ -54,6 +55,7 @@ main = launchAff_ do
     newbLevel
     proLevel
     deityLevel
+    loungePicker
   -- do this just for the init side effect
   _ <- liftEffect fbApp
   isProd <- liftEffect prod
