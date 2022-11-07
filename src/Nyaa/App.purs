@@ -24,6 +24,33 @@ import Nyaa.Ionic.Router (ionRouter_)
 import Nyaa.Ionic.Title (ionTitle_)
 import Nyaa.Ionic.Toolbar (ionToolbar_)
 
+-- Front page [Tutorial -> (Tutorial, Play)]
+-- Tutorial quest
+-- Tutorial
+-- Lounge picker (after first quest is played)
+-- Lounge 1 (requires sign in to unlock)
+-- Game 1
+-- Quest 1
+-- Quest 2
+-- Quest 3
+-- Quest 4
+-- Lounge 2
+-- Game 2
+-- Quest 5
+-- Quest 6
+-- Quest 7
+-- Lounge 3
+-- Game 3
+-- Quest 8
+-- Quest 9
+-- Waiting to play (from quest)
+-- Friends page (from quest)
+-- Waiting to play with friend
+-- Invited by friend
+-- Invite accept & wait page
+-- Invite reject page
+
+
 app :: forall lock payload. Domable lock payload
 app = ionApp_
   [ ionRouter_
