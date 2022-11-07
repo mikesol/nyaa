@@ -12,7 +12,14 @@ import Effect.Uncurried (runEffectFn1)
 import FRP.Event (burning, createO)
 import Nyaa.App (storybook, storybookCC)
 import Nyaa.Capacitor.Utils (Platform(..), getPlatform)
+import Nyaa.Custom.Pages.AmplifyQuest (amplifyQuest)
+import Nyaa.Custom.Pages.CameraQuest (cameraQuest)
+import Nyaa.Custom.Pages.DazzleQuest (dazzleQuest)
+import Nyaa.Custom.Pages.EqualizeQuest (equalizeQuest)
+import Nyaa.Custom.Pages.HideQuest (hideQuest)
 import Nyaa.Custom.Pages.IntroScreen (introScreen)
+import Nyaa.Custom.Pages.ReverseQuest (reverseQuest)
+import Nyaa.Custom.Pages.RotateQuest (rotateQuest)
 import Nyaa.Custom.Pages.TutorialQuest (tutorialQuest)
 import Nyaa.Firebase.Auth (getCurrentUser, listenToAuthStateChange, useEmulator)
 import Nyaa.Firebase.Init (fbApp)
@@ -28,6 +35,13 @@ main = launchAff_ do
   liftEffect do
     introScreen
     tutorialQuest
+    amplifyQuest
+    cameraQuest
+    dazzleQuest
+    equalizeQuest
+    hideQuest
+    reverseQuest
+    rotateQuest
   -- do this just for the init side effect
   _ <- liftEffect fbApp
   isProd <- liftEffect prod

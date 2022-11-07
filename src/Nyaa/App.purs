@@ -66,7 +66,7 @@ app = ionApp_
   ]
 
 pages :: Array String
-pages = [ "intro-screen", "tutorial-quest" ]
+pages = [ "intro-screen", "tutorial-quest", "amplify-quest", "camera-quest", "dazzle-quest", "equalize-quest", "hide-quest", "reverse-quest", "rotate-quest" ]
 
 storybookCC :: Effect Unit
 storybookCC = do
