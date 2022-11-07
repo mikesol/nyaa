@@ -4,4 +4,5 @@
     <string name="title_activity_main">Nyaa</string>
     <string name="package_name">fm.joyride.nyaa</string>
     <string name="custom_url_scheme">fm.joyride.nyaa</string>
+    <string name="app_id">339754466261</string>
 </resources>

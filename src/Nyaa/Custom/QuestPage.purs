@@ -3,10 +3,11 @@ module Nyaa.Custom.QuestPage where
 import Prelude
 
 import Data.Foldable (oneOf)
-import Deku.Attribute ((!:=))
+import Deku.Attribute ((!:=), (:=))
 import Deku.Attributes (klass_)
 import Deku.DOM as D
 import Effect (Effect)
+import Nyaa.Capacitor.Utils (Platform(..), getPlatformE)
 import Nyaa.Ionic.Attributes as I
 import Nyaa.Ionic.BackButton (ionBackButton)
 import Nyaa.Ionic.Buttons (ionButtons)
@@ -19,7 +20,14 @@ questPage
   :: { name :: String, img :: String, text :: String, next :: Effect Unit }
   -> Effect Unit
 questPage i = customComponent i.name {} \_ ->
-  [ ionHeader (oneOf [ I.Translucent !:= true ])
+  [ ionHeader
+      ( oneOf
+          [ I.Translucent !:= true
+          , getPlatformE <#> \p -> D.Class := case p of
+              IOS -> ""
+              _ -> "hidden"
+          ]
+      )
       [ ionToolbar_
           [ ionButtons (oneOf [ I.Slot !:= "start" ])
               [ ionBackButton (oneOf []) []
@@ -27,7 +35,12 @@ questPage i = customComponent i.name {} \_ ->
           ]
       ]
   , ionContent (oneOf [ I.Fullscren !:= true ])
-      [ D.div (oneOf [ klass_ "bg-quest bg-no-repeat bg-cover bg-center w-full h-full grid grid-cols-3 grid-rows-3" ])
+      [ D.div
+          ( oneOf
+              [ klass_
+                  "bg-quest bg-no-repeat bg-cover bg-center w-full h-full grid grid-cols-3 grid-rows-3"
+              ]
+          )
           []
       ]
   ]

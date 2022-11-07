@@ -10,16 +10,20 @@ import Effect.Aff (launchAff_)
 import Effect.Class (liftEffect)
 import Effect.Uncurried (runEffectFn1)
 import FRP.Event (burning, createO)
-import Nyaa.App (app, storybook, storybookCC)
+import Nyaa.App (storybook, storybookCC)
+import Nyaa.Capacitor.Utils (Platform(..), getPlatform)
 import Nyaa.Custom.IntroScreen (introScreen)
 import Nyaa.Custom.QuestPage (questPage)
 import Nyaa.Firebase.Auth (getCurrentUser, listenToAuthStateChange, useEmulator)
 import Nyaa.Firebase.Init (fbApp)
+import Nyaa.Fullscreen (androidFullScreen)
 import Nyaa.Vite.Env (prod)
 import Routing.Hash (getHash, setHash)
 
 main :: Effect Unit
 main = launchAff_ do
+  whenM (liftEffect (getPlatform <#> (_ == Android))) do
+    toAffE androidFullScreen
   -- register components
   liftEffect do
     introScreen
