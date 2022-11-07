@@ -43,6 +43,7 @@ import Nyaa.Ionic.Toolbar (ionToolbar_)
 -- Game 3
 -- Quest 8
 -- Quest 9
+-- End-of-game page (brag, continue)
 -- Waiting to play (from quest)
 -- Friends page (from quest)
 -- Waiting to play with friend
