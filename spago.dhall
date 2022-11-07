@@ -10,6 +10,7 @@
   , "debug"
   , "deku"
   , "effect"
+  , "exists"
   , "fast-vect"
   , "filterable"
   , "foldable-traversable"
