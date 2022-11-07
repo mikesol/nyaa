@@ -12,8 +12,8 @@ import Effect.Uncurried (runEffectFn1)
 import FRP.Event (burning, createO)
 import Nyaa.App (storybook, storybookCC)
 import Nyaa.Capacitor.Utils (Platform(..), getPlatform)
-import Nyaa.Custom.IntroScreen (introScreen)
-import Nyaa.Custom.QuestPage (questPage)
+import Nyaa.Custom.Pages.IntroScreen (introScreen)
+import Nyaa.Custom.Pages.TutorialQuest (tutorialQuest)
 import Nyaa.Firebase.Auth (getCurrentUser, listenToAuthStateChange, useEmulator)
 import Nyaa.Firebase.Init (fbApp)
 import Nyaa.Fullscreen (androidFullScreen)
@@ -27,12 +27,7 @@ main = launchAff_ do
   -- register components
   liftEffect do
     introScreen
-    questPage
-      { name: "tutorial-quest"
-      , img: "bg-spacecat"
-      , text: "Lorem ipsum"
-      , next: pure unit
-      }
+    tutorialQuest
   -- do this just for the init side effect
   _ <- liftEffect fbApp
   isProd <- liftEffect prod

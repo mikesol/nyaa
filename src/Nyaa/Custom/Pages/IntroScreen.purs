@@ -1,4 +1,4 @@
-module Nyaa.Custom.IntroScreen where
+module Nyaa.Custom.Pages.IntroScreen where
 
 import Prelude
 

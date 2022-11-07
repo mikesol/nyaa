@@ -1,4 +1,4 @@
-module Nyaa.Custom.Lounge where
+module Nyaa.Custom.Builders.Lounge where
 
 import Prelude
 
