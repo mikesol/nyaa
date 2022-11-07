@@ -51,7 +51,6 @@ import Nyaa.Ionic.Toolbar (ionToolbar_)
 -- Invite accept & wait page
 -- Invite reject page
 
-
 app :: forall lock payload. Domable lock payload
 app = ionApp_
   [ ionRouter_
@@ -66,7 +65,20 @@ app = ionApp_
   ]
 
 pages :: Array String
-pages = [ "intro-screen", "tutorial-quest", "amplify-quest", "camera-quest", "dazzle-quest", "equalize-quest", "hide-quest", "reverse-quest", "rotate-quest" ]
+pages =
+  [ "intro-screen"
+  , "tutorial-quest"
+  , "amplify-quest"
+  , "camera-quest"
+  , "dazzle-quest"
+  , "equalize-quest"
+  , "hide-quest"
+  , "reverse-quest"
+  , "rotate-quest"
+  , "newb-lounge"
+  , "pro-lounge"
+  , "deity-lounge"
+  ]
 
 storybookCC :: Effect Unit
 storybookCC = do
