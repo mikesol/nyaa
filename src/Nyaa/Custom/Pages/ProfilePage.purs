@@ -17,7 +17,11 @@ import Nyaa.Ionic.BackButton (ionBackButton)
 import Nyaa.Ionic.Buttons (ionButtons)
 import Nyaa.Ionic.Content (ionContent)
 import Nyaa.Ionic.Custom (customComponent)
+import Nyaa.Ionic.Enums (labelFloating)
 import Nyaa.Ionic.Header (ionHeader)
+import Nyaa.Ionic.Input (ionInput)
+import Nyaa.Ionic.Item (ionItem_)
+import Nyaa.Ionic.Label (ionLabel)
 import Nyaa.Ionic.Title (ionTitle_)
 import Nyaa.Ionic.Toolbar (ionToolbar_)
 
@@ -33,7 +37,7 @@ profilePage opts = customComponent "profile-page" {} \_ ->
   [ ionHeader (oneOf [ I.Translucent !:= true ])
       [ ionToolbar_
           [ ionButtons (oneOf [ I.Slot !:= "start" ])
-              [ ionBackButton (oneOf [I.DefaultHref !:= "/" ])  []
+              [ ionBackButton (oneOf [ I.DefaultHref !:= "/" ]) []
               ]
           , ionTitle_ [ text_ "Profile" ]
           ]
@@ -62,12 +66,25 @@ profilePage opts = customComponent "profile-page" {} \_ ->
                       )
                       []
                   ]
-              , D.div (D.Class !:= "mt-8 w-fit mx-auto")
+              , D.div (D.Class !:= "w-fit mx-auto")
+                  [
+                    -- D.h2
+                    --   ( D.Class !:=
+                    --       "text-black font-bold text-2xl tracking-wide"
+                    --   )
+                    --   [ text_ "Jonathan Smith" ]
+                    ionItem_
+                      [ ionLabel (oneOf [I.Position !:= labelFloating, D.Class !:= "text-center"])
+                          [ text_ "Jonathan Smith" ]
+                      , ionInput (D.Placeholder !:= "Your name") []
+                      ]
+                  ]
+              , D.div (D.Class !:= "w-fit mx-auto")
                   [ D.h2
                       ( D.Class !:=
-                          "text-black font-bold text-2xl tracking-wide"
+                          "font-bold text-2xl tracking-wide"
                       )
-                      [ text_ "Jonathan Smith" ]
+                      [ text_ "Achievements" ]
                   ]
               ]
           ]
