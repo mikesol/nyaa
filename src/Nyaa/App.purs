@@ -76,6 +76,7 @@ pages =
   , "hide-quest"
   , "reverse-quest"
   , "rotate-quest"
+  , "profile-page"
   , "newb-lounge"
   , "pro-lounge"
   , "deity-lounge"

@@ -25,57 +25,64 @@ import Nyaa.Custom.Pages.NewbLevel (newbLevel)
 import Nyaa.Custom.Pages.NewbLounge (newbLounge)
 import Nyaa.Custom.Pages.ProLevel (proLevel)
 import Nyaa.Custom.Pages.ProLounge (proLounge)
+import Nyaa.Custom.Pages.ProfilePage (profilePage)
 import Nyaa.Custom.Pages.ReverseQuest (reverseQuest)
 import Nyaa.Custom.Pages.RotateQuest (rotateQuest)
 import Nyaa.Custom.Pages.TutorialQuest (tutorialQuest)
 import Nyaa.Firebase.Auth (getCurrentUser, listenToAuthStateChange, useEmulator)
-import Nyaa.Firebase.Init (fbApp)
+import Nyaa.Firebase.Init (fbAnalytics, fbApp, fbAuth, fbDB)
 import Nyaa.Fullscreen (androidFullScreen)
 import Nyaa.Vite.Env (prod)
 import Routing.Hash (getHash, setHash)
 
 main :: Effect Unit
-main = launchAff_ do
-  whenM (liftEffect (getPlatform <#> (_ == Android))) do
-    toAffE androidFullScreen
-  -- register components
-  liftEffect do
-    introScreen
-    tutorialQuest
-    amplifyQuest
-    cameraQuest
-    dazzleQuest
-    equalizeQuest
-    hideQuest
-    reverseQuest
-    rotateQuest
-    newbLounge
-    proLounge
-    deityLounge
-    newbLevel
-    proLevel
-    deityLevel
-    loungePicker
-  -- do this just for the init side effect
-  _ <- liftEffect fbApp
-  isProd <- liftEffect prod
-  unless isProd do
-    toAffE useEmulator
-  liftEffect do
-    authListener <- createO
-    authState <- burning { user: null } authListener.event
-    h <- getHash
-    when (h == "") do
-      setHash "/"
-    --
-    -- runInBody app
-    storybookCC
-    runInBody storybook
-    --
-    launchAff_ do
-      cu <- toAffE getCurrentUser
-      liftEffect do
-        runEffectFn1 authListener.push { user: cu }
-        _ <- listenToAuthStateChange authListener.push
-        pure unit
-    pure unit
+main = do
+  app <- fbApp
+  analytics <- fbAnalytics app
+  firestoreDB <- fbDB app
+  auth <- fbAuth app
+  authListener <- createO
+  authState <- burning { user: null } authListener.event
+  launchAff_ do
+    whenM (liftEffect (getPlatform <#> (_ == Android))) do
+      toAffE androidFullScreen
+    -- register components
+    liftEffect do
+      introScreen { authState: authState.event }
+      tutorialQuest 
+      amplifyQuest
+      cameraQuest
+      dazzleQuest
+      equalizeQuest
+      hideQuest
+      reverseQuest
+      rotateQuest
+      newbLounge
+      proLounge
+      deityLounge
+      newbLevel
+      proLevel
+      deityLevel
+      loungePicker
+      profilePage
+    -- do this just for the init side effect
+    _ <- liftEffect fbApp
+    isProd <- liftEffect prod
+    unless isProd do
+      toAffE useEmulator
+    liftEffect do
+      h <- getHash
+      when (h == "") do
+        setHash "/"
+      --
+      -- runInBody app
+      storybookCC
+      runInBody storybook
+      --
+      launchAff_ do
+        cu <- toAffE getCurrentUser
+        liftEffect do
+          runEffectFn1 authListener.push { user: cu }
+          _ <- listenToAuthStateChange authListener.push
+          pure unit
+      pure unit
