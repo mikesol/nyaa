@@ -33,6 +33,7 @@
   , "profunctor"
   , "profunctor-lenses"
   , "quickcheck"
+  , "record"
   , "refs"
   , "routing"
   , "routing-duplex"

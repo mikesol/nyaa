@@ -54,6 +54,12 @@ data Shape = Shape
 data Slot = Slot
 data Position = Position
 data Text = Text
+data Autocorrect = Autocorrect
+data ClearInput = ClearInput
+data ClearOnEdit = ClearOnEdit
+data Debounce = Debounce
+data Enterkeyhint =Enterkeyhint
+data Multiple = Multiple
 --
 
 data OnIonBlur = OnIonBlur
@@ -66,3 +72,5 @@ data OnIonRouteWillChange = OnIonRouteWillChange
 data OnIonRouteDataChanged = OnIonRouteDataChanged
 data OnIonNavDidChange = OnIonNavDidChange
 data OnIonNavWillChange = OnIonNavWillChange
+data OnIonChange = OnIonChange
+data OnIonInput = OnIonInput

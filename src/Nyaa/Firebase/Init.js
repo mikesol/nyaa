@@ -1,7 +1,7 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
-import { getFirestore, connectFirestoreEmulator } from "firebase/firestore";
+import { getFirestore, connectFirestoreEmulator, enableIndexedDbPersistence } from "firebase/firestore";
 import { getAuth, connectAuthEmulator } from "firebase/auth";
 
 // TODO: Add SDKs for Firebase products that you want to use
@@ -27,6 +27,16 @@ export const fbAnalytics = (app) => () =>
 export const fbDB = (app) => () => {
   const o = import.meta.env.PROD ? getFirestore(app) : getFirestore();
   connectFirestoreEmulator(o, "localhost", 8080);
+  // let this run async
+  // it's highly unlikely there will ever be a race condition
+  // if needed return this as a promise & chain `o`
+  enableIndexedDbPersistence(o).catch((err) => {
+    if (err.code == "failed-precondition") {
+      console.error("could not do offline persistance");
+    } else if (err.code == "unimplemented") {
+      console.error("browser does not allow for persistance");
+    }
+  });
   return o;
 };
 export const fbAuth = (app) => () => {
