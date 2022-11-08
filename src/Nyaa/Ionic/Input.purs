@@ -19,6 +19,7 @@ import FRP.Event (Event)
 import Nyaa.Ionic.Attributes as I
 import Nyaa.Ionic.Enums as E
 import Type.Proxy (Proxy(..))
+import Unsafe.Coerce (unsafeCoerce)
 
 data IonInput_
 data IonInput
@@ -165,6 +166,11 @@ instance Attr IonInput_ I.OnIonInput (Effect Unit) where
 instance Attr IonInput_ I.OnIonInput (Effect Boolean) where
   attr I.OnIonInput value = unsafeAttribute
     { key: "ionInput", value: cb' (Cb (const value)) }
+--
+instance Attr IonInput_ D.SelfT (IonInput -> Effect Unit) where
+  attr D.SelfT value = unsafeAttribute
+    { key: "@self@", value: cb' (Cb (unsafeCoerce value)) }
+
 
 foreign import getInputElement :: IonInput -> Effect Unit
 foreign import setFocus :: IonInput -> Effect Unit
