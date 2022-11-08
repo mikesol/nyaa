@@ -1,6 +1,5 @@
 module Nyaa.Custom.Pages.ProfilePage where
 
-
 import Prelude
 
 import Control.Plus (empty)
@@ -27,18 +26,50 @@ import Nyaa.Ionic.Toolbar (ionToolbar_)
 -- achievements
 -- invite
 
-profilePage :: { authState :: Event { user :: Nullable User } }
+profilePage
+  :: { authState :: Event { user :: Nullable User } }
   -> Effect Unit
-profilePage opts = customComponent "profile-page" { } \_ -> [
-    ionHeader (oneOf [I.Translucent !:= true ]) [
-        ionToolbar_ [
-            ionButtons (oneOf [I.Slot !:= "start" ]) [
-                ionBackButton empty {-(oneOf [I.DefaultHref !:= "/" ])-} []
-            ],
-            ionTitle_ [text_ "Profile page"]
-        ]
-    ],
-    ionContent (oneOf [klass_ "ion-padding", I.Fullscren !:= true]) [
-      D.p_ [text_ "Oh hello."]
-    ]
-]
+profilePage opts = customComponent "profile-page" {} \_ ->
+  [ ionHeader (oneOf [ I.Translucent !:= true ])
+      [ ionToolbar_
+          [ ionButtons (oneOf [ I.Slot !:= "start" ])
+              [ ionBackButton (oneOf [I.DefaultHref !:= "/" ])  []
+              ]
+          , ionTitle_ [ text_ "Profile" ]
+          ]
+      ]
+  , ionContent (oneOf [ klass_ "ion-padding", I.Fullscren !:= true ])
+      [ D.section
+          ( oneOf
+              [ D.Style !:= "" -- "font-family: Montserrat"
+              , D.Class !:=
+                  ""
+              ]
+          )
+          [ D.section
+              ( D.Class !:=
+                  "w-full mx-auto px-8 py-6 "
+              )
+              [ D.div (D.Class !:= "mt-6 w-fit mx-auto")
+                  [ D.img
+                      ( oneOf
+                          [ D.Src !:=
+                              "https://api.lorem.space/image/face?w=120&h=120&hash=bart89fe"
+                          , D.Class !:= "rounded-full w-28 "
+                          , D.Alt !:= "profile picture"
+                          , D.Srcset !:= ""
+                          ]
+                      )
+                      []
+                  ]
+              , D.div (D.Class !:= "mt-8 w-fit mx-auto")
+                  [ D.h2
+                      ( D.Class !:=
+                          "text-black font-bold text-2xl tracking-wide"
+                      )
+                      [ text_ "Jonathan Smith" ]
+                  ]
+              ]
+          ]
+      ]
+  ]

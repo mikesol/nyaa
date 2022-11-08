@@ -64,7 +64,7 @@ main = do
       proLevel
       deityLevel
       loungePicker
-      profilePage
+      profilePage { authState: authState.event }
     -- do this just for the init side effect
     _ <- liftEffect fbApp
     isProd <- liftEffect prod

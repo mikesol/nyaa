@@ -43,5 +43,5 @@ with hyrule =
       , "web-uievents"
       ]
     , repo = "https://github.com/mikesol/purescript-deku.git"
-    , version = "v0.8.5"
+    , version = "main"
     }
