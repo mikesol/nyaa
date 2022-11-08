@@ -50,6 +50,9 @@ instance Attr IonButton_ D.Download String where
 instance Attr IonButton_ D.Href String where
   attr D.Href value = unsafeAttribute { key: "href", value: prop' value }
 
+instance Attr IonButton_ I.Expand E.ButtonExpand where
+  attr I.Expand value = unsafeAttribute { key: "expand", value: prop' (E.unButtonExpand value) }
+
 instance Attr IonButton_ I.OnIonBlur Cb where
   attr I.OnIonBlur value = unsafeAttribute { key: "ionBlur", value: cb' value }
 

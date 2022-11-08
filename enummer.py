@@ -1,5 +1,5 @@
-N="InputType"
-A='"date" ｜ "datetime-local" ｜ "email" ｜ "month" ｜ "number" ｜ "password" ｜ "search" ｜ "tel" ｜ "text" ｜ "time" ｜ "url" ｜ "week"'
+N="ButtonExpand"
+A='"block" ｜ "full"'
 
 def acn(n,d):
     joined = ''.join([y.capitalize() for y in d.split('-')])

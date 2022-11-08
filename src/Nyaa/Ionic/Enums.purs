@@ -137,9 +137,9 @@ module Nyaa.Ionic.Enums
   , inputmodeTel
   , inputmodeText
   , inputmodeUrl
- , InputType
-    , unInputType
-    , inputtypeDate
+  , InputType
+  , unInputType
+  , inputtypeDate
   , inputtypeDatetimeLocal
   , inputtypeEmail
   , inputtypeMonth
@@ -151,8 +151,10 @@ module Nyaa.Ionic.Enums
   , inputtypeTime
   , inputtypeUrl
   , inputtypeWeek
-
-
+  , ButtonExpand
+  , unButtonExpand
+  , buttonexpandBlock
+  , buttonexpandFull
   ) where
 
 newtype Collapse = Collapse String
@@ -557,31 +559,57 @@ inputmodeText = Inputmode "text"
 
 inputmodeUrl :: Inputmode
 inputmodeUrl = Inputmode "url"
+
 -- starting InputType
 newtype InputType = InputType String
+
 unInputType :: InputType -> String
 unInputType (InputType t) = t
+
 inputtypeDate :: InputType
 inputtypeDate = InputType "date"
+
 inputtypeDatetimeLocal :: InputType
 inputtypeDatetimeLocal = InputType "datetime-local"
+
 inputtypeEmail :: InputType
 inputtypeEmail = InputType "email"
+
 inputtypeMonth :: InputType
 inputtypeMonth = InputType "month"
+
 inputtypeNumber :: InputType
 inputtypeNumber = InputType "number"
+
 inputtypePassword :: InputType
 inputtypePassword = InputType "password"
+
 inputtypeSearch :: InputType
 inputtypeSearch = InputType "search"
+
 inputtypeTel :: InputType
 inputtypeTel = InputType "tel"
+
 inputtypeText :: InputType
 inputtypeText = InputType "text"
+
 inputtypeTime :: InputType
 inputtypeTime = InputType "time"
+
 inputtypeUrl :: InputType
 inputtypeUrl = InputType "url"
+
 inputtypeWeek :: InputType
 inputtypeWeek = InputType "week"
+
+-- starting ButtonExpand
+newtype ButtonExpand = ButtonExpand String
+
+unButtonExpand :: ButtonExpand -> String
+unButtonExpand (ButtonExpand t) = t
+
+buttonexpandBlock :: ButtonExpand
+buttonexpandBlock = ButtonExpand "block"
+
+buttonexpandFull :: ButtonExpand
+buttonexpandFull = ButtonExpand "full"

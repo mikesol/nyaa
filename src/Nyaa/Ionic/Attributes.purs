@@ -60,6 +60,7 @@ data ClearOnEdit = ClearOnEdit
 data Debounce = Debounce
 data Enterkeyhint =Enterkeyhint
 data Multiple = Multiple
+data Expand = Expand
 --
 
 data OnIonBlur = OnIonBlur
