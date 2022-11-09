@@ -100,11 +100,6 @@ profilePage opts = customComponent "profile-page" {} \_ ->
                   ]
               , D.div (D.Class !:= "w-fit mx-auto")
                   [
-                    -- D.h2
-                    --   ( D.Class !:=
-                    --       "text-black font-bold text-2xl tracking-wide"
-                    --   )
-                    --   [ text_ "Jonathan Smith" ]
                     ionItem_
                       [ ionLabel
                           ( oneOf
