@@ -1,4 +1,4 @@
-{ name = "ocarina"
+{ name = "nyaa"
 , dependencies =
   [ "aff"
   , "aff-promise"

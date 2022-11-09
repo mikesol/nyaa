@@ -2,15 +2,21 @@ module Nyaa.Custom.Pages.ProfilePage where
 
 import Prelude
 
+import Control.Plus (empty)
+import Control.Promise (toAffE)
 import Data.Foldable (oneOf)
 import Data.Nullable (Nullable)
 import Deku.Attribute ((!:=), (:=))
 import Deku.Attributes (klass_)
-import Deku.Control (text_)
-import Deku.Core (Domable)
+import Deku.Control (blank, text_)
+import Deku.Core (Domable, envy)
 import Deku.DOM as D
+import Deku.Listeners (click_)
 import Effect (Effect)
+import Effect.Aff (launchAff_)
 import FRP.Event (Event)
+import Nyaa.Capacitor.FriendsPlugin (sendFriendRequest)
+import Nyaa.Capacitor.Utils (Platform(..), getPlatformE)
 import Nyaa.Firebase.Auth (User)
 import Nyaa.Ionic.Attributes as I
 import Nyaa.Ionic.BackButton (ionBackButton)
@@ -135,8 +141,51 @@ profilePage opts = customComponent "profile-page" {} \_ ->
                   , achievement { earned: pure false, title: "Nyāā" }
                   , achievement { earned: pure false, title: "Nyāāā" }
                   ]
-              , ionButton (oneOf [ I.Expand !:= buttonexpandBlock ])
-                      [ text_ "Share" ]
+              , envy $ getPlatformE <#> case _ of
+                  Web -> blank
+                  Android -> D.div empty
+                    [ D.h2
+                        ( D.Class !:=
+                            "font-bold text-2xl tracking-wide"
+                        )
+                        [ text_ "Nyā + Friends = ❤️" ]
+                    , D.p_
+                        [ text_ "In Play Games, go to the "
+                        , D.span (klass_ "font-bold") [ text_ "Profile" ]
+                        , text_ " page and invite your friends!"
+                        ]
+                    , ionButton
+                        ( oneOf
+                            [ --I.Expand !:= buttonexpandBlock
+                              click_ do
+                                launchAff_ $ toAffE sendFriendRequest
+                            , klass_ "mt-4"
+                            ]
+                        )
+                        [ text_ "Open Play Games" ]
+                    , ionButton (oneOf [ klass_ "mt-4" ])
+                        [ text_ "Share Nyā" ]
+                    ]
+                  IOS -> D.div empty
+                    [ D.h2
+                        ( D.Class !:=
+                            "font-bold text-2xl tracking-wide"
+                        )
+                        [ text_ "Nyā + Friends = ❤️" ]
+                    , D.p_ []
+                    , ionButton
+                        ( oneOf
+                            [ -- I.Expand !:= buttonexpandBlock
+                              click_ do
+                                launchAff_ $ toAffE sendFriendRequest
+                            , klass_ "mt-4"
+                            ]
+                        )
+                        [ text_ "Open Game Center" ]
+                    , ionButton (oneOf [ klass_ "mt-4" ])
+                        [ text_ "Share Nyā" ]
+                    ]
+
               ]
           ]
       ]

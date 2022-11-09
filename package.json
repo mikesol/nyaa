@@ -5,7 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "rm -rf dist && mkdir dist && spago -x prod.dhall build && vite build && cap sync",
+    "prod-build": "rm -rf dist && mkdir dist && spago -x prod.dhall build && vite build && cap sync",
+    "build": "rm -rf dist && mkdir dist && spago build && DEV_BUILD=true vite build && cap sync",
+    "run-droid": "rm -rf dist && mkdir dist && spago build && DEV_BUILD=true vite build && cap run android",
     "preview": "vite preview",
     "tidy": "purs-tidy format-in-place src/**/*.purs"
   },

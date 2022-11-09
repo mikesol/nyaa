@@ -31,7 +31,7 @@ introScreen opts = customComponent "intro-screen" {} \_ ->
               [ D.div (oneOf [ klass_ "grow" ]) []
               , D.div (oneOf [])
                   [ D.div_
-                      [ D.h1 (oneOf [ klass_ "text-center" ]) [ text_ "Nyaa" ] ]
+                      [ D.h1 (oneOf [ klass_ "text-center" ]) [ text_ "Nyā" ] ]
                   , ionButton (oneOf [ D.Href !:= "/tutorial-quest" ])
                       [ text_ "Tutorial" ]
                   , flip switcher opts.authState $ _.user >>> toMaybe >>>
