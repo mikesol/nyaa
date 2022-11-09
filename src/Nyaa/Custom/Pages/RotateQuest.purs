@@ -8,7 +8,5 @@ import Nyaa.Custom.Builders.QuestPage (questPage)
 rotateQuest :: Effect Unit
 rotateQuest = questPage
   { name: "rotate-quest"
-  , img: "bg-spacecat"
-  , text: "Lorem ipsum"
-  , next: pure unit
+  , showFriend: true
   }

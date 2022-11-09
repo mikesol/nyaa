@@ -8,7 +8,5 @@ import Nyaa.Custom.Builders.QuestPage (questPage)
 hideQuest :: Effect Unit
 hideQuest = questPage
   { name: "hide-quest"
-  , img: "bg-spacecat"
-  , text: "Lorem ipsum"
-  , next: pure unit
+  , showFriend: true
   }

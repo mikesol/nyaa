@@ -8,7 +8,5 @@ import Nyaa.Custom.Builders.QuestPage (questPage)
 reverseQuest :: Effect Unit
 reverseQuest = questPage
   { name: "reverse-quest"
-  , img: "bg-spacecat"
-  , text: "Lorem ipsum"
-  , next: pure unit
+  , showFriend: true
   }
