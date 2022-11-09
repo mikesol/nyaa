@@ -8,6 +8,7 @@
     "prod-build": "rm -rf dist && mkdir dist && spago -x prod.dhall build && vite build && cap sync",
     "build": "rm -rf dist && mkdir dist && spago build && DEV_BUILD=true vite build && cap sync",
     "run-droid": "rm -rf dist && mkdir dist && spago build && DEV_BUILD=true vite build && cap run android",
+    "run-ios": "rm -rf dist && mkdir dist && spago build && DEV_BUILD=true vite build && cap run ios",
     "preview": "vite preview",
     "tidy": "purs-tidy format-in-place src/**/*.purs"
   },

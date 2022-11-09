@@ -156,8 +156,7 @@ profilePage opts = customComponent "profile-page" {} \_ ->
                         ]
                     , ionButton
                         ( oneOf
-                            [ --I.Expand !:= buttonexpandBlock
-                              click_ do
+                            [ click_ do
                                 launchAff_ $ toAffE sendFriendRequest
                             , klass_ "mt-4"
                             ]
@@ -175,13 +174,12 @@ profilePage opts = customComponent "profile-page" {} \_ ->
                     , D.p_ []
                     , ionButton
                         ( oneOf
-                            [ -- I.Expand !:= buttonexpandBlock
-                              click_ do
+                            [ click_ do
                                 launchAff_ $ toAffE sendFriendRequest
                             , klass_ "mt-4"
                             ]
                         )
-                        [ text_ "Open Game Center" ]
+                        [ text_ "Send a Message from Game Center" ]
                     , ionButton (oneOf [ klass_ "mt-4" ])
                         [ text_ "Share Nyā" ]
                     ]
