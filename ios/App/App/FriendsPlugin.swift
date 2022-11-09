@@ -28,33 +28,34 @@ public class FriendsPlugin: CAPPlugin {
         }
     }
 
-    @objc func getFriends(_ call: CAPPluginCall) async {
-        do {
-            if #available(iOS 14.5, *) {
-                let authorizationStatus = try await GKLocalPlayer.local.loadFriendsAuthorizationStatus()
-                // Handle GKFriendsAuthorizationStatus.
-                switch authorizationStatus {
-                case .notDetermined:
-                    // The player hasn't denied or authorized access to their friends.
-                    await FriendsPlugin.marshallFriends(call)
-                case .denied:
-                    call.reject("Access to friends is denied.", "ACCESS_TO_FRIENDS_DENIED");
-                case .restricted:
-                    call.reject("Access to friends is restricted.", "ACCESS_TO_FRIENDS_RESTRICTED");
-                case .authorized:
-                    // The player authorizes your request to access their friends.
-                    let friends = try await GKLocalPlayer.local.loadFriends()
-                    await FriendsPlugin.marshallFriends(call)
-                @unknown default:
-                    call.reject("Access to friends is unknown.", "ACCESS_TO_FRIENDS_UNKNOWN");
+    @objc func getFriends(_ call: CAPPluginCall) {
+        Task {
+            do {
+                if #available(iOS 14.5, *) {
+                    let authorizationStatus = try await GKLocalPlayer.local.loadFriendsAuthorizationStatus()
+                    // Handle GKFriendsAuthorizationStatus.
+                    switch authorizationStatus {
+                    case .notDetermined:
+                        // The player hasn't denied or authorized access to their friends.
+                        await FriendsPlugin.marshallFriends(call)
+                    case .denied:
+                        call.reject("Access to friends is denied.", "ACCESS_TO_FRIENDS_DENIED");
+                    case .restricted:
+                        call.reject("Access to friends is restricted.", "ACCESS_TO_FRIENDS_RESTRICTED");
+                    case .authorized:
+                        // The player authorizes your request to access their friends.
+                        await FriendsPlugin.marshallFriends(call)
+                    @unknown default:
+                        call.reject("Access to friends is unknown.", "ACCESS_TO_FRIENDS_UNKNOWN");
+                    }
+                } else {
+                    call.reject("Cannot get friends before iOS 14.5", "IOS_VERSION_TOO_OLD")
                 }
-            } else {
-                call.reject("Cannot get friends before iOS 14.5", "IOS_VERSION_TOO_OLD")
+                
+                
+            } catch {
+                print("Error: \(error.localizedDescription).")
             }
-            
-            
-        } catch {
-            print("Error: \(error.localizedDescription).")
         }
     }
 

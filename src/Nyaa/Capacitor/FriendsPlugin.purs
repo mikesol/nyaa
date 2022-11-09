@@ -8,11 +8,11 @@ import Effect (Effect)
 
 newtype Friend = Friend
   { displayName :: String
-  , alias :: String
+  , alias :: Nullable String
   , avatar :: Nullable String
   , gamePlayerID :: Nullable String -- apple only
   , teamPlayerID :: Nullable String -- apple only
   }
 
 foreign import sendFriendRequest :: Effect (Promise Unit)
-foreign import getFriends :: Effect (Promise (Array Friend))
+foreign import getFriends :: Effect (Promise { friends :: Array Friend })
