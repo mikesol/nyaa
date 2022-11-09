@@ -64,6 +64,9 @@ public class GameCenterAuthPlugin: CAPPlugin {
                         let userResult = FirebaseAuthenticationHelper.createUserResult(myUser)
                         var result = JSObject()
                         result["user"] = userResult
+                        result["credential"] = nil
+                        result["gamePlayerID"] = GKLocalPlayer.local.gamePlayerID
+                        result["teamPlayerID"] = GKLocalPlayer.local.teamPlayerID
                         call.resolve(result)
                     }
                 } else {

@@ -1,4 +1,4 @@
-import { registerPlugin } from "@capacitor/core";
+import { registerPlugin, getFriends } from "@capacitor/core";
 
 const GameCenterAuth = registerPlugin("GameCenterAuth");
 

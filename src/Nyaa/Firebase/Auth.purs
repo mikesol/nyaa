@@ -31,6 +31,8 @@ type AuthCredential =
 type SignInResult =
   { user :: Nullable User
   , credential :: Nullable AuthCredential
+  , gamePlayerID :: Nullable String -- apple only
+  , teamPlayerID :: Nullable String -- apple only
   }
 
 foreign import useEmulator :: Effect (Promise Unit)

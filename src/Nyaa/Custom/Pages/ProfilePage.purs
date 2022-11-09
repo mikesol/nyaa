@@ -137,7 +137,6 @@ profilePage opts = customComponent "profile-page" {} \_ ->
                   ]
               , ionButton (oneOf [ I.Expand !:= buttonexpandBlock ])
                       [ text_ "Share" ]
-                  
               ]
           ]
       ]

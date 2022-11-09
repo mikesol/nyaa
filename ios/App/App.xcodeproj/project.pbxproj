@@ -19,6 +19,8 @@
 		D8872AD72913BC2500CF6CED /* GameCenterAuthPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8872AD62913BC2500CF6CED /* GameCenterAuthPlugin.swift */; };
 		D8872ADA2913BC8C00CF6CED /* GameCenterAuthPlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = D8872AD92913BC8C00CF6CED /* GameCenterAuthPlugin.m */; };
 		D8872ADC2913C0F300CF6CED /* FirebaseAuthenticationHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8872ADB2913C0F300CF6CED /* FirebaseAuthenticationHelper.swift */; };
+		D8CA1B07291B97770020361E /* FriendsPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8CA1B06291B97770020361E /* FriendsPlugin.swift */; };
+		D8CA1B09291B98320020361E /* FriendsPlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = D8CA1B08291B98320020361E /* FriendsPlugin.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -39,6 +41,8 @@
 		D8872AD82913BC8B00CF6CED /* App-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "App-Bridging-Header.h"; sourceTree = "<group>"; };
 		D8872AD92913BC8C00CF6CED /* GameCenterAuthPlugin.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GameCenterAuthPlugin.m; sourceTree = "<group>"; };
 		D8872ADB2913C0F300CF6CED /* FirebaseAuthenticationHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseAuthenticationHelper.swift; sourceTree = "<group>"; };
+		D8CA1B06291B97770020361E /* FriendsPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendsPlugin.swift; sourceTree = "<group>"; };
+		D8CA1B08291B98320020361E /* FriendsPlugin.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FriendsPlugin.m; sourceTree = "<group>"; };
 		FC68EB0AF532CFC21C3344DD /* Pods-App.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-App.debug.xcconfig"; path = "Pods/Target Support Files/Pods-App/Pods-App.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -91,11 +95,13 @@
 				D8872AC82912E63800CF6CED /* GoogleService-Info.plist */,
 				504EC3101FED79650016851F /* LaunchScreen.storyboard */,
 				504EC3131FED79650016851F /* Info.plist */,
+				D8CA1B08291B98320020361E /* FriendsPlugin.m */,
 				2FAD9762203C412B000D30F8 /* config.xml */,
 				50B271D01FEDC1A000F3C39B /* public */,
 				D8872AD62913BC2500CF6CED /* GameCenterAuthPlugin.swift */,
 				D8872AD92913BC8C00CF6CED /* GameCenterAuthPlugin.m */,
 				D8872AD82913BC8B00CF6CED /* App-Bridging-Header.h */,
+				D8CA1B06291B97770020361E /* FriendsPlugin.swift */,
 				D8872ADB2913C0F300CF6CED /* FirebaseAuthenticationHelper.swift */,
 			);
 			path = App;
@@ -230,7 +236,9 @@
 			files = (
 				504EC3081FED79650016851F /* AppDelegate.swift in Sources */,
 				D8872ADA2913BC8C00CF6CED /* GameCenterAuthPlugin.m in Sources */,
+				D8CA1B07291B97770020361E /* FriendsPlugin.swift in Sources */,
 				D8872ADC2913C0F300CF6CED /* FirebaseAuthenticationHelper.swift in Sources */,
+				D8CA1B09291B98320020361E /* FriendsPlugin.m in Sources */,
 				D8872AD72913BC2500CF6CED /* GameCenterAuthPlugin.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
