@@ -23,7 +23,7 @@ import Web.HTML (HTMLCanvasElement)
 foreign import startGame
   :: HTMLCanvasElement
   -> String
-  -> Effect { start :: Effect Unit, stop :: Effect Unit, kill :: Effect Unit }
+  -> Effect { start :: Effect Unit, kill :: Effect Unit }
 
 game
   :: { name :: String }

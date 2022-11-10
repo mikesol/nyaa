@@ -5,7 +5,8 @@ function interpolate(value, r1, r2) {
 }
 
 export class CameraEffect {
-    constructor() {
+    constructor(camera) {
+        this.camera = camera;
         this.startTime = null;
         this.endTime = null;
         this.offset = null;
@@ -27,11 +28,11 @@ export class CameraEffect {
         this.effectIndex = Math.floor(Math.random() * 2);
     }
 
-    animate(elapsedTime, camera) {
+    animate(elapsedTime) {
         if (!this.isActive) {
             return;
         }
-        this.effects[this.effectIndex].call(this, elapsedTime, camera);
+        this.effects[this.effectIndex].call(this, elapsedTime, this.camera);
         if (elapsedTime >= this.endTime) {
             this.isActive = false;
         }
