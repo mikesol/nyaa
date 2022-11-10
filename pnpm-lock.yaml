@@ -10,6 +10,7 @@ specifiers:
   '@capacitor/cli': ^4.3.0
   '@capacitor/core': ^4.3.0
   '@capacitor/ios': ^4.3.0
+  '@capacitor/preferences': ^4.0.1
   '@capacitor/push-notifications': ^4.1.1
   '@capacitor/status-bar': ^4.0.1
   '@ionic/core': ^6.3.4
@@ -47,6 +48,7 @@ dependencies:
   '@capacitor/android': 4.3.0_@capacitor+core@4.3.0
   '@capacitor/core': 4.3.0
   '@capacitor/ios': 4.3.0_@capacitor+core@4.3.0
+  '@capacitor/preferences': 4.0.1_@capacitor+core@4.3.0
   '@capacitor/push-notifications': 4.1.1_@capacitor+core@4.3.0
   '@capacitor/status-bar': 4.0.1_@capacitor+core@4.3.0
   '@ionic/core': 6.3.4
@@ -1649,6 +1651,14 @@ packages:
     resolution: {integrity: sha512-l9vuFzGkopHEWTsbdCwcJF/TLPspuhWSSq5cfB61YO4HAG5o3y/M6TiftL3JTyw/OOJ6cgWtLI/2QMp1TPIU4w==}
     peerDependencies:
       '@capacitor/core': ^4.2.0
+    dependencies:
+      '@capacitor/core': 4.3.0
+    dev: false
+
+  /@capacitor/preferences/4.0.1_@capacitor+core@4.3.0:
+    resolution: {integrity: sha512-FffJjKS4XcodUj/rtFtWizQ9q/oYDSn5opZ+JYwj/EkjiMWMhY/Pk9lN3vwQfp+VJrTt3hjr+bwKXjhTbYBqKw==}
+    peerDependencies:
+      '@capacitor/core': ^4.0.0
     dependencies:
       '@capacitor/core': 4.3.0
     dev: false

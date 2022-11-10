@@ -1,13 +1,13 @@
-module Nyaa.Custom.Pages.AmplifyQuest where
+module Nyaa.Custom.Pages.CrushQuest where
 
 import Prelude
 
 import Effect (Effect)
 import Nyaa.Custom.Builders.QuestPage (questPage)
 
-amplifyQuest :: Effect Unit
-amplifyQuest = questPage
-  { name: "amplify-quest"
+crushQuest :: Effect Unit
+crushQuest = questPage
+  { name: "crush-quest"
   , showFriend: true
   , battleRoute: "/deity-level"
   }

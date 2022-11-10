@@ -9,4 +9,5 @@ tutorialQuest :: Effect Unit
 tutorialQuest = questPage
   { name: "tutorial-quest"
   , showFriend: false
+  , battleRoute: "/tutorial-level"
   }

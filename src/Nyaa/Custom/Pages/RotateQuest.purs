@@ -9,4 +9,5 @@ rotateQuest :: Effect Unit
 rotateQuest = questPage
   { name: "rotate-quest"
   , showFriend: true
+  , battleRoute: "/pro-level"
   }

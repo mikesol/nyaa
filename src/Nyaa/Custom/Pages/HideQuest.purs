@@ -9,4 +9,5 @@ hideQuest :: Effect Unit
 hideQuest = questPage
   { name: "hide-quest"
   , showFriend: true
+  , battleRoute: "/pro-level"
   }

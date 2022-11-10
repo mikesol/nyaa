@@ -9,4 +9,5 @@ dazzleQuest :: Effect Unit
 dazzleQuest = questPage
   { name: "dazzle-quest"
   , showFriend: true
+  , battleRoute: "/pro-level"
   }

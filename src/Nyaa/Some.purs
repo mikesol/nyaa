@@ -3,8 +3,9 @@ module Nyaa.Some where
 
 import Data.Maybe (Maybe(..))
 import Data.Symbol (class IsSymbol, reflectSymbol)
-import Prim.Row (class Cons)
+import Prim.Row (class Cons, class Union)
 import Type.Proxy (Proxy)
+import Unsafe.Coerce (unsafeCoerce)
 
 data Some :: Row Type -> Type
 data Some r
@@ -18,3 +19,6 @@ foreign import setImpl :: forall r a. String -> a -> Some r -> Some r
 
 set :: forall r r' l a. IsSymbol l => Cons l a r' r => Proxy l -> a -> Some r -> Some r
 set p = setImpl (reflectSymbol p)
+
+some :: forall x y z. Union x y z => { | x } -> Some z
+some = unsafeCoerce

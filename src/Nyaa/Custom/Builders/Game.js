@@ -191,6 +191,7 @@ export const doThree = (canvas) => () => {
   });
   renderer.setSize(sizes.width, sizes.height);
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setClearColor(0xffb6c1);
 
   /**
    * Animate

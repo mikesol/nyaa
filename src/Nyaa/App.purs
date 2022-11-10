@@ -8,7 +8,7 @@ import Data.List (List(..), (:))
 import Data.List as L
 import Deku.Attribute ((!:=))
 import Deku.Control (text_)
-import Deku.Core (Domable)
+import Deku.Core (Domable, Nut)
 import Deku.DOM as D
 import Effect (Effect)
 import Nyaa.Ionic.App (ionApp_)
@@ -52,38 +52,31 @@ import Nyaa.Ionic.Toolbar (ionToolbar_)
 -- Invite accept & wait page
 -- Invite reject page
 
-app :: forall lock payload. Domable lock payload
-app = ionApp_
-  [ ionRouter_
-      [ ionRoute (oneOf [ I.Url !:= "/", I.Component !:= "intro-screen" ]) []
-      , ionRoute
-          ( oneOf
-              [ I.Url !:= "/tutorial-quest", I.Component !:= "tutorial-quest" ]
-          )
-          []
-      ]
-  , ionNav_ []
-  ]
+
 
 pages :: Array String
 pages =
-  [ "intro-screen"
+  [ "story-book"
+  , "intro-screen"
   , "tutorial-quest"
-  , "amplify-quest"
-  , "camera-quest"
-  , "dazzle-quest"
   , "equalize-quest"
-  , "hide-quest"
-  , "reverse-quest"
+  , "camera-quest"
+  , "glide-quest"
+  , "back-quest"
   , "rotate-quest"
-  , "profile-page"
+  , "hide-quest"
+  , "dazzle-quest"
+  , "crush-quest"
+  , "amplify-quest"
   , "newb-lounge"
   , "pro-lounge"
   , "deity-lounge"
+  , "tutorial-level"
   , "newb-level"
   , "pro-level"
   , "deity-level"
   , "lounge-picker"
+  , "profile-page"
   ]
 
 storybookCC :: Effect Unit
@@ -104,13 +97,14 @@ storybookCC = do
             [ ionTitle_ [ text_ "Storybook" ]
             ]
         ]
-    , ionContent (oneOf [ I.Fullscren !:= true ]) [ionList_ (A.fromFoldable elts)]
+    , ionContent (oneOf [ I.Fullscren !:= true ])
+        [ ionList_ (A.fromFoldable elts) ]
     ]
 
-storybook :: forall lock payload. Domable lock payload
-storybook = ionApp_
+makeApp :: forall lock payload. String -> Domable lock payload
+makeApp homeIs = ionApp_
   [ ionRouter_
-      ( [ ionRoute (oneOf [ I.Url !:= "/", I.Component !:= "story-book" ])
+      ( [ ionRoute (oneOf [ I.Url !:= "/", I.Component !:= homeIs ])
             []
         ] <> A.fromFoldable routes
 
@@ -127,3 +121,9 @@ storybook = ionApp_
       go tail
 
   routes = go (L.fromFoldable pages)
+
+storybook :: Nut
+storybook = makeApp "story-book"
+
+app :: forall lock payload. Domable lock payload
+app = makeApp "intro-screen"

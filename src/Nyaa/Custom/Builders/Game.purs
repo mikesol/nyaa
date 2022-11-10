@@ -13,6 +13,7 @@ import Deku.Do as Deku
 import Effect (Effect)
 import Effect.Ref as Ref
 import FRP.Event (makeEvent, subscribe)
+import Nyaa.Components.UpperLeftBackButton (upperLeftBackButton)
 import Nyaa.FRP.Rider (rider, toRide)
 import Nyaa.Ionic.Attributes as I
 import Nyaa.Ionic.Content (ionContent)
@@ -47,7 +48,7 @@ game i = customComponent i.name {} \_ ->
             ( ionContent (oneOf [ I.Fullscren !:= true ])
                 [ D.canvas
                     ( oneOf
-                        [ klass_ "relative w-full h-full"
+                        [ klass_ "absolute w-full h-full"
                         , D.SelfT !:= \c -> do
                             controls <- doThree c
                             setKill controls.kill
@@ -59,10 +60,11 @@ game i = customComponent i.name {} \_ ->
                 , D.div
                     ( oneOf
                         [ klass_
-                            "relative w-full h-full grid grid-cols-3 grid-rows-3"
+                            "absolute w-full h-full grid grid-cols-3 grid-rows-3"
                         ]
                     )
-                    []
+                    [ upperLeftBackButton
+                    ]
                 ]
             )
   ]

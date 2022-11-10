@@ -13,7 +13,7 @@ type User =
   , emailVerified :: Boolean
   , isAnonymous :: Boolean
   , phoneNumber :: Nullable String
-  , photoUrl :: Nullable String
+  , photoURL :: Nullable String
   , providerId :: String
   , tenantId :: Nullable String
   , uid :: String

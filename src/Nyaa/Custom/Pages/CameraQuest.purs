@@ -9,4 +9,5 @@ cameraQuest :: Effect Unit
 cameraQuest = questPage
   { name: "camera-quest"
   , showFriend: true
+  , battleRoute: "/newb-level"
   }

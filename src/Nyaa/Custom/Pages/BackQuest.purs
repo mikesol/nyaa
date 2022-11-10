@@ -1,13 +1,13 @@
-module Nyaa.Custom.Pages.EqualizeQuest where
+module Nyaa.Custom.Pages.BackQuest where
 
 import Prelude
 
 import Effect (Effect)
 import Nyaa.Custom.Builders.QuestPage (questPage)
 
-equalizeQuest :: Effect Unit
-equalizeQuest = questPage
-  { name: "equalize-quest"
+backQuest :: Effect Unit
+backQuest = questPage
+  { name: "back-quest"
   , showFriend: true
   , battleRoute: "/newb-level"
   }

@@ -4,11 +4,12 @@ import Prelude
 
 import Control.Plus (empty)
 import Control.Promise (toAffE)
+import Data.Compactable (compact)
 import Data.Foldable (oneOf)
-import Data.Nullable (Nullable)
+import Data.Nullable (Nullable, toMaybe)
 import Deku.Attribute ((!:=), (:=))
 import Deku.Attributes (klass_)
-import Deku.Control (blank, text_)
+import Deku.Control (blank, text, text_)
 import Deku.Core (Domable, envy)
 import Deku.DOM as D
 import Deku.Listeners (click_)
@@ -27,7 +28,7 @@ import Nyaa.Ionic.CardHeader (ionCardHeader_)
 import Nyaa.Ionic.CardTitle (ionCardTitle_)
 import Nyaa.Ionic.Content (ionContent)
 import Nyaa.Ionic.Custom (customComponent)
-import Nyaa.Ionic.Enums (buttonexpandBlock, labelFloating)
+import Nyaa.Ionic.Enums (labelFloating)
 import Nyaa.Ionic.Header (ionHeader)
 import Nyaa.Ionic.Input (ionInput)
 import Nyaa.Ionic.Item (ionItem_)
@@ -89,9 +90,13 @@ profilePage opts = customComponent "profile-page" {} \_ ->
               [ D.div (D.Class !:= "mt-6 w-fit mx-auto")
                   [ D.img
                       ( oneOf
-                          [ D.Src !:=
-                              "https://api.lorem.space/image/face?w=120&h=120&hash=bart89fe"
-                          , D.Class !:= "rounded-full w-28 "
+                          [ ( compact
+                                ( opts.authState <#> \{ user } -> join
+                                    (toMaybe user <#> (_.photoURL >>> toMaybe))
+                                )
+                            ) <#> (D.Src := _)
+
+                          , D.Class !:= "rounded-full w-28"
                           , D.Alt !:= "profile picture"
                           , D.Srcset !:= ""
                           ]
@@ -99,15 +104,22 @@ profilePage opts = customComponent "profile-page" {} \_ ->
                       []
                   ]
               , D.div (D.Class !:= "w-fit mx-auto")
-                  [
-                    ionItem_
+                  [ ionItem_
                       [ ionLabel
                           ( oneOf
                               [ I.Position !:= labelFloating
                               , D.Class !:= "text-center"
                               ]
                           )
-                          [ text_ "Jonathan Smith" ]
+                          [ text
+                              ( compact
+                                  ( opts.authState <#> \{ user } -> join
+                                      ( toMaybe user <#>
+                                          (_.displayName >>> toMaybe)
+                                      )
+                                  )
+                              )
+                          ]
                       , ionInput (D.Placeholder !:= "Your name") []
                       ]
                   ]
