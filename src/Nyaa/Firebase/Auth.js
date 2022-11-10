@@ -1,4 +1,4 @@
-import { FirebaseAuthentication } from "@capacitor-firebase/authentication";
+import { FirebaseAuthentication } from "@capacitor-firebase/authentication/src/";
 
 export const useEmulator = async () => {
   const result = await FirebaseAuthentication.useEmulator({
@@ -13,6 +13,13 @@ export const getCurrentUser = async () => {
 };
 export const signInWithApple = async () => {
   const result = await FirebaseAuthentication.signInWithApple();
+  return result;
+};
+
+export const signInWithGameCenter = async () => {
+  console.log('signing in');
+  const result = await FirebaseAuthentication.signInWithGameCenter();
+  console.log('sign in result', result);
   return result;
 };
 

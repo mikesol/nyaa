@@ -6,7 +6,7 @@
   "plugins": {
     "FirebaseAuthentication": {
       "skipNativeAuth": false,
-      "providers": ["apple.com", "google.com", "playgames.google.com"]
+      "providers": ["gc.apple.com", "google.com", "playgames.google.com"]
     }
   }
 }
