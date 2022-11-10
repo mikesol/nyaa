@@ -20,8 +20,9 @@ import Nyaa.Ionic.Content (ionContent)
 import Nyaa.Ionic.Custom (customComponent)
 import Web.HTML (HTMLCanvasElement)
 
-foreign import doThree
+foreign import startGame
   :: HTMLCanvasElement
+  -> String
   -> Effect { start :: Effect Unit, stop :: Effect Unit, kill :: Effect Unit }
 
 game
@@ -50,7 +51,7 @@ game i = customComponent i.name {} \_ ->
                     ( oneOf
                         [ klass_ "absolute w-full h-full"
                         , D.SelfT !:= \c -> do
-                            controls <- doThree c
+                            controls <- startGame c "nyaa!"
                             setKill controls.kill
                             controls.start
                             pure unit

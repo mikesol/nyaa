@@ -7,18 +7,16 @@ import PubNub from "pubnub";
 import { AudioEffect } from "./effects/audio.js";
 import { Judge } from "./core/judge.js";
 import { Notes } from "./visuals/notes.js";
-import { cameraEffect } from "./effects/camera.js";
-import { guides } from "./visuals/guides.js";
-import { hits } from "./visuals/hits.js";
-import { reference } from "./visuals/reference.js";
+import { CameraEffect } from "./effects/camera.js";
+import { Guides } from "./visuals/guides.js";
+import { Hits } from "./visuals/hits.js";
+import { Reference } from "./visuals/reference.js";
 
 async function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-const userId = "nyaa!";
-
-export function startGame(canvas) {
+export function startGameImpl(canvas, userId) {
     const pubnub = new PubNub({
         publishKey: "pub-c-494ce265-0510-4bb9-8871-5039406a833a",
         subscribeKey: "sub-c-829590e3-62e9-40a8-9354-b8161c2fbcd8",
@@ -84,6 +82,8 @@ export function startGame(canvas) {
         }
     };
 
+    const cameraEffect = new CameraEffect();
+
     const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
     const gui = new GUI();
     const raycaster = new THREE.Raycaster();
@@ -99,6 +99,10 @@ export function startGame(canvas) {
 
     const scene = new THREE.Scene();
     const notes = new Notes(noteInfo);
+    const guides = new Guides();
+    const hits = new Hits();
+    const reference = new Reference();
+
     notes.into(scene);
     guides.into(scene);
     hits.into(scene);
@@ -120,10 +124,10 @@ export function startGame(canvas) {
         }
     }
 
-    const audioElement = document.querySelector("audio");
+    // const audioElement = document.getElementsByName("audio");
     let audioContext = null;
     let audioEffect = null;
-    let audioTrack = null;
+    // let audioTrack = null;
     let beginTime = null;
     let isFinished = false;
     const context = {
@@ -131,10 +135,10 @@ export function startGame(canvas) {
         togglePlayBack() {
             if (audioContext === null) {
                 audioContext = new AudioContext();
-                audioTrack = audioContext.createMediaElementSource(audioElement);
-                audioEffect = new AudioEffect(audioContext, audioTrack);
-                audioContext.resume();
-                audioElement.play();
+                // audioTrack = audioContext.createMediaElementSource(audioElement);
+                // audioEffect = new AudioEffect(audioContext, audioTrack);
+                audioContext.resume()
+                // audioElement.play();
                 sendScore().then(() => {
                     console.log("[PubNub] Finished sending scores...");
                 });
@@ -188,11 +192,11 @@ export function startGame(canvas) {
         }
         if (audioContext !== null) {
             const elapsedTime = audioContext.currentTime - beginTime;
-            if (elapsedTime >= audioElement.duration) {
-                isFinished = true;
-            }
+            // if (elapsedTime >= audioElement.duration) {
+            //     isFinished = true;
+            // }
             cameraEffect.animate(elapsedTime, camera);
-            audioEffect.animate(elapsedTime);
+            // audioEffect.animate(elapsedTime);
             notes.animate(elapsedTime, context.uThreshold);
             guides.animate(elapsedTime, context.uThreshold);
             hits.animate(elapsedTime, context.uThreshold);
@@ -202,6 +206,14 @@ export function startGame(canvas) {
         renderer.render(scene, camera);
     }
 
-    renderer.render(scene, camera);
-    requestAnimationFrame(render);
+    return {
+        start() {
+            renderer.render(scene, camera);
+            requestAnimationFrame(render);
+            context.togglePlayBack();
+        },
+        kill() {
+            isFinished = true;
+        }
+    };
 }

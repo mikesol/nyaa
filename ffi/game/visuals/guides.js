@@ -37,7 +37,7 @@ if (uCompress.isActive) {
 vec3 transformed = current;
 `;
 
-class Guides {
+export class Guides {
     constructor() {
         const positions = new Float32Array(4 * 3 * 2);
         const aIndex = new Float32Array(4 * 2 * 2);
@@ -84,5 +84,3 @@ class Guides {
         animateCommon.call(this, currentTime, noteThreshold);
     }
 }
-
-export const guides = new Guides();

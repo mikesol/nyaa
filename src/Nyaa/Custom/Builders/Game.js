@@ -1,242 +1,256 @@
-import * as THREE from "three";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+import { startGameImpl } from "ffi-game";
+// import * as THREE from "three";
+// import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
-export const doThree = (canvas) => () => {
-  /**
-   * Base
-   */
-  // Debug
+export const startGame = (canvas) => (userId) => () => {
+    return startGameImpl(canvas, userId);
+}
 
-  // Textures
-  // const textureLoader = new THREE.TextureLoader()
-  // const cubeTextureLoader = new THREE.CubeTextureLoader()
+// export const doThree = (canvas) => () => {
+//     return startGame(canvas);
+  // /**
+  //  * Base
+  //  */
+  // // Debug
 
-  // const doorColorTexture = textureLoader.load('/textures/door/color.jpg')
-  // const doorAlphaTexture = textureLoader.load('/textures/door/alpha.jpg')
-  // const doorAmbientOcclusionTexture = textureLoader.load('/textures/door/ambientOcclusion.jpg')
-  // const doorHeightTexture = textureLoader.load('/textures/door/height.jpg')
-  // const doorNormalTexture = textureLoader.load('/textures/door/normal.jpg')
-  // const doorMetalnessTexture = textureLoader.load('/textures/door/metalness.jpg')
-  // const doorRoughnessTexture = textureLoader.load('/textures/door/roughness.jpg')
-  // const matcapTexture = textureLoader.load('/textures/matcaps/8.png')
-  // const gradientTexture = textureLoader.load('/textures/gradients/5.jpg')
+  // // Textures
+  // // const textureLoader = new THREE.TextureLoader()
+  // // const cubeTextureLoader = new THREE.CubeTextureLoader()
 
-  // const environmentMapTexture = cubeTextureLoader.load([
-  //     '/textures/environmentMaps/0/px.jpg',
-  //     '/textures/environmentMaps/0/nx.jpg',
-  //     '/textures/environmentMaps/0/py.jpg',
-  //     '/textures/environmentMaps/0/ny.jpg',
-  //     '/textures/environmentMaps/0/pz.jpg',
-  //     '/textures/environmentMaps/0/nz.jpg'
-  // ])
+  // // const doorColorTexture = textureLoader.load('/textures/door/color.jpg')
+  // // const doorAlphaTexture = textureLoader.load('/textures/door/alpha.jpg')
+  // // const doorAmbientOcclusionTexture = textureLoader.load('/textures/door/ambientOcclusion.jpg')
+  // // const doorHeightTexture = textureLoader.load('/textures/door/height.jpg')
+  // // const doorNormalTexture = textureLoader.load('/textures/door/normal.jpg')
+  // // const doorMetalnessTexture = textureLoader.load('/textures/door/metalness.jpg')
+  // // const doorRoughnessTexture = textureLoader.load('/textures/door/roughness.jpg')
+  // // const matcapTexture = textureLoader.load('/textures/matcaps/8.png')
+  // // const gradientTexture = textureLoader.load('/textures/gradients/5.jpg')
 
-  // Scene
-  const scene = new THREE.Scene();
+  // // const environmentMapTexture = cubeTextureLoader.load([
+  // //     '/textures/environmentMaps/0/px.jpg',
+  // //     '/textures/environmentMaps/0/nx.jpg',
+  // //     '/textures/environmentMaps/0/py.jpg',
+  // //     '/textures/environmentMaps/0/ny.jpg',
+  // //     '/textures/environmentMaps/0/pz.jpg',
+  // //     '/textures/environmentMaps/0/nz.jpg'
+  // // ])
 
-  /**
-   * Lights
-   */
-  const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
-  scene.add(ambientLight);
+  // // Scene
+  // const scene = new THREE.Scene();
 
-  const light = new THREE.PointLight(0xffffff, 0.5);
-  light.position.x = 2;
-  light.position.y = 3;
-  light.position.z = 4;
-  scene.add(light);
+  // /**
+  //  * Lights
+  //  */
+  // const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+  // scene.add(ambientLight);
 
-  /**
-   * Objects
-   */
-  // const material = new THREE.MeshBasicMaterial()
-  // material.map = doorColorTexture
-  // material.color = new THREE.Color('#ff0000')
-  // material.wireframe = true
-  // material.transparent = true
-  // material.opacity = 0.5
-  // material.alphaMap = doorAlphaTexture
-  // material.side = THREE.DoubleSide
-  // material.flatShading = true
+  // const light = new THREE.PointLight(0xffffff, 0.5);
+  // light.position.x = 2;
+  // light.position.y = 3;
+  // light.position.z = 4;
+  // scene.add(light);
 
-  // const material = new THREE.MeshNormalMaterial()
-  // material.flatShading = true
+  // /**
+  //  * Objects
+  //  */
+  // // const material = new THREE.MeshBasicMaterial()
+  // // material.map = doorColorTexture
+  // // material.color = new THREE.Color('#ff0000')
+  // // material.wireframe = true
+  // // material.transparent = true
+  // // material.opacity = 0.5
+  // // material.alphaMap = doorAlphaTexture
+  // // material.side = THREE.DoubleSide
+  // // material.flatShading = true
 
-  // const material = new THREE.MeshMatcapMaterial()
-  // material.matcap = matcapTexture
+  // // const material = new THREE.MeshNormalMaterial()
+  // // material.flatShading = true
 
-  // const material = new THREE.MeshDepthMaterial()
+  // // const material = new THREE.MeshMatcapMaterial()
+  // // material.matcap = matcapTexture
 
-  // const material = new THREE.MeshLambertMaterial()
+  // // const material = new THREE.MeshDepthMaterial()
 
-  // const material = new THREE.MeshPhongMaterial()
-  // material.shininess = 100
-  // material.specular = new THREE.Color(0x1188ff)
+  // // const material = new THREE.MeshLambertMaterial()
 
-  // const material = new THREE.MeshToonMaterial()
-  // gradientTexture.generateMipmaps = false
-  // gradientTexture.minFilter = THREE.NearestFilter
-  // gradientTexture.magFilter = THREE.NearestFilter
-  // material.gradientMap = gradientTexture
+  // // const material = new THREE.MeshPhongMaterial()
+  // // material.shininess = 100
+  // // material.specular = new THREE.Color(0x1188ff)
 
-  // const material = new THREE.MeshStandardMaterial()
-  // material.metalness = 0
-  // material.roughness = 1
-  // gui.add(material, 'metalness').min(0).max(1).step(0.0001)
-  // gui.add(material, 'roughness').min(0).max(1).step(0.0001)
-  // material.map = doorColorTexture
-  // material.aoMap = doorAmbientOcclusionTexture
-  // material.aoMapIntensity = 1
-  // material.displacementMap = doorHeightTexture
-  // material.displacementScale = 0.05
-  // material.metalnessMap = doorMetalnessTexture
-  // material.roughnessMap = doorRoughnessTexture
-  // material.normalMap = doorNormalTexture
-  // material.normalScale.set(0.5, 0.5)
-  // material.transparent = true
-  // material.alphaMap = doorAlphaTexture
+  // // const material = new THREE.MeshToonMaterial()
+  // // gradientTexture.generateMipmaps = false
+  // // gradientTexture.minFilter = THREE.NearestFilter
+  // // gradientTexture.magFilter = THREE.NearestFilter
+  // // material.gradientMap = gradientTexture
 
-  // const material = new THREE.MeshPhysicalMaterial()
-  // material.metalness = 0
-  // material.roughness = 1
-  // gui.add(material, 'metalness').min(0).max(1).step(0.0001)
-  // gui.add(material, 'roughness').min(0).max(1).step(0.0001)
-  // material.map = doorColorTexture
-  // material.aoMap = doorAmbientOcclusionTexture
-  // material.aoMapIntensity = 1
-  // material.displacementMap = doorHeightTexture
-  // material.displacementScale = 0.05
-  // material.metalnessMap = doorMetalnessTexture
-  // material.roughnessMap = doorRoughnessTexture
-  // material.normalMap = doorNormalTexture
-  // material.normalScale.set(0.5, 0.5)
-  // material.transparent = true
-  // material.alphaMap = doorAlphaTexture
-  // material.clearcoat = 1
-  // material.clearcoatRoughness = 0
+  // // const material = new THREE.MeshStandardMaterial()
+  // // material.metalness = 0
+  // // material.roughness = 1
+  // // gui.add(material, 'metalness').min(0).max(1).step(0.0001)
+  // // gui.add(material, 'roughness').min(0).max(1).step(0.0001)
+  // // material.map = doorColorTexture
+  // // material.aoMap = doorAmbientOcclusionTexture
+  // // material.aoMapIntensity = 1
+  // // material.displacementMap = doorHeightTexture
+  // // material.displacementScale = 0.05
+  // // material.metalnessMap = doorMetalnessTexture
+  // // material.roughnessMap = doorRoughnessTexture
+  // // material.normalMap = doorNormalTexture
+  // // material.normalScale.set(0.5, 0.5)
+  // // material.transparent = true
+  // // material.alphaMap = doorAlphaTexture
 
-  const material = new THREE.MeshStandardMaterial();
-  material.metalness = 0.7;
-  material.roughness = 0.2;
-  // gui.add(material, 'metalness').min(0).max(1).step(0.0001)
-  // gui.add(material, 'roughness').min(0).max(1).step(0.0001)
-  // material.envMap = environmentMapTexture
-  const sphereGeometry = new THREE.SphereGeometry(0.5, 64, 64);
-  const sphere = new THREE.Mesh(sphereGeometry, material);
-  sphere.geometry.setAttribute(
-    "uv2",
-    new THREE.BufferAttribute(sphere.geometry.attributes.uv.array, 2)
-  );
-  sphere.position.x = -1.5;
-  const planeGeometry = new THREE.PlaneGeometry(1, 1, 100, 100);
-  const plane = new THREE.Mesh(planeGeometry, material);
-  plane.geometry.setAttribute(
-    "uv2",
-    new THREE.BufferAttribute(plane.geometry.attributes.uv.array, 2)
-  );
-  const torusGeometry = new THREE.TorusGeometry(0.3, 0.2, 64, 128);
-  const torus = new THREE.Mesh(torusGeometry, material);
-  torus.geometry.setAttribute(
-    "uv2",
-    new THREE.BufferAttribute(torus.geometry.attributes.uv.array, 2)
-  );
-  torus.position.x = 1.5;
-  scene.add(sphere, plane, torus);
+  // // const material = new THREE.MeshPhysicalMaterial()
+  // // material.metalness = 0
+  // // material.roughness = 1
+  // // gui.add(material, 'metalness').min(0).max(1).step(0.0001)
+  // // gui.add(material, 'roughness').min(0).max(1).step(0.0001)
+  // // material.map = doorColorTexture
+  // // material.aoMap = doorAmbientOcclusionTexture
+  // // material.aoMapIntensity = 1
+  // // material.displacementMap = doorHeightTexture
+  // // material.displacementScale = 0.05
+  // // material.metalnessMap = doorMetalnessTexture
+  // // material.roughnessMap = doorRoughnessTexture
+  // // material.normalMap = doorNormalTexture
+  // // material.normalScale.set(0.5, 0.5)
+  // // material.transparent = true
+  // // material.alphaMap = doorAlphaTexture
+  // // material.clearcoat = 1
+  // // material.clearcoatRoughness = 0
 
-  /**
-   * Sizes
-   */
-  const sizes = {
-    width: window.innerWidth,
-    height: window.innerHeight,
-  };
+  // const material = new THREE.MeshStandardMaterial();
+  // material.metalness = 0.7;
+  // material.roughness = 0.2;
+  // // gui.add(material, 'metalness').min(0).max(1).step(0.0001)
+  // // gui.add(material, 'roughness').min(0).max(1).step(0.0001)
+  // // material.envMap = environmentMapTexture
+  // const sphereGeometry = new THREE.SphereGeometry(0.5, 64, 64);
+  // const sphere = new THREE.Mesh(sphereGeometry, material);
+  // sphere.geometry.setAttribute(
+  //   "uv2",
+  //   new THREE.BufferAttribute(sphere.geometry.attributes.uv.array, 2)
+  // );
+  // sphere.position.x = -1.5;
+  // const planeGeometry = new THREE.PlaneGeometry(1, 1, 100, 100);
+  // const plane = new THREE.Mesh(planeGeometry, material);
+  // plane.geometry.setAttribute(
+  //   "uv2",
+  //   new THREE.BufferAttribute(plane.geometry.attributes.uv.array, 2)
+  // );
+  // const torusGeometry = new THREE.TorusGeometry(0.3, 0.2, 64, 128);
+  // const torus = new THREE.Mesh(torusGeometry, material);
+  // torus.geometry.setAttribute(
+  //   "uv2",
+  //   new THREE.BufferAttribute(torus.geometry.attributes.uv.array, 2)
+  // );
+  // torus.position.x = 1.5;
+  // scene.add(sphere, plane, torus);
 
-  window.addEventListener("resize", () => {
-    // Update sizes
-    sizes.width = window.innerWidth;
-    sizes.height = window.innerHeight;
+  // /**
+  //  * Sizes
+  //  */
+  // const sizes = {
+  //   width: window.innerWidth,
+  //   height: window.innerHeight,
+  // };
 
-    // Update camera
-    camera.aspect = sizes.width / sizes.height;
-    camera.updateProjectionMatrix();
+  // window.addEventListener("resize", () => {
+  //   // Update sizes
+  //   sizes.width = window.innerWidth;
+  //   sizes.height = window.innerHeight;
 
-    // Update renderer
-    renderer.setSize(sizes.width, sizes.height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-  });
+  //   // Update camera
+  //   camera.aspect = sizes.width / sizes.height;
+  //   camera.updateProjectionMatrix();
 
-  /**
-   * Camera
-   */
-  // Base camera
-  const camera = new THREE.PerspectiveCamera(
-    75,
-    sizes.width / sizes.height,
-    0.1,
-    100
-  );
-  camera.position.x = 1;
-  camera.position.y = 1;
-  camera.position.z = 2;
-  scene.add(camera);
+  //   // Update renderer
+  //   renderer.setSize(sizes.width, sizes.height);
+  //   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  // });
 
-  // Controls
-  const controls = new OrbitControls(camera, canvas);
-  controls.enableDamping = true;
+  // /**
+  //  * Camera
+  //  */
+  // // Base camera
+  // const camera = new THREE.PerspectiveCamera(
+  //   75,
+  //   sizes.width / sizes.height,
+  //   0.1,
+  //   100
+  // );
+  // camera.position.x = 1;
+  // camera.position.y = 1;
+  // camera.position.z = 2;
+  // scene.add(camera);
 
-  /**
-   * Renderer
-   */
-  const renderer = new THREE.WebGLRenderer({
-    canvas: canvas,
-  });
-  renderer.setSize(sizes.width, sizes.height);
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-  renderer.setClearColor(0xffb6c1);
+  // // Controls
+  // const controls = new OrbitControls(camera, canvas);
+  // controls.enableDamping = true;
 
-  /**
-   * Animate
-   */
-  const clock = new THREE.Clock();
+  // /**
+  //  * Renderer
+  //  */
+  // const renderer = new THREE.WebGLRenderer({
+  //   canvas: canvas,
+  // });
+  // renderer.setSize(sizes.width, sizes.height);
+  // renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  // renderer.setClearColor(0xffb6c1);
 
-  let playing = false;
-  const tick = () => {
-    const elapsedTime = clock.getElapsedTime();
+  // /**
+  //  * Animate
+  //  */
+  // const clock = new THREE.Clock();
 
-    // Update objects
-    sphere.rotation.y = 0.1 * elapsedTime;
-    plane.rotation.y = 0.1 * elapsedTime;
-    torus.rotation.y = 0.1 * elapsedTime;
+  // let playing = false;
+  // const tick = () => {
+  //   const elapsedTime = clock.getElapsedTime();
 
-    sphere.rotation.x = 0.15 * elapsedTime;
-    plane.rotation.x = 0.15 * elapsedTime;
-    torus.rotation.x = 0.15 * elapsedTime;
+  //   // Update objects
+  //   sphere.rotation.y = 0.1 * elapsedTime;
+  //   plane.rotation.y = 0.1 * elapsedTime;
+  //   torus.rotation.y = 0.1 * elapsedTime;
 
-    // Update controls
-    controls.update();
+  //   sphere.rotation.x = 0.15 * elapsedTime;
+  //   plane.rotation.x = 0.15 * elapsedTime;
+  //   torus.rotation.x = 0.15 * elapsedTime;
 
-    // Render
-    renderer.render(scene, camera);
+  //   // Update controls
+  //   controls.update();
 
-    // Call tick again on the next frame
-    if (playing) {
-      window.requestAnimationFrame(tick);
-    }
-  };
+  //   // Render
+  //   renderer.render(scene, camera);
 
-  return {
-    start: () => {
-      playing = true;
-      tick();
-    },
-    stop: () => {
-      playing = false;
-    },
-    kill: () => {
-      sphereGeometry.dispose();
-      planeGeometry.dispose();
-      torusGeometry.dispose();
-      material.dispose();
-      scene.dispose();
-    },
-  };
-};
+  //   // Call tick again on the next frame
+  //   if (playing) {
+  //     window.requestAnimationFrame(tick);
+  //   }
+  // };
+
+  // return {
+  //   start: () => {
+  //     playing = true;
+  //     tick();
+  //   },
+  //   stop: () => {
+  //     playing = false;
+  //   },
+  //   kill: () => {
+  //     sphereGeometry.dispose();
+  //     planeGeometry.dispose();
+  //     torusGeometry.dispose();
+  //     material.dispose();
+  //     scene.dispose();
+  //   },
+  // };
+  // return {
+  //     start() {
+  //         console.log("Start");
+  //     },
+  //     end()  {
+  //         console.log("End");
+  //     },
+  // }
+// };

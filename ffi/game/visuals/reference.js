@@ -2,7 +2,7 @@
 
 import * as THREE from "three";
 
-class Reference {
+export class Reference {
     constructor() {
         this.geometry = new THREE.PlaneGeometry(2.0, 2.0);
         this.material = new THREE.MeshBasicMaterial({ color: 0x3f3f3f });
@@ -15,5 +15,3 @@ class Reference {
         scene.add(this.mesh);
     }
 }
-
-export const reference = new Reference();

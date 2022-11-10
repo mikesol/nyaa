@@ -7,7 +7,7 @@ function interpolate(value, r1, r2) {
     return (value - r1[0]) * (r2[1] - r2[0]) / (r1[1] - r1[0]) + r2[0];
 }
 
-class Hits {
+export class Hits {
     constructor() {
         this.geometry = new THREE.PlaneGeometry(0.75, 0.75);
         this.material = new THREE.MeshBasicMaterial({
@@ -97,5 +97,3 @@ class Hits {
         return raycaster.intersectObject(this.mesh);
     }
 }
-
-export const hits = new Hits();
