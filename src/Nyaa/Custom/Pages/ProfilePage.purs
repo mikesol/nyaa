@@ -6,7 +6,7 @@ import Control.Plus (empty)
 import Control.Promise (toAffE)
 import Data.Compactable (compact)
 import Data.Foldable (oneOf)
-import Data.Nullable (Nullable, toMaybe)
+import Data.Newtype (unwrap)
 import Deku.Attribute ((!:=), (:=))
 import Deku.Attributes (klass_)
 import Deku.Control (blank, text, text_)
@@ -16,9 +16,11 @@ import Deku.Listeners (click_)
 import Effect (Effect)
 import Effect.Aff (launchAff_)
 import FRP.Event (Event)
+import Nyaa.Assets (catURL)
 import Nyaa.Capacitor.FriendsPlugin (sendFriendRequest)
 import Nyaa.Capacitor.Utils (Platform(..), getPlatformE)
-import Nyaa.Firebase.Auth (User)
+import Nyaa.FRP.Race (race)
+import Nyaa.Firebase.Firestore (Profile)
 import Nyaa.Ionic.Attributes as I
 import Nyaa.Ionic.BackButton (ionBackButton)
 import Nyaa.Ionic.Button (ionButton)
@@ -35,6 +37,8 @@ import Nyaa.Ionic.Item (ionItem_)
 import Nyaa.Ionic.Label (ionLabel)
 import Nyaa.Ionic.Title (ionTitle_)
 import Nyaa.Ionic.Toolbar (ionToolbar_)
+import Nyaa.Some (get)
+import Type.Proxy (Proxy(..))
 
 -- avatar
 -- username
@@ -64,7 +68,7 @@ achievement opts = ionCard (oneOf [ opts.earned <#> not <#> (D.Disabled := _) ])
   ]
 
 profilePage
-  :: { authState :: Event { user :: Nullable User } }
+  :: { profileState :: Event { profile :: Profile } }
   -> Effect Unit
 profilePage opts = customComponent "profile-page" {} \_ ->
   [ ionHeader (oneOf [ I.Translucent !:= true ])
@@ -90,11 +94,14 @@ profilePage opts = customComponent "profile-page" {} \_ ->
               [ D.div (D.Class !:= "mt-6 w-fit mx-auto")
                   [ D.img
                       ( oneOf
-                          [ ( compact
-                                ( opts.authState <#> \{ user } -> join
-                                    (toMaybe user <#> (_.photoURL >>> toMaybe))
+                          [ race ( compact
+                                ( opts.profileState <#>
+                                    ( _.profile >>> unwrap >>> get
+                                        (Proxy :: _ "avatarUrl")
+                                    )
                                 )
-                            ) <#> (D.Src := _)
+
+                            ) (pure catURL) <#> (D.Src := _)
 
                           , D.Class !:= "rounded-full w-28"
                           , D.Alt !:= "profile picture"
@@ -113,11 +120,12 @@ profilePage opts = customComponent "profile-page" {} \_ ->
                           )
                           [ text
                               ( compact
-                                  ( opts.authState <#> \{ user } -> join
-                                      ( toMaybe user <#>
-                                          (_.displayName >>> toMaybe)
+                                  ( opts.profileState <#>
+                                      ( _.profile >>> unwrap >>> get
+                                          (Proxy :: _ "username")
                                       )
                                   )
+
                               )
                           ]
                       , ionInput (D.Placeholder !:= "Your name") []

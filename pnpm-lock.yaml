@@ -3,10 +3,11 @@ lockfileVersion: 5.4
 specifiers:
   '@awesome-cordova-plugins/android-full-screen': ^6.0.1
   '@awesome-cordova-plugins/core': ^6.0.1
-  '@capacitor-firebase/authentication': ^1.2.0
+  '@capacitor-firebase/authentication': https://gitpkg.now.sh/capawesome-team/capacitor-firebase/packages/authentication?fcb0f2586ec89c6902488a5f4f183114fc15556b
   '@capacitor-firebase/messaging': ^1.2.0
   '@capacitor/android': ^4.3.0
   '@capacitor/assets': ^1.0.14
+  '@capacitor/camera': ^4.1.3
   '@capacitor/cli': ^4.3.0
   '@capacitor/core': ^4.3.0
   '@capacitor/ios': ^4.3.0
@@ -43,9 +44,10 @@ specifiers:
 dependencies:
   '@awesome-cordova-plugins/android-full-screen': 6.0.1_prnxaeyfgonofvr466v37kxfwi
   '@awesome-cordova-plugins/core': 6.0.1_rxjs@7.5.7
-  '@capacitor-firebase/authentication': 1.2.0_242wq2marvrefiositiueop2uq
+  '@capacitor-firebase/authentication': '@gitpkg.now.sh/capawesome-team/capacitor-firebase/packages/authentication?fcb0f2586ec89c6902488a5f4f183114fc15556b_242wq2marvrefiositiueop2uq'
   '@capacitor-firebase/messaging': 1.2.0_242wq2marvrefiositiueop2uq
   '@capacitor/android': 4.3.0_@capacitor+core@4.3.0
+  '@capacitor/camera': 4.1.3_@capacitor+core@4.3.0
   '@capacitor/core': 4.3.0
   '@capacitor/ios': 4.3.0_@capacitor+core@4.3.0
   '@capacitor/preferences': 4.0.1_@capacitor+core@4.3.0
@@ -1536,16 +1538,6 @@ packages:
       to-fast-properties: 2.0.0
     dev: true
 
-  /@capacitor-firebase/authentication/1.2.0_242wq2marvrefiositiueop2uq:
-    resolution: {integrity: sha512-N8UhC9JMde1o8V6ucF62IqTfXPospYHvzIxioAu7VxP7cs4DTOWKYVe/Xdb3q01f5YkOl2RrbBDjHTtnTbGH6A==}
-    peerDependencies:
-      '@capacitor/core': ^4.0.0
-      firebase: ^9.0.0
-    dependencies:
-      '@capacitor/core': 4.3.0
-      firebase: 9.12.1
-    dev: false
-
   /@capacitor-firebase/messaging/1.2.0_242wq2marvrefiositiueop2uq:
     resolution: {integrity: sha512-n1chaK4Z3vTCxiu4mgVByfTlsTtpI496cX1tavjY0Nh4RZ4ZZqWlwbBSqBQhPLm/7qtIXJ+IZ5yNrA1QUlKWvg==}
     peerDependencies:
@@ -1589,6 +1581,14 @@ packages:
       - supports-color
       - typescript
     dev: true
+
+  /@capacitor/camera/4.1.3_@capacitor+core@4.3.0:
+    resolution: {integrity: sha512-XhOMsdrRelKns/+X9W8uY2Qy0o2NPrY13gzLujxGuMZIuIzIZD4JvRUq373cIq1e2gfX/8r1Vux5QCamWM/e0A==}
+    peerDependencies:
+      '@capacitor/core': ^4.0.0
+    dependencies:
+      '@capacitor/core': 4.3.0
+    dev: false
 
   /@capacitor/cli/3.9.0:
     resolution: {integrity: sha512-NkbVZhYb0oPdh/XArE2ZmOwPFJbla5meShGhv3DxKCXeKn1rt92ile+2xOgtB/j+mL7f9cqQzTQM/11sGQzMAg==}
@@ -10832,3 +10832,16 @@ packages:
   /zwitch/1.0.5:
     resolution: {integrity: sha512-V50KMwwzqJV0NpZIZFwfOD5/lyny3WlSzRiXgA0G7VUnRlqttta1L6UQIHzd6EuBY/cHGfwTIck7w1yH6Q5zUw==}
     dev: true
+
+  '@gitpkg.now.sh/capawesome-team/capacitor-firebase/packages/authentication?fcb0f2586ec89c6902488a5f4f183114fc15556b_242wq2marvrefiositiueop2uq':
+    resolution: {tarball: https://gitpkg.now.sh/capawesome-team/capacitor-firebase/packages/authentication?fcb0f2586ec89c6902488a5f4f183114fc15556b}
+    id: '@gitpkg.now.sh/capawesome-team/capacitor-firebase/packages/authentication?fcb0f2586ec89c6902488a5f4f183114fc15556b'
+    name: '@capacitor-firebase/authentication'
+    version: 1.2.0
+    peerDependencies:
+      '@capacitor/core': ^4.0.0
+      firebase: ^9.0.0
+    dependencies:
+      '@capacitor/core': 4.3.0
+      firebase: 9.12.1
+    dev: false

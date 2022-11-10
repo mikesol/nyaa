@@ -10,6 +10,7 @@
   , "debug"
   , "deku"
   , "effect"
+  , "either"
   , "exists"
   , "fast-vect"
   , "filterable"

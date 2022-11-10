@@ -1,6 +1,8 @@
 module Nyaa.Some where
 
 
+import Prelude
+
 import Data.Maybe (Maybe(..))
 import Data.Symbol (class IsSymbol, reflectSymbol)
 import Prim.Row (class Cons, class Union)
@@ -9,6 +11,8 @@ import Unsafe.Coerce (unsafeCoerce)
 
 data Some :: Row Type -> Type
 data Some r
+
+derive instance Eq (Some r)
 
 foreign import getImpl :: forall r a. (a -> Maybe a) -> Maybe a -> String -> Some r -> Maybe a
 

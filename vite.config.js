@@ -14,4 +14,7 @@ export default {
       PureScript: DB,
     },
   },
+  build: {
+    minify: process.env.DEV_BUILD ? false : 'esbuild'
+  }
 };

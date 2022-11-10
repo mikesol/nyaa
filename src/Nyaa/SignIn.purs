@@ -5,9 +5,8 @@ import Prelude
 import Control.Promise (toAffE)
 import Effect.Aff (Aff)
 import Effect.Class (liftEffect)
-import Nyaa.Capacitor.GameCenterAuthPlugin (signInWithGameCenter)
 import Nyaa.Capacitor.Utils (Platform(..), getPlatform)
-import Nyaa.Firebase.Auth (signInWithGoogle, signInWithPlayGames, signOut)
+import Nyaa.Firebase.Auth (signInWithGoogle, signInWithGameCenter, signInWithPlayGames, signOut)
 
 signInFlow :: Aff Unit
 signInFlow = do
