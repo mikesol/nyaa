@@ -2,8 +2,8 @@ import { startGameImpl } from "ffi-game";
 // import * as THREE from "three";
 // import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
-export const startGame = (canvas) => (userId) => (audioContext) => () => {
-    return startGameImpl(canvas, userId, audioContext);
+export const startGame = (canvas) => (userId) => (audioContext) => (audioBuffer) => () => {
+    return startGameImpl(canvas, userId, audioContext, audioBuffer);
 }
 
 // export const doThree = (canvas) => () => {

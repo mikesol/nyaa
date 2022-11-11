@@ -12,6 +12,7 @@ import Effect.Ref as Ref
 import Effect.Uncurried (mkEffectFn1, runEffectFn1)
 import FRP.Event (burning, createO)
 import Nyaa.App (storybook, storybookCC)
+import Nyaa.Assets (akiraURL)
 import Nyaa.Audio (newAudioContext)
 import Nyaa.Capacitor.Utils (Platform(..), getPlatform)
 import Nyaa.Custom.Pages.AmplifyQuest (amplifyQuest)
@@ -75,10 +76,10 @@ main = do
       newbLounge
       proLounge
       deityLounge
-      tutorialLevel { audioContext }
-      newbLevel { audioContext }
-      proLevel { audioContext }
-      deityLevel { audioContext }
+      tutorialLevel { audioContext, audioUri: akiraURL }
+      newbLevel { audioContext, audioUri: akiraURL }
+      proLevel { audioContext, audioUri: akiraURL }
+      deityLevel { audioContext, audioUri: akiraURL }
       loungePicker
       profilePage { profileState: profileState.event }
     -- do this just for the init side effect
