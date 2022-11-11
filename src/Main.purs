@@ -12,6 +12,7 @@ import Effect.Ref as Ref
 import Effect.Uncurried (mkEffectFn1, runEffectFn1)
 import FRP.Event (burning, createO)
 import Nyaa.App (storybook, storybookCC)
+import Nyaa.Audio (newAudioContext)
 import Nyaa.Capacitor.Utils (Platform(..), getPlatform)
 import Nyaa.Custom.Pages.AmplifyQuest (amplifyQuest)
 import Nyaa.Custom.Pages.BackQuest (backQuest)
@@ -46,14 +47,15 @@ main :: Effect Unit
 main = do
   unsubProfileListener <- Ref.new (pure unit)
   app <- fbApp
-  analytics <- fbAnalytics app
+  _ <- fbAnalytics app
   firestoreDB <- fbDB app
-  auth <- fbAuth app
+  _ <- fbAuth app
   authListener <- createO
   profileListener <- createO
   authState <- burning { user: null } (dedup authListener.event)
   profileState <- burning { profile: Profile (some {}) }
     (dedup profileListener.event)
+  audioContext <- newAudioContext
   launchAff_ do
     whenM (liftEffect (getPlatform <#> (_ == Android))) do
       toAffE androidFullScreen
@@ -73,10 +75,10 @@ main = do
       newbLounge
       proLounge
       deityLounge
-      tutorialLevel
-      newbLevel
-      proLevel
-      deityLevel
+      tutorialLevel { audioContext }
+      newbLevel { audioContext }
+      proLevel { audioContext }
+      deityLevel { audioContext }
       loungePicker
       profilePage { profileState: profileState.event }
     -- do this just for the init side effect

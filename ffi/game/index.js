@@ -15,10 +15,7 @@ async function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-// TODO: global audio context
-const audioContext = new AudioContext();
-
-export function startGameImpl(canvas, userId) {
+export function startGameImpl(canvas, userId, audioContext) {
     // SECTION START - THREE //
 
     const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
