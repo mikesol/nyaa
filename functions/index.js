@@ -1,9 +1,13 @@
-const functions = require("firebase-functions");
+const functions = require('firebase-functions');
 
-// // Create and Deploy Your First Cloud Functions
-// // https://firebase.google.com/docs/functions/write-firebase-functions
-//
-// exports.helloWorld = functions.https.onRequest((request, response) => {
-//   functions.logger.info("Hello logs!", {structuredData: true});
-//   response.send("Hello from Firebase!");
-// });
+// The Firebase Admin SDK to access Firestore.
+const admin = require('firebase-admin');
+admin.initializeApp();
+const auth = admin.auth();
+
+exports.customAuth = functions.https.onRequest(async (req, res) => {
+    const idToken = req.body.idToken;
+    const decodedToken = await auth.verifyIdToken(idToken);
+    const result = await auth.createCustomToken(decodedToken.uid);
+    res.json({ result });
+  });
