@@ -267,7 +267,7 @@ export function startGameImpl(canvas, userId, audioContext, audioBuffer) {
             });
         },
         kill() {
-            // TODO : SOMETHING HERE!
+            isFinished = true;
         }
     };
 }

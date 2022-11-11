@@ -70,7 +70,7 @@ achievement opts = ionCard (oneOf [ opts.earned <#> not <#> (D.Disabled := _) ])
 profilePage
   :: { profileState :: Event { profile :: Profile } }
   -> Effect Unit
-profilePage opts = customComponent "profile-page" {} \_ ->
+profilePage opts = customComponent "profile-page" {} (pure unit) (pure unit) \_ ->
   [ ionHeader (oneOf [ I.Translucent !:= true ])
       [ ionToolbar_
           [ ionButtons (oneOf [ I.Slot !:= "start" ])

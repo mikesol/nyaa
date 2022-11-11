@@ -23,7 +23,7 @@ import Nyaa.SignIn (signInFlow, signOutFlow)
 introScreen
   :: { authState :: Event { user :: Nullable User } }
   -> Effect Unit
-introScreen opts = customComponent "intro-screen" {} \_ ->
+introScreen opts = customComponent "intro-screen" {} (pure unit) (pure unit) \_ ->
   [ ionContent_
       [ D.div (oneOf [ klass_ "flex flex-col justify-between w-full h-full" ])
           [ D.div (oneOf [ klass_ "grow" ]) []

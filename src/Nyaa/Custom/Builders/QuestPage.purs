@@ -21,7 +21,7 @@ questPage
      , battleRoute :: String
      }
   -> Effect Unit
-questPage i = customComponent i.name {} \_ ->
+questPage i = customComponent i.name {} (pure unit) (pure unit) \_ ->
   [ ionContent (oneOf [ I.Fullscren !:= true ])
       [ D.div
           ( oneOf
