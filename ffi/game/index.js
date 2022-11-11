@@ -156,7 +156,7 @@ export function startGameImpl(canvas, userId) {
     const judge = new Judge(noteInfo, 20);
     const pointerBuffer = new THREE.Vector2();
     function handleTouch(event) {
-        if (audioContext === null) {
+        if (audioContext.state === "suspended") {
             return;
         }
         const elapsedTime = audioContext.currentTime - beginTime;
@@ -202,7 +202,7 @@ export function startGameImpl(canvas, userId) {
                 console.log("[PubNub] Ignoring message from self...");
                 return;
             }
-            if (audioContext === null) {
+            if (audioContext.state === "suspended") {
                 console.log("[PubNub] Not ready...");
                 return;
             }
