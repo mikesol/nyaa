@@ -3,12 +3,13 @@ module Main where
 import Prelude
 
 import Control.Promise (toAffE)
-import Data.Nullable (null)
+import Data.Nullable (null, toMaybe)
 import Deku.Toplevel (runInBody)
 import Effect (Effect)
 import Effect.Aff (launchAff_)
 import Effect.Class (liftEffect)
-import Effect.Uncurried (runEffectFn1)
+import Effect.Ref as Ref
+import Effect.Uncurried (mkEffectFn1, runEffectFn1)
 import FRP.Event (burning, createO)
 import Nyaa.App (storybook, storybookCC)
 import Nyaa.Capacitor.Utils (Platform(..), getPlatform)
@@ -32,8 +33,9 @@ import Nyaa.Custom.Pages.ProfilePage (profilePage)
 import Nyaa.Custom.Pages.RotateQuest (rotateQuest)
 import Nyaa.Custom.Pages.TutorialLevel (tutorialLevel)
 import Nyaa.Custom.Pages.TutorialQuest (tutorialQuest)
+import Nyaa.FRP.Dedup (dedup)
 import Nyaa.Firebase.Auth (getCurrentUser, listenToAuthStateChange, useEmulator)
-import Nyaa.Firebase.Firestore (Profile(..))
+import Nyaa.Firebase.Firestore (Profile(..), reactToNewUser)
 import Nyaa.Firebase.Init (fbAnalytics, fbApp, fbAuth, fbDB)
 import Nyaa.Fullscreen (androidFullScreen)
 import Nyaa.Some (some)
@@ -42,15 +44,16 @@ import Routing.Hash (getHash, setHash)
 
 main :: Effect Unit
 main = do
+  unsubProfileListener <- Ref.new (pure unit)
   app <- fbApp
   analytics <- fbAnalytics app
   firestoreDB <- fbDB app
   auth <- fbAuth app
   authListener <- createO
   profileListener <- createO
-  authState <- burning { user: null } authListener.event
-  profileListener <- burning { profile: Profile (some {}) }
-    profileListener.event
+  authState <- burning { user: null } (dedup authListener.event)
+  profileState <- burning { profile: Profile (some {}) }
+    (dedup profileListener.event)
   launchAff_ do
     whenM (liftEffect (getPlatform <#> (_ == Android))) do
       toAffE androidFullScreen
@@ -75,7 +78,7 @@ main = do
       proLevel
       deityLevel
       loungePicker
-      profilePage { authState: authState.event }
+      profilePage { profileState: profileState.event }
     -- do this just for the init side effect
     _ <- liftEffect fbApp
     isProd <- liftEffect prod
@@ -93,7 +96,10 @@ main = do
       launchAff_ do
         cu <- toAffE getCurrentUser
         liftEffect do
-          runEffectFn1 authListener.push { user: cu }
-          _ <- listenToAuthStateChange authListener.push
+          runEffectFn1 authListener.push cu
+          reactToNewUser { user: toMaybe cu.user, firestoreDB, push: profileListener.push, unsubProfileListener }
+          _ <- listenToAuthStateChange $ mkEffectFn1 \u -> do
+            runEffectFn1 authListener.push u
+            reactToNewUser { user: toMaybe u.user, firestoreDB, push: profileListener.push, unsubProfileListener }
           pure unit
       pure unit

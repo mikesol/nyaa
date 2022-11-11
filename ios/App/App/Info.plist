@@ -8,6 +8,12 @@
 	<string>Nyaa</string>
 	<key>NSGKFriendListUsageDescription</key>
 	<string>Find friends to battle in Nyā!</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Smile! Take a beautiful avatar photo.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Choose that perfect avatar photo.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Choose that perfect avatar photo.</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>

@@ -36,9 +36,11 @@ type SignInResult =
   }
 
 foreign import useEmulator :: Effect (Promise Unit)
-foreign import getCurrentUser :: Effect (Promise (Nullable User))
+foreign import getCurrentUser :: Effect (Promise { user :: Nullable User })
 foreign import signInWithApple :: Effect (Promise SignInResult)
+foreign import signInWithGameCenter :: Effect (Promise SignInResult)
 foreign import signInWithGoogle :: Effect (Promise SignInResult)
 foreign import signOut :: Effect (Promise Unit)
 foreign import signInWithPlayGames :: Effect (Promise SignInResult)
-foreign import listenToAuthStateChange :: EffectFn1 { user :: Nullable User } Unit -> Effect (Effect Unit)
+foreign import listenToAuthStateChange
+  :: EffectFn1 { user :: Nullable User } Unit -> Effect (Effect Unit)

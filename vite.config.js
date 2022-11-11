@@ -17,4 +17,7 @@ export default {
       assets: ASSETS,
     },
   },
+  build: {
+    minify: process.env.DEV_BUILD ? false : 'esbuild'
+  }
 };
