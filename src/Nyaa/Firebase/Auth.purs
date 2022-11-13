@@ -6,6 +6,7 @@ import Control.Promise (Promise)
 import Data.Nullable (Nullable)
 import Effect (Effect)
 import Effect.Uncurried (EffectFn1)
+import Nyaa.Firebase.Opaque (FirebaseAuth)
 
 type User =
   { displayName :: Nullable String
@@ -35,12 +36,10 @@ type SignInResult =
   , teamPlayerID :: Nullable String -- apple only
   }
 
-foreign import useEmulator :: Effect (Promise Unit)
-foreign import getCurrentUser :: Effect (Promise { user :: Nullable User })
-foreign import signInWithApple :: Effect (Promise SignInResult)
-foreign import signInWithGameCenter :: Effect (Promise SignInResult)
-foreign import signInWithGoogle :: Effect (Promise SignInResult)
-foreign import signOut :: Effect (Promise Unit)
-foreign import signInWithPlayGames :: Effect (Promise SignInResult)
+foreign import getCurrentUser :: FirebaseAuth -> Effect (Promise { user :: Nullable User })
+foreign import signInWithGameCenter :: FirebaseAuth -> Effect (Promise SignInResult)
+foreign import signInWithGoogle :: FirebaseAuth ->Effect (Promise SignInResult)
+foreign import signOut :: FirebaseAuth ->Effect (Promise Unit)
+foreign import signInWithPlayGames :: FirebaseAuth ->Effect (Promise SignInResult)
 foreign import listenToAuthStateChange
-  :: EffectFn1 { user :: Nullable User } Unit -> Effect (Effect Unit)
+  :: FirebaseAuth -> EffectFn1 { user :: Nullable User } Unit -> Effect (Effect Unit)

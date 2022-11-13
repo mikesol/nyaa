@@ -34,9 +34,9 @@ import Nyaa.Custom.Pages.RotateQuest (rotateQuest)
 import Nyaa.Custom.Pages.TutorialLevel (tutorialLevel)
 import Nyaa.Custom.Pages.TutorialQuest (tutorialQuest)
 import Nyaa.FRP.Dedup (dedup)
-import Nyaa.Firebase.Auth (getCurrentUser, listenToAuthStateChange, useEmulator)
+import Nyaa.Firebase.Auth (getCurrentUser, listenToAuthStateChange)
 import Nyaa.Firebase.Firestore (Profile(..), reactToNewUser)
-import Nyaa.Firebase.Init (fbAnalytics, fbApp, fbAuth, fbDB)
+import Nyaa.Firebase.Init (fbAnalytics, fbApp, fbAuth, fbDB, fbFunctions)
 import Nyaa.Fullscreen (androidFullScreen)
 import Nyaa.Some (some)
 import Nyaa.Vite.Env (prod)
@@ -47,6 +47,7 @@ main = do
   unsubProfileListener <- Ref.new (pure unit)
   app <- fbApp
   analytics <- fbAnalytics app
+  functions <- fbFunctions app
   firestoreDB <- fbDB app
   auth <- fbAuth app
   authListener <- createO
@@ -59,7 +60,7 @@ main = do
       toAffE androidFullScreen
     -- register components
     liftEffect do
-      introScreen { authState: authState.event }
+      introScreen { auth, functions, authState: authState.event }
       tutorialQuest
       equalizeQuest
       cameraQuest
@@ -82,8 +83,8 @@ main = do
     -- do this just for the init side effect
     _ <- liftEffect fbApp
     isProd <- liftEffect prod
-    unless isProd do
-      toAffE useEmulator
+    -- unless isProd do
+    --   toAffE useEmulator
     liftEffect do
       h <- getHash
       when (h == "") do
@@ -94,11 +95,11 @@ main = do
       runInBody storybook
       --
       launchAff_ do
-        cu <- toAffE getCurrentUser
+        cu <- toAffE (getCurrentUser auth)
         liftEffect do
           runEffectFn1 authListener.push cu
           reactToNewUser { user: toMaybe cu.user, firestoreDB, push: profileListener.push, unsubProfileListener }
-          _ <- listenToAuthStateChange $ mkEffectFn1 \u -> do
+          _ <- listenToAuthStateChange auth $ mkEffectFn1 \u -> do
             runEffectFn1 authListener.push u
             reactToNewUser { user: toMaybe u.user, firestoreDB, push: profileListener.push, unsubProfileListener }
           pure unit

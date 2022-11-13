@@ -7,14 +7,15 @@ import Effect.Aff (Aff)
 import Effect.Class (liftEffect)
 import Nyaa.Capacitor.Utils (Platform(..), getPlatform)
 import Nyaa.Firebase.Auth (signInWithGoogle, signInWithGameCenter, signInWithPlayGames, signOut)
+import Nyaa.Firebase.Opaque (FirebaseAuth, FirebaseFunctions)
 
-signInFlow :: Aff Unit
-signInFlow = do
+signInFlow :: { auth :: FirebaseAuth, functions :: FirebaseFunctions } -> Aff Unit
+signInFlow { auth } = do
   platform <- liftEffect getPlatform
   case platform of
-    Web -> void $ toAffE signInWithGoogle
-    IOS -> void $ toAffE signInWithGameCenter
-    Android -> void $ toAffE signInWithPlayGames
+    Web -> void $ toAffE $ signInWithGoogle auth
+    IOS -> void $ toAffE $ signInWithGameCenter auth
+    Android -> void $ toAffE $ signInWithPlayGames auth
 
-signOutFlow :: Aff Unit
-signOutFlow =  toAffE signOut
+signOutFlow :: { auth :: FirebaseAuth } -> Aff Unit
+signOutFlow { auth }=  toAffE$ signOut auth

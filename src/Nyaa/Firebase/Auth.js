@@ -1,41 +1,39 @@
-import { FirebaseAuthentication } from "@capacitor-firebase/authentication/src/";
+// import { FirebaseAuthentication } from "@capacitor-firebase/authentication/src/";
+import { registerPlugin } from "@capacitor/core";
+import { signInWithCustomToken } from "firebase/auth";
+import axios from "axios";
+const GameCenterAuth = registerPlugin("GameCenterAuth");
 
-export const useEmulator = async () => {
-  const result = await FirebaseAuthentication.useEmulator({
-    host: "http://127.0.0.1",
-    port: 9099,
-  });
-  return result;
+export const getCurrentUser = (auth) => async () => {
+  const result = await auth.currentUser;
+  return { user: result };
 };
-export const getCurrentUser = async () => {
-  const result = await FirebaseAuthentication.getCurrentUser();
-  return result;
+export const signInWithGameCenter = (auth) => async () => {
+  //console.log("started signInWithGameCenter");
+  const result = await GameCenterAuth.signIn();
+  //console.log("got result", result);
+  // const token = await axios.post("https://us-central1-nyaa-game.cloudfunctions.net/gcAuth", result);
+  //console.log("TOKEY", token);
+  console.log('signing in using token');
+  try {
+    const userCredential = await signInWithCustomToken(auth, result.result);
+    const user = userCredential.user;
+    console.log("User", user);
+    return { user };  
+  } catch (e)  {
+    console.error(e);
+  }
 };
-export const signInWithApple = async () => {
-  const result = await FirebaseAuthentication.signInWithApple();
-  return result;
-};
-
-export const signInWithGameCenter = async () => {
-  console.log('signing in');
-  const result = await FirebaseAuthentication.signInWithGameCenter();
-  console.log('sign in result', result);
-  return result;
-};
-
-export const signInWithGoogle = async () => {
-  const result = await FirebaseAuthentication.signInWithGoogle();
-  return result;
-};
-
-export const signInWithPlayGames = async () => {
-  const result = await FirebaseAuthentication.signInWithPlayGames();
-  return result;
+export const signOut = (auth) => async () => {
+  await auth.signOut();
 };
 
-export const listenToAuthStateChange = (listener) => () =>
-  FirebaseAuthentication.addListener("authStateChange", listener);
-
-export const signOut = async () => {
-  await FirebaseAuthentication.signOut();
+export const signInWithGoogle = () => async () => {
+  throw new Error("unimplemented");
 };
+
+export const signInWithPlayGames = () => async () => {
+  throw new Error("unimplemented");
+};
+
+export const listenToAuthStateChange = () => () => () => () => {};

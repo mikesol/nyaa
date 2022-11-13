@@ -2,7 +2,7 @@ import { doc, getDoc, runTransaction, onSnapshot } from "firebase/firestore";
 
 const PROFILE = "profile";
 
-export const getMeImpl = (just) => (nothing) => (auth) => async () => {
+export const getMeImpl = (just) => (nothing) => (db) => (auth) => async () => {
   console.log('get me', PROFILE, auth.currentUser.uid);
   const docRef = doc(db, PROFILE, auth.currentUser.uid);
   const docSnap = await getDoc(docRef);

@@ -1,13 +1,34 @@
-const functions = require('firebase-functions');
+const functions = require("firebase-functions");
+const verifier = require("gamecenter-identity-verifier");
+const admin = require("firebase-admin");
+const cors = require("cors")({origin: true});
 
-// The Firebase Admin SDK to access Firestore.
-const admin = require('firebase-admin');
 admin.initializeApp();
 const auth = admin.auth();
 
-exports.customAuth = functions.https.onRequest(async (req, res) => {
-    const idToken = req.body.idToken;
-    const decodedToken = await auth.verifyIdToken(idToken);
-    const result = await auth.createCustomToken(decodedToken.uid);
-    res.json({ result });
+const BUNDLE_ID = "fm.joyride.nyaa";
+
+exports.gcAuth = functions.https.onRequest((req, res) => {
+  return cors(req, res, async () => {
+    const info = req.body;
+    const identity = {
+      publicKeyUrl: info.publicKeyURL,
+      timestamp: parseInt(info.timestamp),
+      signature: info.signature,
+      salt: info.salt,
+      playerId: info.teamPlayerID,
+      bundleId: BUNDLE_ID,
+    };
+    await new Promise((resolve, reject) => {
+      verifier.verify(identity, function(err) {
+        if (err) {
+          reject(err);
+          return;
+        }
+        resolve();
+      });
+    });
+    const result = await auth.createCustomToken(info.gamePlayerID);
+    res.json({result});
   });
+});

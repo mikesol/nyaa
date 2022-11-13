@@ -3,6 +3,7 @@ import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import { getFirestore, connectFirestoreEmulator, enableIndexedDbPersistence } from "firebase/firestore";
 import { getAuth, connectAuthEmulator } from "firebase/auth";
+import { getFunctions } from "firebase/functions";
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -22,6 +23,7 @@ const firebaseConfig = {
 
 // Initialize Firebase
 export const fbApp = () => initializeApp(firebaseConfig);
+export const fbFunctions = (app) => () => import.meta.env.PROD ? getFunctions(app) : getFunctions();
 export const fbAnalytics = (app) => () =>
   import.meta.env.PROD ? getAnalytics(app) : undefined; // ugggh
 export const fbDB = (app) => () => {

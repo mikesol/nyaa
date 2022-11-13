@@ -7,7 +7,6 @@ import Data.Foldable (for_)
 import Data.Maybe (Maybe(..))
 import Data.Newtype (class Newtype)
 import Data.Nullable (Nullable)
-import Debug (spy)
 import Effect (Effect)
 import Effect.Aff (launchAff_)
 import Effect.Class (liftEffect)
@@ -46,11 +45,13 @@ derive instance  Newtype Profile _
 foreign import getMeImpl
   :: (Profile -> Maybe Profile)
   -> (Maybe Profile)
+  -> Firestore
   -> FirebaseAuth
   -> Effect (Promise (Maybe Profile))
 
 getMe
-  :: FirebaseAuth
+  :: Firestore
+  -> FirebaseAuth
   -> Effect (Promise (Maybe Profile))
 getMe = getMeImpl Just Nothing
 
