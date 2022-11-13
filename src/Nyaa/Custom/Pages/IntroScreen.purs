@@ -14,16 +14,14 @@ import Deku.Listeners (click_)
 import Effect (Effect)
 import Effect.Aff (launchAff_)
 import FRP.Event (Event)
-import Nyaa.Firebase.Auth (User)
-import Nyaa.Firebase.Opaque (FirebaseAuth, FirebaseFunctions)
+import Nyaa.Firebase.Firebase (User)
 import Nyaa.Ionic.Button (ionButton)
 import Nyaa.Ionic.Content (ionContent_)
 import Nyaa.Ionic.Custom (customComponent)
 import Nyaa.SignIn (signInFlow, signOutFlow)
 
 introScreen
-  :: { auth :: FirebaseAuth
-     , authState :: Event { user :: Nullable User }
+  :: { authState :: Event { user :: Nullable User }
      }
   -> Effect Unit
 introScreen opts = customComponent "intro-screen" {} \_ ->
@@ -42,7 +40,7 @@ introScreen opts = customComponent "intro-screen" {} \_ ->
                         Nothing -> fixed
                           [ ionButton
                               ( click_
-                                  (launchAff_ (signInFlow { auth: opts.auth }))
+                                  (launchAff_ signInFlow)
                               )
                               [ text_ "Sign in" ]
                           ]
@@ -51,7 +49,7 @@ introScreen opts = customComponent "intro-screen" {} \_ ->
                               [ text_ "Profile" ]
                           , ionButton
                               ( click_
-                                  (launchAff_ (signOutFlow { auth: opts.auth }))
+                                  (launchAff_ signOutFlow)
                               )
                               [ text_ "Sign out" ]
                           ]

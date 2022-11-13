@@ -20,7 +20,7 @@ import Nyaa.Assets (catURL)
 import Nyaa.Capacitor.FriendsPlugin (sendFriendRequest)
 import Nyaa.Capacitor.Utils (Platform(..), getPlatformE)
 import Nyaa.FRP.Race (race)
-import Nyaa.Firebase.Firestore (Profile)
+import Nyaa.Firebase.Firebase (Profile)
 import Nyaa.Ionic.Attributes as I
 import Nyaa.Ionic.BackButton (ionBackButton)
 import Nyaa.Ionic.Button (ionButton)

@@ -28,6 +28,7 @@ exports.gcAuth = functions.https.onRequest((req, res) => {
         resolve();
       });
     });
+    // super important that this is the game player id, NOT the team player id!
     const result = await auth.createCustomToken(info.gamePlayerID);
     res.json({result});
   });
