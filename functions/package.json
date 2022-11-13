@@ -14,8 +14,10 @@
   },
   "main": "index.js",
   "dependencies": {
+    "cors": "^2.8.5",
     "firebase-admin": "^10.0.2",
-    "firebase-functions": "^4.0.2"
+    "firebase-functions": "^4.0.2",
+    "gamecenter-identity-verifier": "^0.1.1"
   },
   "devDependencies": {
     "eslint": "^8.9.0",
