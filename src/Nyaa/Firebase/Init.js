@@ -1,8 +1,8 @@
 // Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
-import { getFirestore, connectFirestoreEmulator, enableIndexedDbPersistence } from "firebase/firestore";
-import { getAuth, connectAuthEmulator } from "firebase/auth";
+import firebase from "firebase";
+// import { getAnalytics } from "firebase/analytics";
+// import { getFirestore, connectFirestoreEmulator, enableIndexedDbPersistence } from "firebase/firestore";
+// import { getAuth, connectAuthEmulator } from "firebase/auth";
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -21,16 +21,16 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-export const fbApp = () => initializeApp(firebaseConfig);
+export const fbApp = () => import.meta.env.PROD ? firebase.initializeApp(firebaseConfig) : firebase.initializeApp();
 export const fbAnalytics = (app) => () =>
-  import.meta.env.PROD ? getAnalytics(app) : undefined; // ugggh
+  app.analytics(); // ugggh
 export const fbDB = (app) => () => {
-  const o = import.meta.env.PROD ? getFirestore(app) : getFirestore();
-  connectFirestoreEmulator(o, "localhost", 8080);
+  const o = app.firestore()
+  //connectFirestoreEmulator(o, "localhost", 8080);
   // let this run async
   // it's highly unlikely there will ever be a race condition
   // if needed return this as a promise & chain `o`
-  enableIndexedDbPersistence(o).catch((err) => {
+  o.enablePersistence.catch((err) => {
     if (err.code == "failed-precondition") {
       console.error("could not do offline persistance");
     } else if (err.code == "unimplemented") {
@@ -40,9 +40,9 @@ export const fbDB = (app) => () => {
   return o;
 };
 export const fbAuth = (app) => () => {
-  const o = import.meta.env.PROD ? getAuth(app) : getAuth();
+  const o = app.auth()
   if (import.meta.env.DEV) {
-    connectAuthEmulator(o, "http://localhost:9099");
+    o.useEmulator("http://localhost:9099");
   }
   return o;
 };
