@@ -1,7 +1,7 @@
 // import { FirebaseAuthentication } from "@capacitor-firebase/authentication/src/";
 import { registerPlugin } from "@capacitor/core";
 import { signInWithCustomToken } from "firebase/auth";
-import axios from "axios";
+//import axios from "axios";
 const GameCenterAuth = registerPlugin("GameCenterAuth");
 
 export const getCurrentUser = (auth) => async () => {
@@ -16,7 +16,7 @@ export const signInWithGameCenter = (auth) => async () => {
   //console.log("TOKEY", token);
   console.log('signing in using token');
   try {
-    const userCredential = await signInWithCustomToken(auth, result.result);
+    const userCredential = await auth.signInWithCustomToken(result.result);
     const user = userCredential.user;
     console.log("User", user);
     return { user };  

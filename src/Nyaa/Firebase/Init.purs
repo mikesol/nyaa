@@ -7,4 +7,4 @@ foreign import fbApp :: Effect FirebaseApp
 foreign import fbAnalytics :: FirebaseApp -> Effect FirebaseAnalytics
 foreign import fbDB :: FirebaseApp -> Effect Firestore
 foreign import fbAuth :: FirebaseApp -> Effect FirebaseAuth
-foreign import fbFunctions :: FirebaseApp -> Effect FirebaseFunctions
+-- foreign import fbFunctions :: FirebaseApp -> Effect FirebaseFunctions

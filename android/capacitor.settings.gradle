@@ -3,7 +3,7 @@ include ':capacitor-android'
 project(':capacitor-android').projectDir = new File('../node_modules/.pnpm/@capacitor+android@4.3.0_@capacitor+core@4.3.0/node_modules/@capacitor/android/capacitor')
 
 include ':capacitor-firebase-messaging'
-project(':capacitor-firebase-messaging').projectDir = new File('../node_modules/.pnpm/@capacitor-firebase+messaging@1.2.0_kat4tuxx6j7c5wnz6orloxu3uq/node_modules/@capacitor-firebase/messaging/android')
+project(':capacitor-firebase-messaging').projectDir = new File('../node_modules/.pnpm/@capacitor-firebase+messaging@1.2.0_qe7mwfxqj6rvfclcldrujh24ke/node_modules/@capacitor-firebase/messaging/android')
 
 include ':capacitor-camera'
 project(':capacitor-camera').projectDir = new File('../node_modules/.pnpm/@capacitor+camera@4.1.3_@capacitor+core@4.3.0/node_modules/@capacitor/camera/android')

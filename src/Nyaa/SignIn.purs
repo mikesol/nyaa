@@ -9,7 +9,7 @@ import Nyaa.Capacitor.Utils (Platform(..), getPlatform)
 import Nyaa.Firebase.Auth (signInWithGoogle, signInWithGameCenter, signInWithPlayGames, signOut)
 import Nyaa.Firebase.Opaque (FirebaseAuth, FirebaseFunctions)
 
-signInFlow :: { auth :: FirebaseAuth, functions :: FirebaseFunctions } -> Aff Unit
+signInFlow :: { auth :: FirebaseAuth } -> Aff Unit
 signInFlow { auth } = do
   platform <- liftEffect getPlatform
   case platform of

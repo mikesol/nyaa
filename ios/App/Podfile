@@ -11,7 +11,7 @@ install! 'cocoapods', :disable_input_output_paths => true
 def capacitor_pods
   pod 'Capacitor', :path => '../../node_modules/.pnpm/@capacitor+ios@4.3.0_@capacitor+core@4.3.0/node_modules/@capacitor/ios'
   pod 'CapacitorCordova', :path => '../../node_modules/.pnpm/@capacitor+ios@4.3.0_@capacitor+core@4.3.0/node_modules/@capacitor/ios'
-  pod 'CapacitorFirebaseMessaging', :path => '../../node_modules/.pnpm/@capacitor-firebase+messaging@1.2.0_kat4tuxx6j7c5wnz6orloxu3uq/node_modules/@capacitor-firebase/messaging'
+  pod 'CapacitorFirebaseMessaging', :path => '../../node_modules/.pnpm/@capacitor-firebase+messaging@1.2.0_qe7mwfxqj6rvfclcldrujh24ke/node_modules/@capacitor-firebase/messaging'
   pod 'CapacitorCamera', :path => '../../node_modules/.pnpm/@capacitor+camera@4.1.3_@capacitor+core@4.3.0/node_modules/@capacitor/camera'
   pod 'CapacitorPreferences', :path => '../../node_modules/.pnpm/@capacitor+preferences@4.0.1_@capacitor+core@4.3.0/node_modules/@capacitor/preferences'
   pod 'CapacitorPushNotifications', :path => '../../node_modules/.pnpm/@capacitor+push-notifications@4.1.1_@capacitor+core@4.3.0/node_modules/@capacitor/push-notifications'

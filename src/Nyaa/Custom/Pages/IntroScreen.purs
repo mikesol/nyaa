@@ -23,7 +23,6 @@ import Nyaa.SignIn (signInFlow, signOutFlow)
 
 introScreen
   :: { auth :: FirebaseAuth
-     , functions :: FirebaseFunctions
      , authState :: Event { user :: Nullable User }
      }
   -> Effect Unit
@@ -43,7 +42,7 @@ introScreen opts = customComponent "intro-screen" {} \_ ->
                         Nothing -> fixed
                           [ ionButton
                               ( click_
-                                  (launchAff_ (signInFlow { auth: opts.auth, functions: opts.functions }))
+                                  (launchAff_ (signInFlow { auth: opts.auth }))
                               )
                               [ text_ "Sign in" ]
                           ]

@@ -36,7 +36,7 @@ import Nyaa.Custom.Pages.TutorialQuest (tutorialQuest)
 import Nyaa.FRP.Dedup (dedup)
 import Nyaa.Firebase.Auth (getCurrentUser, listenToAuthStateChange)
 import Nyaa.Firebase.Firestore (Profile(..), reactToNewUser)
-import Nyaa.Firebase.Init (fbAnalytics, fbApp, fbAuth, fbDB, fbFunctions)
+import Nyaa.Firebase.Init (fbAnalytics, fbApp, fbAuth, fbDB)
 import Nyaa.Fullscreen (androidFullScreen)
 import Nyaa.Some (some)
 import Nyaa.Vite.Env (prod)
@@ -47,7 +47,7 @@ main = do
   unsubProfileListener <- Ref.new (pure unit)
   app <- fbApp
   analytics <- fbAnalytics app
-  functions <- fbFunctions app
+  -- functions <- fbFunctions app
   firestoreDB <- fbDB app
   auth <- fbAuth app
   authListener <- createO
@@ -60,7 +60,7 @@ main = do
       toAffE androidFullScreen
     -- register components
     liftEffect do
-      introScreen { auth, functions, authState: authState.event }
+      introScreen { auth, authState: authState.event }
       tutorialQuest
       equalizeQuest
       cameraQuest
@@ -81,7 +81,6 @@ main = do
       loungePicker
       profilePage { profileState: profileState.event }
     -- do this just for the init side effect
-    _ <- liftEffect fbApp
     isProd <- liftEffect prod
     -- unless isProd do
     --   toAffE useEmulator

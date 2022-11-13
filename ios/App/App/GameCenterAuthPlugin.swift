@@ -57,7 +57,13 @@ public class GameCenterAuthPlugin: CAPPlugin {
                                     call.reject("\(String(describing: err))")
                                     return
                                 }
-                                if ((Auth.auth().currentUser?.providerData.count ?? 0) > 1) {
+                                var hasGC = false
+                                for lnk in Auth.auth().currentUser?.providerData ?? [] {
+                                    if (lnk.providerID == "gc.apple.com") { hasGC = true
+                                        break
+                                    }
+                                }
+                                if (hasGC) {
                                     // we're already linked to something else, so we can return early
                                     var res = JSObject()
                                     res["result"] = response.value?.result;
@@ -74,6 +80,8 @@ public class GameCenterAuthPlugin: CAPPlugin {
                                         call.reject("\(String(describing: error))")
                                         return
                                     }
+                                    
+                                            
                                     if let credential = credential {
                                         Auth.auth().currentUser?.link(with: credential) { (res, err) in
                                             if (err != nil) {
