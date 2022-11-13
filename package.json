@@ -34,6 +34,7 @@
   "dependencies": {
     "@awesome-cordova-plugins/android-full-screen": "^6.0.1",
     "@awesome-cordova-plugins/core": "^6.0.1",
+    "@aws-amplify/datastore": "^3.14.4",
     "@capacitor-firebase/authentication": "https://gitpkg.now.sh/capawesome-team/capacitor-firebase/packages/authentication?fcb0f2586ec89c6902488a5f4f183114fc15556b",
     "@capacitor-firebase/messaging": "^1.2.0",
     "@capacitor/android": "^4.3.0",

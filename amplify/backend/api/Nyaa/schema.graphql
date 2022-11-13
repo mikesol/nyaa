@@ -1,0 +1,5 @@
+type Profile @model @auth(rules: [{allow: public}]) {
+  id: ID!
+  displayName: String
+  avatarURL: AWSURL
+}
