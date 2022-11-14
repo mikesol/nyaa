@@ -96,11 +96,11 @@ export function startGameImpl(canvas, userId, audioContext, audioBuffer) {
     function animateCoreUi() {
         if (audioContext.state === "running") {
             const elapsedTime = audioContext.currentTime - beginTime;
-            // if (elapsedTime >= audioElement.duration) {
-            //     isFinished = true;
-            // }
+            if (elapsedTime >= audioBuffer.duration) {
+                isFinished = true;
+            }
             cameraEffect.animate(elapsedTime, camera);
-            // audioEffect.animate(elapsedTime);
+            audioEffect.animate(elapsedTime);
             notes.animate(elapsedTime, 1.0);
             guides.animate(elapsedTime, 1.0);
             hits.animate(elapsedTime, 1.0);
@@ -111,40 +111,20 @@ export function startGameImpl(canvas, userId, audioContext, audioBuffer) {
 
     // SUBSECTION START - AUDIO
 
+    let audioTrack = null;
     let beginTime = null;
+
     function startAudio() {
         if (audioContext.state === "suspended") {
+            audioTrack = new AudioBufferSourceNode(audioContext, { buffer: audioBuffer });
+            audioEffect = new AudioEffect(audioContext, audioTrack);
             audioContext.resume();
+            audioTrack.start();
             beginTime = audioContext.currentTime;
         } else {
             throw new Error("Already started...");
         }
     }
-
-    // const audioElement = document.getElementsByName("audio");
-    // let audioContext = null;
-    // let audioTrack = null;
-    // let beginTime = null;
-    // let isFinished = false;
-    // const context = {
-    //     uThreshold: 1.0,
-    //     togglePlayBack() {
-    //         if (audioContext === null) {
-    //             audioContext = new AudioContext();
-    //             // audioTrack = audioContext.createMediaElementSource(audioElement);
-    //             // audioEffect = new AudioEffect(audioContext, audioTrack);
-    //             audioContext.resume()
-    //             // audioElement.play();
-    //             sendScore().then(() => {
-    //                 console.log("[PubNub] Finished sending scores...");
-    //             });
-    //         }
-    //         beginTime = audioContext.currentTime;
-    //     }
-    // };
-
-    // gui.add(context, "uThreshold", 0.5, 1.0).name("uThreshold");
-    // gui.add(context, "togglePlayBack").name("Toggle Playback");
 
     // SUBSECTION END - AUDIO
 
@@ -268,6 +248,11 @@ export function startGameImpl(canvas, userId, audioContext, audioBuffer) {
         },
         kill() {
             isFinished = true;
+            notes.destroy();
+            guides.destroy();
+            hits.destroy();
+            reference.destroy();
+            audioTrack.stop();
         }
     };
 }

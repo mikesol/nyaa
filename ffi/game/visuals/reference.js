@@ -14,4 +14,9 @@ export class Reference {
     into(scene) {
         scene.add(this.mesh);
     }
+
+    destroy() {
+        this.geometry.dispose();
+        this.material.dispose();
+    }
 }

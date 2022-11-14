@@ -202,4 +202,9 @@ export class Notes {
     animate(currentTime, noteThreshold) {
         animateCommon.call(this, currentTime, noteThreshold);
     }
+
+    destroy() {
+        this.geometry.dispose();
+        this.material.dispose();
+    }
 }

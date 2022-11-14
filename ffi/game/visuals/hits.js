@@ -96,4 +96,10 @@ export class Hits {
     intersect(raycaster) {
         return raycaster.intersectObject(this.mesh);
     }
+
+    destroy() {
+        this.geometry.dispose();
+        this.material.dispose();
+        this.mesh.dispose();
+    }
 }
