@@ -63,24 +63,21 @@ export function startGameImpl(canvas, userId, audioContext, audioBuffer) {
 
     // SUBSECTION START - UI
 
-    const scoreElement = document.getElementById("score");
+    const playerScoreElement = document.getElementById("score-player");
+    const enemyScoreElement = document.getElementById("score-enemy");
     const judgmentElement = document.getElementById("judgment");
     const uiState = {
-        score: 0,
+        playerScore: 0,
+        enemyScore: 0,
         judgment: "",
         needsUpdate: false,
     };
 
-    function updateUiState(score, judgment) {
-        uiState.score = score;
-        uiState.judgment = judgment;
-        uiState.needsUpdate = true;
-    }
-
     function animateUiState() {
         if (uiState.needsUpdate) {
-            console.log(scoreElement.textContent);
-            scoreElement.textContent = uiState.score.toString().padStart(7, "0");
+            console.log(uiState.enemyScore);
+            playerScoreElement.textContent = uiState.playerScore.toString().padStart(7, "0");
+            enemyScoreElement.textContent = uiState.enemyScore.toString().padStart(7, "0");
             judgmentElement.textContent = uiState.judgment;
         }
         uiState.needsUpdate = false;
@@ -147,9 +144,13 @@ export function startGameImpl(canvas, userId, audioContext, audioBuffer) {
                 const column = intersects[0].instanceId;
                 judge.judge(elapsedTime, column, (judgment) => {
                     if (judgment === "perfect") {
-                        updateUiState(uiState.score + 100, "Perfect");
+                        uiState.playerScore += 10;
+                        uiState.judgment = "Perfect";
+                        uiState.needsUpdate = true;
                     } else if (judgment === "near") {
-                        updateUiState(uiState.score + 50, "Near");
+                        uiState.playerScore += 50;
+                        uiState.judgment = "Near";
+                        uiState.needsUpdate = true;
                     }
                 });
             }
@@ -186,6 +187,9 @@ export function startGameImpl(canvas, userId, audioContext, audioBuffer) {
             }
             switch (messageEvent.channel) {
                 case "nyaa-score":
+                    const { score } = messageEvent.message;
+                    uiState.enemyScore = score.toString().padStart(7, "0");
+                    uiState.needsUpdate = true;
                     break;
                 case "nyaa-effect":
                     const { effect, startTime, duration, offset } = messageEvent.message;
@@ -221,7 +225,7 @@ export function startGameImpl(canvas, userId, audioContext, audioBuffer) {
             await pubnub.publish({
                 channel: "nyaa-score",
                 message: {
-                    score: uiState.score,
+                    score: uiState.playerScore,
                 },
             });
             await sleep(1000);
