@@ -11,8 +11,7 @@ install! 'cocoapods', :disable_input_output_paths => true
 def capacitor_pods
   pod 'Capacitor', :path => '../../node_modules/.pnpm/@capacitor+ios@4.3.0_@capacitor+core@4.3.0/node_modules/@capacitor/ios'
   pod 'CapacitorCordova', :path => '../../node_modules/.pnpm/@capacitor+ios@4.3.0_@capacitor+core@4.3.0/node_modules/@capacitor/ios'
-  pod 'CapacitorFirebaseAuthentication', :path => '../../node_modules/.pnpm/@gitpkg.now.sh+capawesome-team+capacitor-firebase+_72tmoeifqlmn6ujdcuuovogbym/node_modules/@capacitor-firebase/authentication'
-  pod 'CapacitorFirebaseMessaging', :path => '../../node_modules/.pnpm/@capacitor-firebase+messaging@1.2.0_242wq2marvrefiositiueop2uq/node_modules/@capacitor-firebase/messaging'
+  pod 'CapacitorFirebaseMessaging', :path => '../../node_modules/.pnpm/@capacitor-firebase+messaging@1.2.0_qe7mwfxqj6rvfclcldrujh24ke/node_modules/@capacitor-firebase/messaging'
   pod 'CapacitorCamera', :path => '../../node_modules/.pnpm/@capacitor+camera@4.1.3_@capacitor+core@4.3.0/node_modules/@capacitor/camera'
   pod 'CapacitorPreferences', :path => '../../node_modules/.pnpm/@capacitor+preferences@4.0.1_@capacitor+core@4.3.0/node_modules/@capacitor/preferences'
   pod 'CapacitorPushNotifications', :path => '../../node_modules/.pnpm/@capacitor+push-notifications@4.1.1_@capacitor+core@4.3.0/node_modules/@capacitor/push-notifications'
@@ -23,6 +22,9 @@ target 'App' do
   capacitor_pods
   # Add your Pods here
   pod 'Firebase/Messaging' # Add this line
+  pod 'Firebase/Auth'
+  pod 'Firebase/Storage'
+  pod 'Alamofire'
 end
 
 post_install do |installer|
