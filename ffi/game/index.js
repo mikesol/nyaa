@@ -75,7 +75,6 @@ export function startGameImpl(canvas, userId, audioContext, audioBuffer) {
 
     function animateUiState() {
         if (uiState.needsUpdate) {
-            console.log(uiState.enemyScore);
             playerScoreElement.textContent = uiState.playerScore.toString().padStart(7, "0");
             enemyScoreElement.textContent = uiState.enemyScore.toString().padStart(7, "0");
             judgmentElement.textContent = uiState.judgment;
