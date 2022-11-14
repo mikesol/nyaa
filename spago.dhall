@@ -5,6 +5,7 @@
   , "arraybuffer-types"
   , "arrays"
   , "bolson"
+  , "console"
   , "control"
   , "convertable-options"
   , "debug"

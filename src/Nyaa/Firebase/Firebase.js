@@ -2,9 +2,10 @@
 import firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/firestore";
-import { registerPlugin } from "@capacitor/core";
+import { registerPlugin, Capacitor } from "@capacitor/core";
 //// setup
 const GameCenterAuth = registerPlugin("GameCenterAuth");
+const PlayGamesAuth = registerPlugin("PlayGamesAuth");
 const firebaseConfig = {
   apiKey: "AIzaSyApcNptrGT_uafnXmkLVtTkSZLhqGyXbrM",
   authDomain: "nyaa-game.firebaseapp.com",
@@ -47,18 +48,32 @@ export const signInWithGoogle = async () => {
   await auth.signInWithPopup(new firebase.auth.GoogleAuthProvider());
 };
 export const signInWithPlayGames = async () => {
-  throw new Error("Unimplemented")
+  throw new Error("Unimplemented");
 };
 export const signOut = async () => {
+  console.log("starting web sign out");
   await auth.signOut();
+  console.log("finsihed web sign out");
+  const platform = Capacitor.getPlatform();
+  if (platform === "ios") {
+    console.log("starting native sign out");
+    await GameCenterAuth.signOut();
+    console.log("finsihed native sign out");
+  } else if (platform === "android") {
+    await PlayGamesAuth.signOut();
+  }
 };
+
 export const listenToAuthStateChange = (cb) => () => {
   const unsub = firebase.auth().onAuthStateChanged((u) => {
-    console.log('change',u);
+    if (u && u.photoURL) {
+      var img = new Image();
+      img.src = u.photoURL;
+    }
     cb(u);
   });
   return unsub;
-}
+};
 
 ////////////
 // firestore
@@ -77,15 +92,15 @@ export const getMeImpl = (just) => (nothing) => async () => {
 };
 
 export const createOrUpdateProfileAndInitializeListener =
-  ({  username, avatarUrl, hasCompletedTutorial, push }) =>
+  ({ username, avatarUrl, hasCompletedTutorial, push }) =>
   async () => {
-    console.log('createOrUpdateProfileAndInitializeListener');
+    console.log("createOrUpdateProfileAndInitializeListener");
     const profileDocRef = db.collection(PROFILE).doc(auth.currentUser.uid);
     const myProfile = await db.runTransaction(async (transaction) => {
-      console.log('got doc');
+      console.log("got doc");
       const profileDoc = await transaction.get(profileDocRef);
       if (!profileDoc.exists) {
-        console.log('no exist');
+        console.log("no exist");
         const profile = {};
         if (username) {
           profile.username = username;
@@ -97,12 +112,17 @@ export const createOrUpdateProfileAndInitializeListener =
         transaction.set(profileDocRef, profile);
         return profile;
       }
-      console.log('exist')
+      console.log("exist");
       return profileDoc.data();
     });
     push({ profile: myProfile });
     const unsub = profileDocRef.onSnapshot((doc) => {
-      push({ profile: doc.data() });
+      const profileData = doc.data();
+      if (profileData.avatarUrl) {
+        var img = new Image();
+        img.src = profileData.avatarUrl;
+      }
+      push({ profile: profileData });
     });
     return unsub;
   };

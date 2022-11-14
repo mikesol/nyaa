@@ -8,6 +8,7 @@ import Deku.Toplevel (runInBody)
 import Effect (Effect)
 import Effect.Aff (launchAff_)
 import Effect.Class (liftEffect)
+import Effect.Console (log)
 import Effect.Ref as Ref
 import Effect.Uncurried (mkEffectFn1, runEffectFn1)
 import FRP.Event (burning, createO)
@@ -37,7 +38,6 @@ import Nyaa.FRP.Dedup (dedup)
 import Nyaa.Firebase.Firebase (Profile(..), reactToNewUser, getCurrentUser, listenToAuthStateChange)
 import Nyaa.Fullscreen (androidFullScreen)
 import Nyaa.Some (some)
--- import Nyaa.Vite.Env (prod)
 import Routing.Hash (getHash, setHash)
 
 main :: Effect Unit
@@ -96,6 +96,7 @@ main = do
             , unsubProfileListener
             }
           _ <- listenToAuthStateChange $ mkEffectFn1 \u -> do
+            log ("ASCHANGE: " <> show u)
             runEffectFn1 authListener.push { user: u }
             reactToNewUser
               { user: toMaybe u
