@@ -23,6 +23,7 @@ target 'App' do
   # Add your Pods here
   pod 'Firebase/Messaging' # Add this line
   pod 'Firebase/Auth'
+  pod 'Firebase/Storage'
   pod 'Alamofire'
 end
 

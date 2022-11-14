@@ -9,6 +9,7 @@ import Capacitor
 import GameKit
 import Alamofire
 import FirebaseAuth
+import FirebaseStorage
 
 struct CustomAuthResponse: Decodable {
     let result: String
@@ -80,24 +81,90 @@ public class GameCenterAuthPlugin: CAPPlugin {
                                         call.reject("\(String(describing: error))")
                                         return
                                     }
-                                    
-                                            
                                     if let credential = credential {
                                         Auth.auth().currentUser?.link(with: credential) { (res, err) in
                                             if (err != nil) {
                                                 call.reject("\(String(describing: err))")
                                                 return
                                             }
+                                            
                                             var res = JSObject()
                                             res["result"] = response.value?.result;
                                             res["gamePlayerID"] = GKLocalPlayer.local.gamePlayerID;
                                             res["teamPlayerID"] = GKLocalPlayer.local.teamPlayerID;
                                             res["displayName"] = GKLocalPlayer.local.displayName;
                                             res["alias"] = GKLocalPlayer.local.alias;
-                                            call.resolve(res)
+                                            let changeRequest = Auth.auth().currentUser?.createProfileChangeRequest()
+                                            changeRequest?.displayName = GKLocalPlayer.local.displayName
+                                            GKLocalPlayer.local.loadPhoto(for: GKPlayer.PhotoSize.small) {(img, err)  in
+                                                if (err != nil) {
+                                                    // no photo, no problem
+                                                    print("Could not get photo \(String(describing: err))")
+                                                    changeRequest?.commitChanges { err in
+                                                        call.resolve(res)
+                                                    }
+                                                    return
+                                                }
+                                                guard let img = img else {
+                                                    print("No img \(String(describing: err))")
+                                                    changeRequest?.commitChanges { err in
+                                                        call.resolve(res)
+                                                    }
+                                                    return
+                                                }
+                                                let storage = Storage.storage()
+                                                let storageRef = storage.reference()
+                                                guard let uid = Auth.auth().currentUser?.uid else {
+                                                    print("no uid")
+                                                    changeRequest?.commitChanges { err in
+                                                        call.resolve(res)
+                                                    }
+                                                    return
+                                                }
+                                                let profileRef = storageRef.child("nyaaProfileImages/\(uid)")
+                                                if let data = img.pngData()  {
+                                                    let metadata = StorageMetadata()
+                                                    metadata.contentType = "image/png"
+                                                    profileRef.putData(data, metadata: metadata) { (metadata, error) in
+                                                        if (error != nil) {
+                                                            print("Upload failed \(String(describing: error))")
+                                                            changeRequest?.commitChanges { err in
+                                                                call.resolve(res)
+                                                            }
+                                                            return
+                                                        }
+                                                        if (metadata == nil) {
+                                                            print("No metadata")
+                                                            changeRequest?.commitChanges { err in
+                                                                call.resolve(res)
+                                                            }
+                                                            return
+                                                        }
+                                                        profileRef.downloadURL { (url, error) in
+                                                            guard let downloadURL = url else {
+                                                                print("No download url")
+                                                                changeRequest?.commitChanges { err in
+                                                                    call.resolve(res)
+                                                                }
+                                                                return
+                                                            }
+                                                            changeRequest?.photoURL = downloadURL
+                                                            changeRequest?.commitChanges { err in
+                                                                call.resolve(res)
+                                                            }
+                                                        }
+                                                    }
+                                                } else {
+                                                    changeRequest?.commitChanges { err in
+                                                        call.resolve(res)
+                                                    }
+                                                    return
+                                                }
+                                            }
                                         }
                                     }
-                                }}
+                                }
+                            }
                         case let .failure(error):
                             call.reject("\(error)")
                         }
