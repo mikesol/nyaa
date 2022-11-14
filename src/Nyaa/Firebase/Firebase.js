@@ -48,9 +48,7 @@ export const signInWithGoogle = async () => {
   await auth.signInWithPopup(new firebase.auth.GoogleAuthProvider());
 };
 export const signInWithPlayGames = async () => {
-  console.log('trying sign in');
   const result = await PlayGamesAuth.signIn();
-  console.log('got sign in');
   await auth.signInWithCustomToken(result.result);
   return;
 };
@@ -94,13 +92,10 @@ export const getMeImpl = (just) => (nothing) => async () => {
 export const createOrUpdateProfileAndInitializeListener =
   ({ username, avatarUrl, hasCompletedTutorial, push }) =>
   async () => {
-    console.log("createOrUpdateProfileAndInitializeListener");
     const profileDocRef = db.collection(PROFILE).doc(auth.currentUser.uid);
     const myProfile = await db.runTransaction(async (transaction) => {
-      console.log("got doc");
       const profileDoc = await transaction.get(profileDocRef);
       if (!profileDoc.exists) {
-        console.log("no exist");
         const profile = {};
         if (username) {
           profile.username = username;
@@ -112,7 +107,6 @@ export const createOrUpdateProfileAndInitializeListener =
         transaction.set(profileDocRef, profile);
         return profile;
       }
-      console.log("exist");
       return profileDoc.data();
     });
     push({ profile: myProfile });
