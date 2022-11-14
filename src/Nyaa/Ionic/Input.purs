@@ -3,6 +3,8 @@ module Nyaa.Ionic.Input
   , IonInput_(..)
   , ionInput
   , ionInput_
+  , getInputElement
+  , setFocus
   )
   where
 
@@ -10,6 +12,7 @@ module Nyaa.Ionic.Input
 import Prelude
 
 import Control.Plus (empty)
+import Control.Promise (Promise)
 import Deku.Attribute (class Attr, Attribute, Cb(..), cb', prop', unsafeAttribute)
 import Deku.Core (Domable)
 import Deku.DOM (unsafeCustomElement)
@@ -20,6 +23,7 @@ import Nyaa.Ionic.Attributes as I
 import Nyaa.Ionic.Enums as E
 import Type.Proxy (Proxy(..))
 import Unsafe.Coerce (unsafeCoerce)
+import Web.HTML (HTMLInputElement)
 
 data IonInput_
 data IonInput
@@ -172,5 +176,5 @@ instance Attr IonInput_ D.SelfT (IonInput -> Effect Unit) where
     { key: "@self@", value: cb' (Cb (unsafeCoerce value)) }
 
 
-foreign import getInputElement :: IonInput -> Effect Unit
-foreign import setFocus :: IonInput -> Effect Unit
+foreign import getInputElement :: IonInput -> Effect (Promise HTMLInputElement)
+foreign import setFocus :: IonInput -> Effect (Promise Unit)

@@ -61,6 +61,17 @@ data Debounce = Debounce
 data Enterkeyhint =Enterkeyhint
 data Multiple = Multiple
 data Expand = Expand
+data BackdropBreakpoint = BackdropBreakpoint
+data BackdropDismiss = BackdropDismiss
+data CanDismiss = CanDismiss
+data IsOpen = IsOpen
+data KeyboardClose = KeyboardClose
+data ShowBackdrop = ShowBackdrop
+data Trigger = Trigger
+data KeepContentsMounted = KeepContentsMounted
+data Handle = Handle
+data HandleBehavior = HandleBehavior
+data InitialBreakpoint = InitialBreakpoint
 --
 
 data OnIonBlur = OnIonBlur
@@ -75,3 +86,8 @@ data OnIonNavDidChange = OnIonNavDidChange
 data OnIonNavWillChange = OnIonNavWillChange
 data OnIonChange = OnIonChange
 data OnIonInput = OnIonInput
+data OnIonBreakpointDidChange = OnIonBreakpointDidChange
+data OnIonModalDidDismiss = OnIonModalDidDismiss
+data OnIonModalDidPresent = OnIonModalDidPresent
+data OnIonModalWillDismiss = OnIonModalWillDismiss
+data OnIonModalWillPresent = OnIonModalWillPresent

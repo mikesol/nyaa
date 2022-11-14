@@ -1,5 +1,5 @@
-N="ButtonExpand"
-A='"block" ｜ "full"'
+N="HandleBehavior"
+A='"cycle" ｜ "none"'
 
 def acn(n,d):
     joined = ''.join([y.capitalize() for y in d.split('-')])

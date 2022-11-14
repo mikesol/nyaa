@@ -8,14 +8,20 @@ import Control.Promise (toAffE)
 import Data.Compactable (compact)
 import Data.Foldable (oneOf)
 import Data.Newtype (unwrap)
-import Deku.Attribute ((!:=), (:=))
+import Data.Tuple.Nested ((/\))
+import Debug (spy)
+import Deku.Attribute (cb, (!:=), (:=))
 import Deku.Attributes (klass_)
 import Deku.Control (blank, text, text_)
 import Deku.Core (Domable, envy)
 import Deku.DOM as D
+import Deku.Do (useState')
+import Deku.Do as Deku
 import Deku.Listeners (click_)
 import Effect (Effect)
 import Effect.Aff (Aff, bracket, launchAff_)
+import Effect.Class (liftEffect)
+import Effect.Console (log)
 import FRP.Event (Event)
 import Nyaa.Assets (catURL)
 import Nyaa.Capacitor.Camera (takePicture)
@@ -24,7 +30,7 @@ import Nyaa.Capacitor.Utils (Platform(..), getPlatformE)
 import Nyaa.FRP.Dedup (dedup)
 import Nyaa.FRP.First (first)
 import Nyaa.FRP.Race (race)
-import Nyaa.Firebase.Firebase (Profile, updateAvatarUrl, uploadAvatar)
+import Nyaa.Firebase.Firebase (Profile, updateAvatarUrl, updateName, uploadAvatar)
 import Nyaa.Ionic.Attributes as I
 import Nyaa.Ionic.BackButton (ionBackButton)
 import Nyaa.Ionic.Button (ionButton)
@@ -32,19 +38,24 @@ import Nyaa.Ionic.Buttons (ionButtons)
 import Nyaa.Ionic.Card (ionCard)
 import Nyaa.Ionic.CardHeader (ionCardHeader_)
 import Nyaa.Ionic.CardTitle (ionCardTitle_)
+import Nyaa.Ionic.Col (ionCol, ionCol_)
 import Nyaa.Ionic.Content (ionContent)
 import Nyaa.Ionic.Custom (customComponent)
 import Nyaa.Ionic.Enums (labelFloating)
+import Nyaa.Ionic.Grid (ionGrid_)
 import Nyaa.Ionic.Header (ionHeader)
 import Nyaa.Ionic.Icon (ionIcon)
-import Nyaa.Ionic.Input (ionInput)
+import Nyaa.Ionic.Input (getInputElement, ionInput)
 import Nyaa.Ionic.Item (ionItem_)
 import Nyaa.Ionic.Label (ionLabel)
 import Nyaa.Ionic.Loading (dismissLoading, presentLoading)
+import Nyaa.Ionic.Row (ionRow_)
 import Nyaa.Ionic.Title (ionTitle_)
 import Nyaa.Ionic.Toolbar (ionToolbar_)
 import Nyaa.Some (get)
 import Type.Proxy (Proxy(..))
+import Web.Event.Event (target)
+import Web.HTML.HTMLInputElement (setValue, value)
 
 -- avatar
 -- username
@@ -138,27 +149,53 @@ profilePage opts = customComponent "profile-page" {} \_ ->
                       )
                       []
                   ]
-              , D.div (D.Class !:= "w-fit mx-auto")
-                  [ ionItem_
-                      [ ionLabel
-                          ( oneOf
-                              [ I.Position !:= labelFloating
-                              , D.Class !:= "text-center"
-                              ]
-                          )
-                          [ text
-                              ( compact
-                                  ( opts.profileState <#>
-                                      ( _.profile >>> unwrap >>> get
-                                          (Proxy :: _ "username")
-                                      )
+              , ionGrid_
+                  [ ionRow_
+                      [ ionCol_ []
+                      , ionCol (I.Size !:= "6")
+                          [ ionItem_
+                              [ ionLabel
+                                  ( oneOf
+                                      [ --D.Class !:= "text-center"
+                                      I.Position !:= labelFloating
+                                      ]
                                   )
+                                  [ text
+                                      ( compact
+                                          ( opts.profileState <#>
+                                              ( _.profile >>> unwrap >>> get
+                                                  (Proxy :: _ "username")
+                                              )
+                                          )
 
-                              )
+                                      )
+                                  ]
+                              , Deku.do
+                                  setNameInput /\ nameInput <- useState'
+                                  ionInput
+                                    ( oneOf
+                                        [ D.Placeholder !:= "Your name"
+                                        , nameInput <#> \ni ->
+                                            I.OnIonBlur := cb \e ->
+                                              launchAff_ do
+                                                iu <- toAffE $ getInputElement
+                                                  ni
+                                                username <- liftEffect $ value
+                                                  iu
+                                                when (username /= "") do
+                                                  liftEffect $ setValue "" iu
+                                                  toAffE $ updateName
+                                                    { username }
+                                        , D.SelfT !:= setNameInput
+                                        ]
+                                    )
+                                    []
+                              ]
                           ]
-                      , ionInput (D.Placeholder !:= "Your name") []
+                      , ionCol_ []
                       ]
                   ]
+
               , D.div (D.Class !:= "w-fit mx-auto")
                   [ D.h2
                       ( D.Class !:=
