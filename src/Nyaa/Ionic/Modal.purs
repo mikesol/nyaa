@@ -135,10 +135,6 @@ instance Attr IonModal_ SelfT (IonModal -> Effect Unit) where
   attr SelfT value = unsafeAttribute
     { key: "@self@", value: cb' (Cb (unsafeCoerce value)) }
 
-type NavigationHookResult = Boolean |+|
-  { redirect :: String
-  }
-
 foreign import breakpoints :: IonModal -> Array Number -> Effect Unit
 foreign import getBreakpoints :: IonModal ->  Effect (Nullable (Array Number))
 foreign import enterAnimation :: IonModal -> EnterAnimation -> Effect Unit

@@ -25,14 +25,14 @@ ionButtons_
   -> Domable lock payload
 ionButtons_ = ionButtons empty
 
+instance Attr IonButtons_ I.Slot String where
+  attr I.Slot value = unsafeAttribute { key: "slot", value: prop' value }
+
 instance Attr IonButtons_ D.Class String where
   attr D.Class value = unsafeAttribute { key: "class", value: prop' value }
 
 instance Attr IonButtons_ D.Style String where
   attr D.Style value = unsafeAttribute { key: "style", value: prop' value }
-
-instance Attr IonButtons_ I.Slot String where
-  attr I.Slot value = unsafeAttribute { key: "slot", value: prop' value }
 
 instance Attr IonButtons_ I.Collapse Boolean where
   attr I.Collapse value = unsafeAttribute { key: "collapse", value: prop' (if value then "true" else "false") }
