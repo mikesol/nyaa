@@ -2,6 +2,7 @@
 import firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/firestore";
+import "firebase/storage";
 import { registerPlugin, Capacitor } from "@capacitor/core";
 //// setup
 const GameCenterAuth = registerPlugin("GameCenterAuth");
@@ -18,8 +19,10 @@ const firebaseConfig = {
 };
 const app = firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
+const storage = firebase.storage();
 if (import.meta.env.DEV) {
   db.useEmulator("localhost", 8080);
+  storage.useEmulator("localhost", 9199);
 }
 db.enablePersistence().catch((err) => {
   if (err.code == "failed-precondition") {
@@ -89,6 +92,30 @@ export const getMeImpl = (just) => (nothing) => async () => {
   }
 };
 
+export const updateName =
+  ({ username }) =>
+  async () => {
+    const profileDocRef = db.collection(PROFILE).doc(auth.currentUser.uid);
+    await profileDocRef.set(
+      {
+        username,
+      },
+      { merge: true }
+    );
+  };
+
+export const updateAvatarUrl =
+  ({ avatarUrl }) =>
+  async () => {
+    const profileDocRef = db.collection(PROFILE).doc(auth.currentUser.uid);
+    await profileDocRef.set(
+      {
+        avatarUrl,
+      },
+      { merge: true }
+    );
+  };
+
 export const createOrUpdateProfileAndInitializeListener =
   ({ username, avatarUrl, hasCompletedTutorial, push }) =>
   async () => {
@@ -120,3 +147,14 @@ export const createOrUpdateProfileAndInitializeListener =
     });
     return unsub;
   };
+
+export const uploadAvatar = (bytes) => async () => {
+  const storageRef = storage.ref();
+  const profileRef = storageRef.child(`nyaaProfileImages/${auth.currentUser.uid}`);
+  const metadata = {
+    contentType: 'image/jpeg',
+  };
+  const uploadTask = await profileRef.put(bytes, metadata);
+  const url = await uploadTask.ref.getDownloadURL();
+  return url;
+} 

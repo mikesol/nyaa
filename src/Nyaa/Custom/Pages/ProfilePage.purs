@@ -2,6 +2,7 @@ module Nyaa.Custom.Pages.ProfilePage where
 
 import Prelude
 
+import Control.Alt ((<|>))
 import Control.Plus (empty)
 import Control.Promise (toAffE)
 import Data.Compactable (compact)
@@ -14,13 +15,16 @@ import Deku.Core (Domable, envy)
 import Deku.DOM as D
 import Deku.Listeners (click_)
 import Effect (Effect)
-import Effect.Aff (launchAff_)
+import Effect.Aff (Aff, bracket, launchAff_)
 import FRP.Event (Event)
 import Nyaa.Assets (catURL)
+import Nyaa.Capacitor.Camera (takePicture)
 import Nyaa.Capacitor.FriendsPlugin (sendFriendRequest)
 import Nyaa.Capacitor.Utils (Platform(..), getPlatformE)
+import Nyaa.FRP.Dedup (dedup)
+import Nyaa.FRP.First (first)
 import Nyaa.FRP.Race (race)
-import Nyaa.Firebase.Firebase (Profile)
+import Nyaa.Firebase.Firebase (Profile, updateAvatarUrl, uploadAvatar)
 import Nyaa.Ionic.Attributes as I
 import Nyaa.Ionic.BackButton (ionBackButton)
 import Nyaa.Ionic.Button (ionButton)
@@ -36,6 +40,7 @@ import Nyaa.Ionic.Icon (ionIcon)
 import Nyaa.Ionic.Input (ionInput)
 import Nyaa.Ionic.Item (ionItem_)
 import Nyaa.Ionic.Label (ionLabel)
+import Nyaa.Ionic.Loading (dismissLoading, presentLoading)
 import Nyaa.Ionic.Title (ionTitle_)
 import Nyaa.Ionic.Toolbar (ionToolbar_)
 import Nyaa.Some (get)
@@ -45,6 +50,15 @@ import Type.Proxy (Proxy(..))
 -- username
 -- achievements
 -- invite
+
+changeAvatar ∷ Aff Unit
+changeAvatar = do
+  tookPicture <- toAffE takePicture
+  bracket (toAffE $ presentLoading "Uploading photo")
+    (toAffE <<< dismissLoading)
+    \_ -> do
+      avatarUrl <- toAffE $ uploadAvatar tookPicture.buffer
+      toAffE $ updateAvatarUrl { avatarUrl }
 
 achievement
   :: forall lock payload
@@ -95,20 +109,22 @@ profilePage opts = customComponent "profile-page" {} \_ ->
               [ D.div (D.Class !:= "mt-6 w-fit mx-auto")
                   [ D.img
                       ( oneOf
-                          [ race
-                              ( compact
-                                  ( opts.profileState <#>
-                                      ( _.profile >>> unwrap >>> get
-                                          (Proxy :: _ "avatarUrl")
-                                      )
-                                  )
-
-                              )
-                              (pure catURL) <#> (D.Src := _)
-
+                          [ let
+                              strm = compact
+                                ( opts.profileState <#>
+                                    ( _.profile >>> unwrap >>> get
+                                        (Proxy :: _ "avatarUrl")
+                                    )
+                                )
+                            in
+                              -- a bit expensive
+                              -- can optimize later
+                              (dedup (strm <|> (first (strm <|> pure catURL))))
+                                <#> (D.Src := _)
                           , D.Class !:= "rounded-full w-28"
                           , D.Alt !:= "profile picture"
                           , D.Srcset !:= ""
+                          , click_ (launchAff_ changeAvatar)
                           ]
                       )
                       []
@@ -117,9 +133,10 @@ profilePage opts = customComponent "profile-page" {} \_ ->
                           [ D.Name !:= "camera-reverse-outline"
                           , D.Size !:= "small"
                           , D.Class !:= "absolute -mt-4"
+                          , click_ (launchAff_ changeAvatar)
                           ]
                       )
-                      [  ]
+                      []
                   ]
               , D.div (D.Class !:= "w-fit mx-auto")
                   [ ionItem_
