@@ -48,17 +48,17 @@ export const signInWithGoogle = async () => {
   await auth.signInWithPopup(new firebase.auth.GoogleAuthProvider());
 };
 export const signInWithPlayGames = async () => {
-  throw new Error("Unimplemented");
+  console.log('trying sign in');
+  const result = await PlayGamesAuth.signIn();
+  console.log('got sign in');
+  await auth.signInWithCustomToken(result.result);
+  return;
 };
 export const signOut = async () => {
-  console.log("starting web sign out");
   await auth.signOut();
-  console.log("finsihed web sign out");
   const platform = Capacitor.getPlatform();
   if (platform === "ios") {
-    console.log("starting native sign out");
     await GameCenterAuth.signOut();
-    console.log("finsihed native sign out");
   } else if (platform === "android") {
     await PlayGamesAuth.signOut();
   }
