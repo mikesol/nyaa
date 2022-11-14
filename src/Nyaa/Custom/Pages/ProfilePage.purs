@@ -32,6 +32,7 @@ import Nyaa.Ionic.Content (ionContent)
 import Nyaa.Ionic.Custom (customComponent)
 import Nyaa.Ionic.Enums (labelFloating)
 import Nyaa.Ionic.Header (ionHeader)
+import Nyaa.Ionic.Icon (ionIcon)
 import Nyaa.Ionic.Input (ionInput)
 import Nyaa.Ionic.Item (ionItem_)
 import Nyaa.Ionic.Label (ionLabel)
@@ -94,14 +95,16 @@ profilePage opts = customComponent "profile-page" {} \_ ->
               [ D.div (D.Class !:= "mt-6 w-fit mx-auto")
                   [ D.img
                       ( oneOf
-                          [ race ( compact
-                                ( opts.profileState <#>
-                                    ( _.profile >>> unwrap >>> get
-                                        (Proxy :: _ "avatarUrl")
-                                    )
-                                )
+                          [ race
+                              ( compact
+                                  ( opts.profileState <#>
+                                      ( _.profile >>> unwrap >>> get
+                                          (Proxy :: _ "avatarUrl")
+                                      )
+                                  )
 
-                            ) (pure catURL) <#> (D.Src := _)
+                              )
+                              (pure catURL) <#> (D.Src := _)
 
                           , D.Class !:= "rounded-full w-28"
                           , D.Alt !:= "profile picture"
@@ -109,6 +112,14 @@ profilePage opts = customComponent "profile-page" {} \_ ->
                           ]
                       )
                       []
+                  , ionIcon
+                      ( oneOf
+                          [ D.Name !:= "camera-reverse-outline"
+                          , D.Size !:= "small"
+                          , D.Class !:= "absolute -mt-4"
+                          ]
+                      )
+                      [  ]
                   ]
               , D.div (D.Class !:= "w-fit mx-auto")
                   [ ionItem_
