@@ -79,7 +79,8 @@ export function startGameImpl(canvas, userId, audioContext, audioBuffer) {
 
     function animateUiState() {
         if (uiState.needsUpdate) {
-            scoreElement.textContent = uiState.score.toString().padStart(8, "0");
+            console.log(scoreElement.textContent);
+            scoreElement.textContent = uiState.score.toString().padStart(7, "0");
             judgmentElement.textContent = uiState.judgment;
         }
         uiState.needsUpdate = false;
@@ -146,9 +147,9 @@ export function startGameImpl(canvas, userId, audioContext, audioBuffer) {
                 const column = intersects[0].instanceId;
                 judge.judge(elapsedTime, column, (judgment) => {
                     if (judgment === "perfect") {
-                        updateUiState(score + 100, "Perfect");
+                        updateUiState(uiState.score + 100, "Perfect");
                     } else if (judgment === "near") {
-                        updateUiState(score + 100, "Near");
+                        updateUiState(uiState.score + 50, "Near");
                     }
                 });
             }

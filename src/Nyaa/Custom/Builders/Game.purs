@@ -6,6 +6,7 @@ import Data.Foldable (oneOf)
 import Data.Maybe (Maybe(..))
 import Deku.Attribute ((!:=))
 import Deku.Attributes (klass_, id_)
+import Deku.Control (text_)
 import Deku.DOM as D
 import Effect (Effect)
 import Effect.Aff (launchAff_)
@@ -63,6 +64,12 @@ game { name, audioContext, audioUri } = do
             ]
         , D.div (oneOf [ klass_ "absolute w-full h-full grid grid-cols-3 grid-rows-3" ])
             [ upperLeftBackButton
+            , D.span (oneOf [ id_ "score", klass_ "text-white col-start-3 justify-self-end m-4 text-2xl font-mono" ])
+                [ text_ "0000000"
+                ]
+            , D.span (oneOf [ id_ "judgment", klass_ "text-white row-start-2 col-start-2 justify-self-center self-center text-2xl" ])
+                [ text_ "..."
+                ]
             ]
         ]
     ]
