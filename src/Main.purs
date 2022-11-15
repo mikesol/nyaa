@@ -12,7 +12,7 @@ import Effect.Console (log)
 import Effect.Ref as Ref
 import Effect.Uncurried (mkEffectFn1, runEffectFn1)
 import FRP.Event (burning, createO)
-import Nyaa.App (storybook, storybookCC)
+import Nyaa.App (app, storybook, storybookCC)
 import Nyaa.Capacitor.Utils (Platform(..), getPlatform)
 import Nyaa.Custom.Pages.AmplifyQuest (amplifyQuest)
 import Nyaa.Custom.Pages.BackQuest (backQuest)
@@ -21,6 +21,7 @@ import Nyaa.Custom.Pages.CrushQuest (crushQuest)
 import Nyaa.Custom.Pages.DazzleQuest (dazzleQuest)
 import Nyaa.Custom.Pages.DeityLevel (deityLevel)
 import Nyaa.Custom.Pages.DeityLounge (deityLounge)
+import Nyaa.Custom.Pages.DevAdmin (devAdmin)
 import Nyaa.Custom.Pages.EqualizeQuest (equalizeQuest)
 import Nyaa.Custom.Pages.GlideQuest (glideQuest)
 import Nyaa.Custom.Pages.HideQuest (hideQuest)
@@ -40,8 +41,11 @@ import Nyaa.Fullscreen (androidFullScreen)
 import Nyaa.Some (some)
 import Routing.Hash (getHash, setHash)
 
+foreign import prod :: Effect Boolean
+
 main :: Effect Unit
 main = do
+  isProd <- prod
   unsubProfileListener <- Ref.new (pure unit)
   authListener <- createO
   profileListener <- createO
@@ -73,6 +77,7 @@ main = do
       proLevel
       deityLevel
       loungePicker
+      devAdmin { platform }
       profilePage { platform, profileState: profileState.event }
     -- do this just for the init side effect
     -- isProd <- liftEffect prod
@@ -82,11 +87,11 @@ main = do
       h <- getHash
       when (h == "") do
         setHash "/"
-      --
-      -- runInBody app
-      storybookCC
-      runInBody storybook
-      --
+      if false then do
+        runInBody app
+      else do
+        storybookCC
+        runInBody storybook
       launchAff_ do
         cu <- liftEffect getCurrentUser
         liftEffect do

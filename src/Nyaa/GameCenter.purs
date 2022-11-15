@@ -60,4 +60,4 @@ foreign import getAchievements
 foreign import reportAchievements
   :: { achievements :: Array ReportableAchievement
      }
-  -> Effect (Promise {})
+  -> Effect (Promise Unit)

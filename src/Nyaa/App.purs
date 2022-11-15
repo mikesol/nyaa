@@ -3,6 +3,7 @@ module Nyaa.App where
 import Prelude
 
 import Data.Array as A
+import Data.Filterable (filter)
 import Data.Foldable (oneOf)
 import Data.List (List(..), (:))
 import Data.List as L
@@ -58,6 +59,7 @@ pages :: Array String
 pages =
   [ "story-book"
   , "intro-screen"
+  , "dev-admin"
   , "tutorial-quest"
   , "equalize-quest"
   , "camera-quest"
@@ -101,8 +103,8 @@ storybookCC = do
         [ ionList_ (A.fromFoldable elts) ]
     ]
 
-makeApp :: forall lock payload. String -> Domable lock payload
-makeApp homeIs = ionApp_
+makeApp :: forall lock payload. Boolean -> String -> Domable lock payload
+makeApp withAdmin homeIs = ionApp_
   [ ionRouter_
       ( [ ionRoute (oneOf [ I.Url !:= "/", I.Component !:= homeIs ])
             []
@@ -120,10 +122,10 @@ makeApp homeIs = ionApp_
     (ionRoute (oneOf [ I.Url !:= shead, I.Component !:= head ]) []) :
       go tail
 
-  routes = go (L.fromFoldable pages)
+  routes = go (L.fromFoldable ((if withAdmin then identity else filter (_ /= "dev-admin")) pages))
 
 storybook :: Nut
-storybook = makeApp "story-book"
+storybook = makeApp true "story-book"
 
 app :: forall lock payload. Domable lock payload
-app = makeApp "intro-screen"
+app = makeApp false "intro-screen"
