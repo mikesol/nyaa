@@ -8,6 +8,7 @@ import Nyaa.Custom.Builders.QuestPage (questPage)
 crushQuest :: Effect Unit
 crushQuest = questPage
   { name: "crush-quest"
+  , title: "Unlock Crush!"
   , showFriend: true
   , battleRoute: "/deity-level"
   }
