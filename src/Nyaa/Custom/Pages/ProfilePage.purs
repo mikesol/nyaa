@@ -26,6 +26,7 @@ import Nyaa.Assets (catURL)
 import Nyaa.Capacitor.Camera (takePicture)
 import Nyaa.Capacitor.FriendsPlugin (sendFriendRequest)
 import Nyaa.Capacitor.Utils (Platform(..), getPlatformE)
+import Nyaa.Constants.PlayGames as PGConstants
 import Nyaa.FRP.Dedup (dedup)
 import Nyaa.FRP.First (first)
 import Nyaa.FRP.MemoBeh (useMemoBeh)
@@ -238,7 +239,10 @@ profilePage opts = customComponent "profile-page" {} \_ ->
                                     [ ionButton
                                         ( oneOf
                                             [ click_ $ launchAff_ do
-                                                toAffE $ PG.showLeaderboard { leaderboardID: "CgkI1ffG1_EJEAIQAQ" }
+                                                toAffE $ PG.showLeaderboard
+                                                  { leaderboardID:
+                                                      PGConstants.track1LeaderboardID
+                                                  }
                                             ]
                                         )
                                         [ text_ "Track 1" ]
@@ -247,7 +251,10 @@ profilePage opts = customComponent "profile-page" {} \_ ->
                                     [ ionButton
                                         ( oneOf
                                             [ click_ $ launchAff_ do
-                                                toAffE $ PG.showLeaderboard { leaderboardID: "CgkI1ffG1_EJEAIQAg" }
+                                                toAffE $ PG.showLeaderboard
+                                                  { leaderboardID:
+                                                      PGConstants.track2LeaderboardID
+                                                  }
                                             ]
                                         )
                                         [ text_ "Track 2" ]
@@ -256,7 +263,10 @@ profilePage opts = customComponent "profile-page" {} \_ ->
                                     [ ionButton
                                         ( oneOf
                                             [ click_ $ launchAff_ do
-                                                toAffE $ PG.showLeaderboard { leaderboardID: "CgkI1ffG1_EJEAIQAw" }
+                                                toAffE $ PG.showLeaderboard
+                                                  { leaderboardID:
+                                                      PGConstants.track3LeaderboardID
+                                                  }
                                             ]
                                         )
                                         [ text_ "Track 3" ]
