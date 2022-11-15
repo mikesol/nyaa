@@ -3,16 +3,14 @@ module Nyaa.Custom.Builders.QuestPage where
 import Prelude
 
 import Data.Foldable (oneOf)
-import Data.Monoid (guard)
 import Deku.Attribute ((!:=))
 import Deku.Attributes (klass_)
 import Deku.Control (text_)
 import Deku.DOM as D
 import Effect (Effect)
-import Nyaa.Components.UpperLeftBackButton (upperLeftBackButton)
 import Nyaa.Ionic.Attributes as I
 import Nyaa.Ionic.BackButton (ionBackButton)
-import Nyaa.Ionic.Button (ionButton, ionButton_)
+import Nyaa.Ionic.Button (ionButton)
 import Nyaa.Ionic.Buttons (ionButtons)
 import Nyaa.Ionic.Content (ionContent)
 import Nyaa.Ionic.Custom (customComponent)
