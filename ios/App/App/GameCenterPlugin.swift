@@ -143,7 +143,7 @@ public class GameCenterPlugin: CAPPlugin {
                     achievement = GKAchievement(identifier: achievementID)
                 }
                 achievement?.percentComplete = _achievement.percentComplete
-                if let achievement = achievement { achievementsToReport.append(achievement) }                
+                if let achievement = achievement { achievementsToReport.append(achievement) }
             }
             GKAchievement.report(achievementsToReport, withCompletionHandler: {(error: Error?) in
                 if error != nil {

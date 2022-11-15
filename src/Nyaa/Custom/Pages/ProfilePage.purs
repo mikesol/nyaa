@@ -202,7 +202,7 @@ profilePage opts = customComponent "profile-page" {} \_ ->
                                                 pure unit
                                             ]
                                         )
-                                        [ text_ "Achievements" ]
+                                        [ text_ "Leaderboards" ]
                                     ]
                                 , ionCol_
                                     [ ionButton
@@ -211,7 +211,7 @@ profilePage opts = customComponent "profile-page" {} \_ ->
                                                 pure unit
                                             ]
                                         )
-                                        [ text_ "Achievements" ]
+                                        [ text_ "Friends" ]
                                     ]
                                 ]
                             ]
@@ -235,16 +235,7 @@ profilePage opts = customComponent "profile-page" {} \_ ->
                                                 pure unit
                                             ]
                                         )
-                                        [ text_ "Achievements" ]
-                                    ]
-                                , ionCol_
-                                    [ ionButton
-                                        ( oneOf
-                                            [ click_ $ launchAff_ do
-                                                pure unit
-                                            ]
-                                        )
-                                        [ text_ "Achievements" ]
+                                        [ text_ "Leaderboards" ]
                                     ]
                                 ]
                             ]
