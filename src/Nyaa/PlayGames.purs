@@ -20,11 +20,19 @@ newtype Achievement = Achievement
   , state :: Int
   }
 
-foreign import submitScore :: {} -> Effect (Promise Unit)
-foreign import showLeaderboard :: Effect (Promise Unit)
-foreign import unlockAchievement :: {} -> Effect (Promise Unit)
-foreign import incrementAchievement :: {} -> Effect (Promise Unit)
+foreign import submitScore
+  :: { leaderboardID :: String, amount :: Int } -> Effect (Promise Unit)
+
+foreign import showLeaderboard
+  :: { leaderboardID :: String } -> Effect (Promise Unit)
+
+foreign import unlockAchievement
+  :: { achievementID :: String } -> Effect (Promise Unit)
+
+foreign import incrementAchievement
+  :: { achievementID :: String, amount :: Int } -> Effect (Promise Unit)
+
 foreign import getAchievements
-  :: {} -> Effect (Promise { achievements :: Array Achievement })
+  :: Effect (Promise { achievements :: Array Achievement })
 
 foreign import showAchievements :: Effect (Promise Unit)

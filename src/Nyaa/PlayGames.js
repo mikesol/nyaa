@@ -3,11 +3,11 @@ import { registerPlugin } from "@capacitor/core";
 const PlayGames = registerPlugin("PlayGames");
 
 export const submitScore = (values) => () => PlayGames.submitScore(values);
-export const showLeaderboard = () => PlayGames.showLeaderboard();
+export const showLeaderboard = (values) => () => PlayGames.showLeaderboard(values);
 export const unlockAchievement = (values) => () =>
   PlayGames.unlockAchievement(values);
 export const incrementAchievement = (values) => () =>
   PlayGames.incrementAchievement(values);
-export const getAchievements = (values) => () =>
-  PlayGames.getAchievements(values);
+export const getAchievements = () =>
+  PlayGames.getAchievements();
 export const showAchievements = () => PlayGames.getAchievements();

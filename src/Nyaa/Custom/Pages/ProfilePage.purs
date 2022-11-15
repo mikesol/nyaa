@@ -30,6 +30,7 @@ import Nyaa.FRP.Dedup (dedup)
 import Nyaa.FRP.First (first)
 import Nyaa.FRP.MemoBeh (useMemoBeh)
 import Nyaa.Firebase.Firebase (Profile, updateAvatarUrl, updateName, uploadAvatar)
+import Nyaa.GameCenter as GC
 import Nyaa.Ionic.Attributes as I
 import Nyaa.Ionic.BackButton (ionBackButton)
 import Nyaa.Ionic.Button (ionButton)
@@ -40,7 +41,7 @@ import Nyaa.Ionic.CardTitle (ionCardTitle_)
 import Nyaa.Ionic.Col (ionCol_)
 import Nyaa.Ionic.Content (ionContent)
 import Nyaa.Ionic.Custom (customComponent)
-import Nyaa.Ionic.Enums (labelStacked)
+import Nyaa.Ionic.Enums (buttonexpandFull, labelStacked)
 import Nyaa.Ionic.Grid (ionGrid_)
 import Nyaa.Ionic.Header (ionHeader, ionHeader_)
 import Nyaa.Ionic.Icon (ionIcon)
@@ -52,6 +53,7 @@ import Nyaa.Ionic.Modal (dismiss, ionModal, present)
 import Nyaa.Ionic.Row (ionRow_)
 import Nyaa.Ionic.Title (ionTitle_)
 import Nyaa.Ionic.Toolbar (ionToolbar_)
+import Nyaa.PlayGames as PG
 import Nyaa.Some (get)
 import Simple.JSON as JSON
 import Type.Proxy (Proxy(..))
@@ -190,7 +192,8 @@ profilePage opts = customComponent "profile-page" {} \_ ->
                                     [ ionButton
                                         ( oneOf
                                             [ click_ $ launchAff_ do
-                                                pure unit
+                                                toAffE $ GC.showGameCenter
+                                                  { state: "achievements" }
                                             ]
                                         )
                                         [ text_ "Achievements" ]
@@ -199,7 +202,8 @@ profilePage opts = customComponent "profile-page" {} \_ ->
                                     [ ionButton
                                         ( oneOf
                                             [ click_ $ launchAff_ do
-                                                pure unit
+                                                toAffE $ GC.showGameCenter
+                                                  { state: "leaderboards" }
                                             ]
                                         )
                                         [ text_ "Leaderboards" ]
@@ -208,7 +212,10 @@ profilePage opts = customComponent "profile-page" {} \_ ->
                                     [ ionButton
                                         ( oneOf
                                             [ click_ $ launchAff_ do
-                                                pure unit
+                                                toAffE $ GC.showGameCenter
+                                                  { state:
+                                                      "localPlayerFriendsList"
+                                                  }
                                             ]
                                         )
                                         [ text_ "Friends" ]
@@ -217,25 +224,42 @@ profilePage opts = customComponent "profile-page" {} \_ ->
                             ]
                         ]
                       Android ->
-                        [ ionGrid_
+                        [ ionButton
+                            ( oneOf
+                                [ click_ $ launchAff_ do
+                                    toAffE PG.showAchievements
+                                , I.Expand !:= buttonexpandFull
+                                ]
+                            )
+                            [ text_ "Achievements" ]
+                        , ionGrid_
                             [ ionRow_
                                 [ ionCol_
                                     [ ionButton
                                         ( oneOf
                                             [ click_ $ launchAff_ do
-                                                pure unit
+                                                toAffE $ PG.showLeaderboard { leaderboardID: "CgkI1ffG1_EJEAIQAQ" }
                                             ]
                                         )
-                                        [ text_ "Achievements" ]
+                                        [ text_ "Track 1" ]
                                     ]
                                 , ionCol_
                                     [ ionButton
                                         ( oneOf
                                             [ click_ $ launchAff_ do
-                                                pure unit
+                                                toAffE $ PG.showLeaderboard { leaderboardID: "CgkI1ffG1_EJEAIQAg" }
                                             ]
                                         )
-                                        [ text_ "Leaderboards" ]
+                                        [ text_ "Track 2" ]
+                                    ]
+                                , ionCol_
+                                    [ ionButton
+                                        ( oneOf
+                                            [ click_ $ launchAff_ do
+                                                toAffE $ PG.showLeaderboard { leaderboardID: "CgkI1ffG1_EJEAIQAw" }
+                                            ]
+                                        )
+                                        [ text_ "Track 3" ]
                                     ]
                                 ]
                             ]
