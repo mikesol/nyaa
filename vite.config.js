@@ -1,4 +1,5 @@
 import * as path from "path";
+import { VitePluginFonts } from 'vite-plugin-fonts'
 
 const DB = process.env.DEV_BUILD
   ? path.resolve(__dirname, "output/Main/")
@@ -16,5 +17,12 @@ export default {
   },
   build: {
     minify: process.env.DEV_BUILD ? false : 'esbuild'
-  }
+  },
+  plugins: [
+    VitePluginFonts({
+      google: {
+        families: ['Mochiy Pop P One'],
+      },
+    }),
+  ],
 };

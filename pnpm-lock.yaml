@@ -26,6 +26,7 @@ specifiers:
   autoprefixer: ^10.4.12
   clipboard: ^2.0.11
   cordova-plugin-fullscreen: ^1.3.0
+  cordova-plugin-purchase: ^11.0.0
   double-ended-queue: 2.1.0-0
   eslint: ^8.25.0
   firebase: ^8.10.1
@@ -47,6 +48,7 @@ specifiers:
   three: ^0.144.0
   typescript: ^4.8.4
   vite: ^3.1.1
+  vite-plugin-fonts: ^0.6.0
 
 dependencies:
   '@awesome-cordova-plugins/android-full-screen': 6.0.1_prnxaeyfgonofvr466v37kxfwi
@@ -70,6 +72,7 @@ dependencies:
   '@ionic/core': 6.3.6
   clipboard: 2.0.11
   cordova-plugin-fullscreen: 1.3.0
+  cordova-plugin-purchase: 11.0.0
   double-ended-queue: 2.1.0-0
   firebase: 8.10.1
   flowbite: 1.5.3
@@ -97,6 +100,7 @@ devDependencies:
   tailwindcss: 3.1.8_postcss@8.4.18
   typescript: 4.8.4
   vite: 3.1.1
+  vite-plugin-fonts: 0.6.0_vite@3.1.1
 
 packages:
 
@@ -5060,6 +5064,10 @@ packages:
   /cordova-plugin-fullscreen/1.3.0:
     resolution: {integrity: sha512-K0SQMUyemQrezNlnfyHXQd8BgpwR3TS/fx456GueRCUdro5QG6tCzDDVBCVEGeKroDhXWmabAlhvO3gPoqw/tg==}
     engines: {'0': {name: cordova, version: '>=3.0.0'}}
+    dev: false
+
+  /cordova-plugin-purchase/11.0.0:
+    resolution: {integrity: sha512-FkgOyWBYS989dYpM6d3R36VrdsHweTbmp5y7ELa1GwMYq2AG+ImdB6DJcVpyU/se/zpTndBWH/zN9s3AFKfsLg==}
     dev: false
 
   /core-js-compat/3.26.0:
@@ -11052,6 +11060,15 @@ packages:
       is-buffer: 2.0.5
       unist-util-stringify-position: 2.0.3
       vfile-message: 2.0.4
+    dev: true
+
+  /vite-plugin-fonts/0.6.0_vite@3.1.1:
+    resolution: {integrity: sha512-dV6nnLEju8k5EmvlBH6egxkVZ+rgc5zWsJr9+cNRXBMEDnpRGHcZPI260UEDNg2yB99wSTNER2eduEvZFbMIGw==}
+    peerDependencies:
+      vite: ^2.0.0 || ^3.0.0
+    dependencies:
+      fast-glob: 3.2.12
+      vite: 3.1.1
     dev: true
 
   /vite/3.1.1:

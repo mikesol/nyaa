@@ -14,8 +14,8 @@ android {
         applicationId "fm.joyride.nyaa"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
+        versionCode 3
+        versionName "1.0.2"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.
@@ -67,6 +67,8 @@ dependencies {
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.google.code.gson:gson:2.10'
     implementation 'com.squareup.retrofit2:converter-gson:2.5.0'
+    def billing_version = "5.1.0"
+    implementation "com.android.billingclient:billing:$billing_version"
 }
 
 apply from: 'capacitor.build.gradle'

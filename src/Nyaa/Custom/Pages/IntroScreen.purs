@@ -26,13 +26,13 @@ introScreen
   -> Effect Unit
 introScreen opts = customComponent "intro-screen" {} \_ ->
   [ ionContent_
-      [ D.div (oneOf [ klass_ "flex flex-col justify-between w-full h-full" ])
+      [ D.div (oneOf [ klass_ "bg-beach bg-center bg-cover flex flex-col justify-between w-full h-full" ])
           [ D.div (oneOf [ klass_ "grow" ]) []
           , D.div (oneOf [ klass_ "flex flex-row" ])
               [ D.div (oneOf [ klass_ "grow" ]) []
               , D.div (oneOf [])
                   [ D.div_
-                      [ D.h1 (oneOf [ klass_ "text-center" ]) [ text_ "Nyā" ] ]
+                      [ D.h1 (oneOf [ klass_ "moichy-font text-center" ]) [ text_ "Nya" ] ] -- "Nyā"
                   , ionButton (oneOf [ D.Href !:= "/tutorial-quest" ])
                       [ text_ "Tutorial" ]
                   , flip switcher opts.authState $ _.user >>> toMaybe >>>
