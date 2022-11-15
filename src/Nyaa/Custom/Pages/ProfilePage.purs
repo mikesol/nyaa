@@ -39,11 +39,11 @@ import Nyaa.Ionic.Buttons (ionButtons)
 import Nyaa.Ionic.Card (ionCard)
 import Nyaa.Ionic.CardHeader (ionCardHeader_)
 import Nyaa.Ionic.CardTitle (ionCardTitle_)
-import Nyaa.Ionic.Col (ionCol_)
+import Nyaa.Ionic.Col (ionCol, ionCol_)
 import Nyaa.Ionic.Content (ionContent)
 import Nyaa.Ionic.Custom (customComponent)
 import Nyaa.Ionic.Enums (buttonexpandFull, labelStacked)
-import Nyaa.Ionic.Grid (ionGrid_)
+import Nyaa.Ionic.Grid (ionGrid, ionGrid_)
 import Nyaa.Ionic.Header (ionHeader, ionHeader_)
 import Nyaa.Ionic.Icon (ionIcon)
 import Nyaa.Ionic.Input (getInputElement, ionInput)
@@ -159,7 +159,7 @@ profilePage opts = customComponent "profile-page" {} \_ ->
                       ]
                   , D.h1
                       ( oneOf
-                          [ klass_ "text-center"
+                          [ klass_ "text-center text-2xl pt-2"
                           , click $ modalComponent <#> \mc -> launchAff_ do
                               toAffE $ present mc
                           ]
@@ -189,7 +189,7 @@ profilePage opts = customComponent "profile-page" {} \_ ->
                       IOS ->
                         [ ionGrid_
                             [ ionRow_
-                                [ ionCol_
+                                [ ionCol (oneOf [ klass_ "ion-text-center" ])
                                     [ ionButton
                                         ( oneOf
                                             [ click_ $ launchAff_ do
@@ -199,7 +199,7 @@ profilePage opts = customComponent "profile-page" {} \_ ->
                                         )
                                         [ text_ "Achievements" ]
                                     ]
-                                , ionCol_
+                                , ionCol (oneOf [ klass_ "ion-text-center" ])
                                     [ ionButton
                                         ( oneOf
                                             [ click_ $ launchAff_ do
@@ -209,7 +209,7 @@ profilePage opts = customComponent "profile-page" {} \_ ->
                                         )
                                         [ text_ "Leaderboards" ]
                                     ]
-                                , ionCol_
+                                , ionCol (oneOf [ klass_ "ion-text-center" ])
                                     [ ionButton
                                         ( oneOf
                                             [ click_ $ launchAff_ do
@@ -233,9 +233,16 @@ profilePage opts = customComponent "profile-page" {} \_ ->
                                 ]
                             )
                             [ text_ "Achievements" ]
+                        , D.div (D.Class !:= "w-fit mx-auto")
+                            [ D.h2
+                                ( D.Class !:=
+                                    "font-bold text-2xl tracking-wide"
+                                )
+                                [ text_ "Leaderboards" ]
+                            ]
                         , ionGrid_
                             [ ionRow_
-                                [ ionCol_
+                                [ ionCol (oneOf [ klass_ "ion-text-center" ])
                                     [ ionButton
                                         ( oneOf
                                             [ click_ $ launchAff_ do
@@ -247,7 +254,7 @@ profilePage opts = customComponent "profile-page" {} \_ ->
                                         )
                                         [ text_ "Track 1" ]
                                     ]
-                                , ionCol_
+                                , ionCol (oneOf [ klass_ "ion-text-center" ])
                                     [ ionButton
                                         ( oneOf
                                             [ click_ $ launchAff_ do
@@ -259,7 +266,7 @@ profilePage opts = customComponent "profile-page" {} \_ ->
                                         )
                                         [ text_ "Track 2" ]
                                     ]
-                                , ionCol_
+                                , ionCol (oneOf [ klass_ "ion-text-center" ])
                                     [ ionButton
                                         ( oneOf
                                             [ click_ $ launchAff_ do

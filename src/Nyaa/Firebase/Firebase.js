@@ -55,6 +55,10 @@ export const signInWithPlayGames = async () => {
   await auth.signInWithCustomToken(result.result);
   return;
 };
+export const gameCenterEagerAuth = async () => {
+  await GameCenterAuth.eagerAuth();
+  return;
+}
 export const signOut = async () => {
   await auth.signOut();
   const platform = Capacitor.getPlatform();

@@ -6,7 +6,7 @@ import Control.Promise (toAffE)
 import Data.Nullable (null, toMaybe)
 import Deku.Toplevel (runInBody)
 import Effect (Effect)
-import Effect.Aff (launchAff_)
+import Effect.Aff (apathize, launchAff_)
 import Effect.Class (liftEffect)
 import Effect.Console (log)
 import Effect.Ref as Ref
@@ -36,8 +36,9 @@ import Nyaa.Custom.Pages.RotateQuest (rotateQuest)
 import Nyaa.Custom.Pages.TutorialLevel (tutorialLevel)
 import Nyaa.Custom.Pages.TutorialQuest (tutorialQuest)
 import Nyaa.FRP.Dedup (dedup)
-import Nyaa.Firebase.Firebase (Profile(..), reactToNewUser, getCurrentUser, listenToAuthStateChange)
+import Nyaa.Firebase.Firebase (Profile(..), gameCenterEagerAuth, getCurrentUser, listenToAuthStateChange, reactToNewUser, signInWithGameCenter, signInWithPlayGames)
 import Nyaa.Fullscreen (androidFullScreen)
+import Nyaa.Ionic.Loading (brackedWithLoading)
 import Nyaa.Some (some)
 import Routing.Hash (getHash, setHash)
 
@@ -110,4 +111,9 @@ main = do
               , unsubProfileListener
               }
           pure unit
+        apathize $ brackedWithLoading "Setting phasers on stun..." do
+          case platform of
+            IOS -> toAffE signInWithGameCenter
+            Android -> toAffE signInWithPlayGames
+            Web -> pure unit
       pure unit

@@ -53,25 +53,26 @@ public class GameCenterPlugin: CAPPlugin {
     }
     @objc func showGameCenter(_ call: CAPPluginCall) {
         if #available(iOS 14.0, *) {
-            guard let vc = self.bridge?.viewController else { call.reject("No view controller"); return; }
             bridge?.saveCall(call)
             gcCallID = call.callbackId
             let state = call.getString("state", "dashboard")
-            let viewController = GKGameCenterViewController(state: state == "achievements"
-                                                            ? .achievements
-                                                            : state == "challenges"
-                                                            ? .challenges
-                                                            : state == "dashboard"
-                                                            ? .dashboard
-                                                            : state == "leaderboards"
-                                                            ? .leaderboards
-                                                            : state == "localPlayerFriendsList"
-                                                            ? .localPlayerFriendsList
-                                                            : state == "localPlayerProfile"
-                                                            ? .localPlayerProfile
-                                                            : .dashboard)
-            viewController.gameCenterDelegate = self
-            viewController.present(vc, animated: true, completion: nil)
+            DispatchQueue.main.async {
+                let viewController = GKGameCenterViewController(state: state == "achievements"
+                                                                ? .achievements
+                                                                : state == "challenges"
+                                                                ? .challenges
+                                                                : state == "dashboard"
+                                                                ? .dashboard
+                                                                : state == "leaderboards"
+                                                                ? .leaderboards
+                                                                : state == "localPlayerFriendsList"
+                                                                ? .localPlayerFriendsList
+                                                                : state == "localPlayerProfile"
+                                                                ? .localPlayerProfile
+                                                                : .dashboard)
+                viewController.gameCenterDelegate = self
+                
+                self.bridge?.viewController?.present(viewController, animated: true, completion: nil)}
         } else {
             call.reject("Too old")
         }
@@ -219,9 +220,12 @@ public class GameCenterPlugin: CAPPlugin {
 }
 extension GameCenterPlugin: GKGameCenterControllerDelegate {
     public func gameCenterViewControllerDidFinish(_ gameCenterViewController: GKGameCenterViewController) {
+        print("getting back")
         if let callID = gcCallID, let call = bridge?.savedCall(withID: callID) {
+            print("found saved call")
             call.resolve()
             bridge?.releaseCall(call)
+            gameCenterViewController.dismiss(animated:true)
         }
     }
 }

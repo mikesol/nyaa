@@ -26,6 +26,7 @@ type User =
   , uid :: String
   }
 
+foreign import gameCenterEagerAuth :: Effect (Promise Unit)
 foreign import getCurrentUser :: Effect (Nullable User)
 foreign import signInWithGameCenter :: Effect (Promise Unit)
 

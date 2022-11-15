@@ -10,5 +10,6 @@
 
 CAP_PLUGIN(GameCenterAuthPlugin, "GameCenterAuth",
     CAP_PLUGIN_METHOD(signIn, CAPPluginReturnPromise);
+    CAP_PLUGIN_METHOD(eagerAuth, CAPPluginReturnPromise);
     CAP_PLUGIN_METHOD(signOut, CAPPluginReturnPromise);
 )

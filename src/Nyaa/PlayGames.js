@@ -10,4 +10,4 @@ export const incrementAchievement = (values) => () =>
   PlayGames.incrementAchievement(values);
 export const getAchievements = () =>
   PlayGames.getAchievements();
-export const showAchievements = () => PlayGames.getAchievements();
+export const showAchievements = () => PlayGames.showAchievements();
