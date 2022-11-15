@@ -45,11 +45,12 @@ main = do
   unsubProfileListener <- Ref.new (pure unit)
   authListener <- createO
   profileListener <- createO
+  platform <- getPlatform
   authState <- burning { user: null } (dedup authListener.event)
   profileState <- burning { profile: Profile (some {}) }
     (dedup profileListener.event)
   launchAff_ do
-    whenM (liftEffect (getPlatform <#> (_ == Android))) do
+    when (platform == Android) do
       toAffE androidFullScreen
     -- register components
     liftEffect do
@@ -72,7 +73,7 @@ main = do
       proLevel
       deityLevel
       loungePicker
-      profilePage { profileState: profileState.event }
+      profilePage { platform, profileState: profileState.event }
     -- do this just for the init side effect
     -- isProd <- liftEffect prod
     -- unless isProd do

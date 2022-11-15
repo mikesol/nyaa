@@ -37,9 +37,11 @@ import Nyaa.Ionic.Buttons (ionButtons)
 import Nyaa.Ionic.Card (ionCard)
 import Nyaa.Ionic.CardHeader (ionCardHeader_)
 import Nyaa.Ionic.CardTitle (ionCardTitle_)
+import Nyaa.Ionic.Col (ionCol_)
 import Nyaa.Ionic.Content (ionContent)
 import Nyaa.Ionic.Custom (customComponent)
 import Nyaa.Ionic.Enums (labelStacked)
+import Nyaa.Ionic.Grid (ionGrid_)
 import Nyaa.Ionic.Header (ionHeader, ionHeader_)
 import Nyaa.Ionic.Icon (ionIcon)
 import Nyaa.Ionic.Input (getInputElement, ionInput)
@@ -47,6 +49,7 @@ import Nyaa.Ionic.Item (ionItem_)
 import Nyaa.Ionic.Label (ionLabel)
 import Nyaa.Ionic.Loading (brackedWithLoading, dismissLoading, presentLoading)
 import Nyaa.Ionic.Modal (dismiss, ionModal, present)
+import Nyaa.Ionic.Row (ionRow_)
 import Nyaa.Ionic.Title (ionTitle_)
 import Nyaa.Ionic.Toolbar (ionToolbar_)
 import Nyaa.Some (get)
@@ -91,7 +94,7 @@ achievement opts = ionCard (oneOf [ opts.earned <#> not <#> (D.Disabled := _) ])
   ]
 
 profilePage
-  :: { profileState :: Event { profile :: Profile } }
+  :: { platform :: Platform, profileState :: Event { profile :: Profile } }
   -> Effect Unit
 profilePage opts = customComponent "profile-page" {} \_ ->
   [ ionHeader (oneOf [ I.Translucent !:= true ])
@@ -117,137 +120,213 @@ profilePage opts = customComponent "profile-page" {} \_ ->
                 ( D.Class !:=
                     "w-full mx-auto px-8 py-6 "
                 )
-                [ D.div (D.Class !:= "mt-6 w-fit mx-auto")
-                    [ D.img
-                        ( oneOf
-                            [ let
-                                strm = compact
-                                  ( opts.profileState <#>
-                                      ( _.profile >>> unwrap >>> get
-                                          (Proxy :: _ "avatarUrl")
-                                      )
+                ( [ D.div (D.Class !:= "mt-6 w-fit mx-auto")
+                      [ D.img
+                          ( oneOf
+                              [ let
+                                  strm = compact
+                                    ( opts.profileState <#>
+                                        ( _.profile >>> unwrap >>> get
+                                            (Proxy :: _ "avatarUrl")
+                                        )
+                                    )
+                                in
+                                  -- a bit expensive
+                                  -- can optimize later
+                                  ( dedup
+                                      (strm <|> (first (strm <|> pure catURL)))
                                   )
-                              in
-                                -- a bit expensive
-                                -- can optimize later
-                                ( dedup
-                                    (strm <|> (first (strm <|> pure catURL)))
-                                )
-                                  <#> (D.Src := _)
-                            , D.Class !:= "rounded-full w-28"
-                            , D.Alt !:= "profile picture"
-                            , D.Srcset !:= ""
-                            , click_ (launchAff_ changeAvatar)
-                            ]
-                        )
-                        []
-                    , ionIcon
-                        ( oneOf
-                            [ D.Name !:= "camera-reverse-outline"
-                            , D.Size !:= "small"
-                            , D.Class !:= "absolute -mt-4 cursor-pointer"
-                            , click_ (launchAff_ changeAvatar)
-                            ]
-                        )
-                        []
-                    ]
-                , D.h1
-                    ( oneOf
-                        [ klass_ "text-center"
-                        , click $ modalComponent <#> \mc -> launchAff_ do
-                            toAffE $ present mc
-                        ]
-                    )
-                    [ text
-                        ( compact
-                            ( opts.profileState <#>
-                                ( _.profile >>> unwrap >>> get
-                                    (Proxy :: _ "username")
-                                )
-                            )
-
-                        )
-                    , ionIcon
-                        ( oneOf
-                            [ D.Name !:= "pencil"
-                            , D.Size !:= "small"
-                            , D.Class !:= "ml-2 cursor-pointer"
-                            , click $ modalComponent <#> \mc -> launchAff_ do
-                                toAffE $ present mc
-                            ]
-                        )
-                        []
-                    ]
-
-                , D.div (D.Class !:= "w-fit mx-auto")
-                    [ D.h2
-                        ( D.Class !:=
-                            "font-bold text-2xl tracking-wide"
-                        )
-                        [ text_ "Achievements" ]
-                    ]
-                , D.div (D.Class !:= "grid grid-cols-4 gap-4")
-                    [ achievement { earned: pure true, title: "Tutorial" }
-                    , achievement { earned: pure true, title: "Track 1" }
-                    , achievement { earned: pure true, title: "Flat" }
-                    , achievement { earned: pure true, title: "Buzz" }
-                    , achievement { earned: pure true, title: "Glide" }
-                    , achievement { earned: pure false, title: "Back" }
-                    , achievement { earned: pure false, title: "Track 2" }
-                    , achievement { earned: pure false, title: "Rotate" }
-                    , achievement { earned: pure false, title: "Hide" }
-                    , achievement { earned: pure false, title: "Dazzle" }
-                    , achievement { earned: pure false, title: "Track 3" }
-                    , achievement { earned: pure false, title: "Crush" }
-                    , achievement { earned: pure false, title: "Amplify" }
-                    , achievement { earned: pure false, title: "Nyā" }
-                    , achievement { earned: pure false, title: "Nyāā" }
-                    , achievement { earned: pure false, title: "Nyāāā" }
-                    ]
-                , envy $ getPlatformE <#> case _ of
-                    Web -> blank
-                    Android -> D.div empty
-                      [ D.h2
-                          ( D.Class !:=
-                              "font-bold text-2xl tracking-wide"
+                                    <#> (D.Src := _)
+                              , D.Class !:= "rounded-full w-28"
+                              , D.Alt !:= "profile picture"
+                              , D.Srcset !:= ""
+                              , click_ (launchAff_ changeAvatar)
+                              ]
                           )
-                          [ text_ "Nyā + Friends = ❤️" ]
-                      , D.p_
-                          [ text_ "In Play Games, go to the "
-                          , D.span (klass_ "font-bold") [ text_ "Profile" ]
-                          , text_ " page and invite your friends!"
+                          []
+                      , ionIcon
+                          ( oneOf
+                              [ D.Name !:= "camera-reverse-outline"
+                              , D.Size !:= "small"
+                              , D.Class !:= "absolute -mt-4 cursor-pointer"
+                              , click_ (launchAff_ changeAvatar)
+                              ]
+                          )
+                          []
+                      ]
+                  , D.h1
+                      ( oneOf
+                          [ klass_ "text-center"
+                          , click $ modalComponent <#> \mc -> launchAff_ do
+                              toAffE $ present mc
                           ]
-                      , ionButton
-                          ( oneOf
-                              [ click_ do
-                                  launchAff_ $ toAffE sendFriendRequest
-                              , klass_ "mt-4"
-                              ]
-                          )
-                          [ text_ "Open Play Games" ]
-                      , ionButton (oneOf [ klass_ "mt-4" ])
-                          [ text_ "Share Nyā" ]
-                      ]
-                    IOS -> D.div empty
-                      [ D.h2
-                          ( D.Class !:=
-                              "font-bold text-2xl tracking-wide"
-                          )
-                          [ text_ "Nyā + Friends = ❤️" ]
-                      , D.p_ []
-                      , ionButton
-                          ( oneOf
-                              [ click_ do
-                                  launchAff_ $ toAffE sendFriendRequest
-                              , klass_ "mt-4"
-                              ]
-                          )
-                          [ text_ "Send a Message from Game Center" ]
-                      , ionButton (oneOf [ klass_ "mt-4" ])
-                          [ text_ "Share Nyā" ]
-                      ]
+                      )
+                      [ text
+                          ( compact
+                              ( opts.profileState <#>
+                                  ( _.profile >>> unwrap >>> get
+                                      (Proxy :: _ "username")
+                                  )
+                              )
 
-                ]
+                          )
+                      , ionIcon
+                          ( oneOf
+                              [ D.Name !:= "pencil"
+                              , D.Size !:= "small"
+                              , D.Class !:= "ml-2 cursor-pointer"
+                              , click $ modalComponent <#> \mc -> launchAff_ do
+                                  toAffE $ present mc
+                              ]
+                          )
+                          []
+                      ]
+                  ] <>
+                    case opts.platform of
+                      IOS ->
+                        [ ionGrid_
+                            [ ionRow_
+                                [ ionCol_
+                                    [ ionButton
+                                        ( oneOf
+                                            [ click_ $ launchAff_ do
+                                                pure unit
+                                            ]
+                                        )
+                                        [ text_ "Achievements" ]
+                                    ]
+                                , ionCol_
+                                    [ ionButton
+                                        ( oneOf
+                                            [ click_ $ launchAff_ do
+                                                pure unit
+                                            ]
+                                        )
+                                        [ text_ "Achievements" ]
+                                    ]
+                                , ionCol_
+                                    [ ionButton
+                                        ( oneOf
+                                            [ click_ $ launchAff_ do
+                                                pure unit
+                                            ]
+                                        )
+                                        [ text_ "Achievements" ]
+                                    ]
+                                ]
+                            ]
+                        ]
+                      Android ->
+                        [ ionGrid_
+                            [ ionRow_
+                                [ ionCol_
+                                    [ ionButton
+                                        ( oneOf
+                                            [ click_ $ launchAff_ do
+                                                pure unit
+                                            ]
+                                        )
+                                        [ text_ "Achievements" ]
+                                    ]
+                                , ionCol_
+                                    [ ionButton
+                                        ( oneOf
+                                            [ click_ $ launchAff_ do
+                                                pure unit
+                                            ]
+                                        )
+                                        [ text_ "Achievements" ]
+                                    ]
+                                , ionCol_
+                                    [ ionButton
+                                        ( oneOf
+                                            [ click_ $ launchAff_ do
+                                                pure unit
+                                            ]
+                                        )
+                                        [ text_ "Achievements" ]
+                                    ]
+                                ]
+                            ]
+                        ]
+                      Web ->
+                        [ D.div (D.Class !:= "w-fit mx-auto")
+                            [ D.h2
+                                ( D.Class !:=
+                                    "font-bold text-2xl tracking-wide"
+                                )
+                                [ text_ "Achievements" ]
+                            ]
+                        , D.div (D.Class !:= "grid grid-cols-4 gap-4")
+                            [ achievement
+                                { earned: pure true, title: "Tutorial" }
+                            , achievement
+                                { earned: pure true, title: "Track 1" }
+                            , achievement { earned: pure true, title: "Flat" }
+                            , achievement { earned: pure true, title: "Buzz" }
+                            , achievement { earned: pure true, title: "Glide" }
+                            , achievement { earned: pure false, title: "Back" }
+                            , achievement
+                                { earned: pure false, title: "Track 2" }
+                            , achievement
+                                { earned: pure false, title: "Rotate" }
+                            , achievement { earned: pure false, title: "Hide" }
+                            , achievement
+                                { earned: pure false, title: "Dazzle" }
+                            , achievement
+                                { earned: pure false, title: "Track 3" }
+                            , achievement { earned: pure false, title: "Crush" }
+                            , achievement
+                                { earned: pure false, title: "Amplify" }
+                            , achievement { earned: pure false, title: "Nyā" }
+                            , achievement { earned: pure false, title: "Nyāā" }
+                            , achievement { earned: pure false, title: "Nyāāā" }
+                            ]
+                        , envy $ getPlatformE <#> case _ of
+                            Web -> blank
+                            Android -> D.div empty
+                              [ D.h2
+                                  ( D.Class !:=
+                                      "font-bold text-2xl tracking-wide"
+                                  )
+                                  [ text_ "Nyā + Friends = ❤️" ]
+                              , D.p_
+                                  [ text_ "In Play Games, go to the "
+                                  , D.span (klass_ "font-bold")
+                                      [ text_ "Profile" ]
+                                  , text_ " page and invite your friends!"
+                                  ]
+                              , ionButton
+                                  ( oneOf
+                                      [ click_ do
+                                          launchAff_ $ toAffE sendFriendRequest
+                                      , klass_ "mt-4"
+                                      ]
+                                  )
+                                  [ text_ "Open Play Games" ]
+                              , ionButton (oneOf [ klass_ "mt-4" ])
+                                  [ text_ "Share Nyā" ]
+                              ]
+                            IOS -> D.div empty
+                              [ D.h2
+                                  ( D.Class !:=
+                                      "font-bold text-2xl tracking-wide"
+                                  )
+                                  [ text_ "Nyā + Friends = ❤️" ]
+                              , D.p_ []
+                              , ionButton
+                                  ( oneOf
+                                      [ click_ do
+                                          launchAff_ $ toAffE sendFriendRequest
+                                      , klass_ "mt-4"
+                                      ]
+                                  )
+                                  [ text_ "Send a Message from Game Center" ]
+                              , ionButton (oneOf [ klass_ "mt-4" ])
+                                  [ text_ "Share Nyā" ]
+                              ]
+                        ]
+                )
             ]
         , ionModal
             ( oneOf
@@ -279,13 +358,14 @@ profilePage opts = customComponent "profile-page" {} \_ ->
                                       ( Tuple <$> modalComponent <*>
                                           nameInputComponent
                                       ) <#> \(mc /\ nic) -> launchAff_ do
-                                        brackedWithLoading "Updating profile..." do
-                                          ipt <- toAffE $ getInputElement nic
-                                          username <- liftEffect $ value ipt
-                                          toAffE $ updateName { username }
-                                          void $ toAffE $ dismiss mc
-                                            (JSON.write {})
-                                            "confirm"
+                                        brackedWithLoading "Updating profile..."
+                                          do
+                                            ipt <- toAffE $ getInputElement nic
+                                            username <- liftEffect $ value ipt
+                                            toAffE $ updateName { username }
+                                            void $ toAffE $ dismiss mc
+                                              (JSON.write {})
+                                              "confirm"
                                   )
                                 ]
                             )

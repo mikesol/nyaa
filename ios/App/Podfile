@@ -13,9 +13,16 @@ def capacitor_pods
   pod 'CapacitorCordova', :path => '../../node_modules/.pnpm/@capacitor+ios@4.3.0_@capacitor+core@4.3.0/node_modules/@capacitor/ios'
   pod 'CapacitorFirebaseMessaging', :path => '../../node_modules/.pnpm/@capacitor-firebase+messaging@1.2.0_qe7mwfxqj6rvfclcldrujh24ke/node_modules/@capacitor-firebase/messaging'
   pod 'CapacitorCamera', :path => '../../node_modules/.pnpm/@capacitor+camera@4.1.3_@capacitor+core@4.3.0/node_modules/@capacitor/camera'
+  pod 'CapacitorDialog', :path => '../../node_modules/.pnpm/@capacitor+dialog@4.0.1_@capacitor+core@4.3.0/node_modules/@capacitor/dialog'
+  pod 'CapacitorKeyboard', :path => '../../node_modules/.pnpm/@capacitor+keyboard@4.0.1_@capacitor+core@4.3.0/node_modules/@capacitor/keyboard'
+  pod 'CapacitorLocalNotifications', :path => '../../node_modules/.pnpm/@capacitor+local-notifications@4.1.2_@capacitor+core@4.3.0/node_modules/@capacitor/local-notifications'
+  pod 'CapacitorNetwork', :path => '../../node_modules/.pnpm/@capacitor+network@4.0.1_@capacitor+core@4.3.0/node_modules/@capacitor/network'
   pod 'CapacitorPreferences', :path => '../../node_modules/.pnpm/@capacitor+preferences@4.0.1_@capacitor+core@4.3.0/node_modules/@capacitor/preferences'
   pod 'CapacitorPushNotifications', :path => '../../node_modules/.pnpm/@capacitor+push-notifications@4.1.1_@capacitor+core@4.3.0/node_modules/@capacitor/push-notifications'
+  pod 'CapacitorShare', :path => '../../node_modules/.pnpm/@capacitor+share@4.0.1_@capacitor+core@4.3.0/node_modules/@capacitor/share'
+  pod 'CapacitorSplashScreen', :path => '../../node_modules/.pnpm/@capacitor+splash-screen@4.1.1_@capacitor+core@4.3.0/node_modules/@capacitor/splash-screen'
   pod 'CapacitorStatusBar', :path => '../../node_modules/.pnpm/@capacitor+status-bar@4.0.1_@capacitor+core@4.3.0/node_modules/@capacitor/status-bar'
+  pod 'CapacitorToast', :path => '../../node_modules/.pnpm/@capacitor+toast@4.0.1_@capacitor+core@4.3.0/node_modules/@capacitor/toast'
 end
 
 target 'App' do
