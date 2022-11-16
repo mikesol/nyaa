@@ -44,7 +44,7 @@ newbLounge { profileState } = lounge
               ]
           , img: catURL
           , path: "/flat-quest"
-          , unlocker: get (Proxy :: _ "flat")
+          , unlocker: get (Proxy :: _ "track1")
           }
       , Mission
           { title: "Buzz"
@@ -58,7 +58,7 @@ newbLounge { profileState } = lounge
               ]
           , img: catURL
           , path: "/buzz-quest"
-          , unlocker: get (Proxy :: _ "buzz")
+          , unlocker: get (Proxy :: _ "flat")
           }
       , Mission
           { title: "Glide"
@@ -72,7 +72,7 @@ newbLounge { profileState } = lounge
               ]
           , img: catURL
           , path: "/glide-quest"
-          , unlocker: get (Proxy :: _ "glide")
+          , unlocker: get (Proxy :: _ "buzz")
           }
       , Mission
           { title: "Back"
@@ -86,7 +86,7 @@ newbLounge { profileState } = lounge
               ]
           , img: catURL
           , path: "/back-quest"
-          , unlocker: get (Proxy :: _ "back")
+          , unlocker: get (Proxy :: _ "glide")
           }
       ]
   }
