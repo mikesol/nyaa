@@ -4,15 +4,18 @@ import Prelude
 
 import Data.Foldable (oneOf)
 import Data.Maybe (Maybe(..))
+import Data.Newtype (unwrap)
 import Deku.Attribute ((!:=))
 import Deku.Attributes (klass_, id_)
 import Deku.Control (text_)
 import Deku.DOM as D
 import Effect (Effect)
-import Effect.Aff (launchAff_)
+import Effect.Aff (Milliseconds, launchAff_)
 import Effect.Class (liftEffect)
+import Effect.Console (log)
 import Effect.Ref as Ref
 import Nyaa.Components.UpperLeftBackButton (upperLeftBackButton)
+import Nyaa.CoordinatedNow (coordinatedNow)
 import Nyaa.Ionic.Attributes as I
 import Nyaa.Ionic.Content (ionContent)
 import Nyaa.Ionic.Custom (customComponent)
@@ -31,6 +34,7 @@ foreign import startGame
   -> String
   -> AudioContext
   -> BrowserAudioBuffer
+  -> Effect { time :: Milliseconds, diff :: Number, pdiff :: Number }
   -> Effect { start :: Effect Unit, kill :: Effect Unit }
 
 game
@@ -45,14 +49,17 @@ game { name, audioContext, audioUri } = do
     gameStart { roomId } = launchAff_ do
       audioBuffer <- decodeAudioDataFromUri audioContext audioUri
       liftEffect do
+        n <- coordinatedNow
+        t <- n.now
+        log $ "[Game] Initial timestamp is set at " <> show (unwrap t.time)
         w <- window
         d <- document w
         c <- getElementById (name <> "-canvas") $ toNonElementParentNode $ toDocument d
         case c >>= HTMLCanvasElement.fromElement of
           Just canvas -> do
-            controls <- startGame canvas "nyaa!" roomId audioContext audioBuffer
+            controls <- startGame canvas "nyaa!" roomId audioContext audioBuffer n.now
             controls.start
-            Ref.write controls.kill killRef
+            Ref.write (controls.kill *> n.cancelNow) killRef
           Nothing ->
             pure unit
     gameEnd _ = do

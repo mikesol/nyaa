@@ -37,7 +37,7 @@ coordinatedNow
              , diff :: Number
              , pdiff :: Number
              }
-       , cancel :: Effect Unit
+       , cancelNow :: Effect Unit
        }
 coordinatedNow = do
   ptref <- Ref.new 0.0
@@ -62,7 +62,7 @@ coordinatedNow = do
           Ref.write diff tref
           Ref.write (Just (unInstant re)) preading
   pure
-    { cancel: clearInterval iid
+    { cancelNow: clearInterval iid
     , now: do
         pr <- Ref.read preading
         n <- now
