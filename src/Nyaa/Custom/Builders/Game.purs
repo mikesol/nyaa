@@ -41,7 +41,7 @@ game
 game { name, audioContext, audioUri } = do
   killRef <- Ref.new (pure unit)
   let
-    gameStart = launchAff_ do
+    gameStart _ = launchAff_ do
       audioBuffer <- decodeAudioDataFromUri audioContext audioUri
       liftEffect do
         w <- window
@@ -54,10 +54,10 @@ game { name, audioContext, audioUri } = do
             Ref.write controls.kill killRef
           Nothing ->
             pure unit
-    gameEnd = do
+    gameEnd _ = do
       v <- Ref.read killRef
       v
-  customComponent name {} gameStart gameEnd \_ ->
+  customComponent name { roomId: "debug-room" } gameStart gameEnd \_ ->
     [ ionContent (oneOf [ I.Fullscren !:= true ])
         [ D.canvas (oneOf [ klass_ "absolute w-full h-full", id_ (name <> "-canvas") ])
             [

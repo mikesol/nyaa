@@ -13,7 +13,7 @@ import Nyaa.Ionic.BackButton (ionBackButton)
 import Nyaa.Ionic.Button (ionButton)
 import Nyaa.Ionic.Buttons (ionButtons)
 import Nyaa.Ionic.Content (ionContent)
-import Nyaa.Ionic.Custom (customComponent)
+import Nyaa.Ionic.Custom (customComponent_)
 import Nyaa.Ionic.Header (ionHeader)
 import Nyaa.Ionic.Title (ionTitle_)
 import Nyaa.Ionic.Toolbar (ionToolbar_)
@@ -25,7 +25,7 @@ questPage
      , battleRoute :: String
      }
   -> Effect Unit
-questPage i = customComponent i.name {} (pure unit) (pure unit) \_ ->
+questPage i = customComponent_ i.name {} \_ ->
   [ionHeader (oneOf [ I.Translucent !:= true ])
       [ ionToolbar_
           [ ionButtons (oneOf [ I.Slot !:= "start" ])

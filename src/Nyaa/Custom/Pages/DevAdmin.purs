@@ -3,12 +3,8 @@ module Nyaa.Custom.Pages.DevAdmin where
 import Prelude
 
 import Control.Promise (Promise, toAffE)
-import Data.Array (groupBy)
-import Data.Array.NonEmpty (NonEmptyArray, toArray)
+import Data.Array.NonEmpty (toArray)
 import Data.Foldable (oneOf)
-import Data.FunctorWithIndex (mapWithIndex)
-import Data.Tuple (Tuple(..), snd)
-import Data.Tuple.Nested ((/\))
 import Deku.Attribute ((!:=))
 import Deku.Attributes (klass_)
 import Deku.Control (text_)
@@ -26,7 +22,7 @@ import Nyaa.Ionic.Button (ionButton)
 import Nyaa.Ionic.Buttons (ionButtons)
 import Nyaa.Ionic.Col (ionCol_)
 import Nyaa.Ionic.Content (ionContent)
-import Nyaa.Ionic.Custom (customComponent)
+import Nyaa.Ionic.Custom (customComponent_)
 import Nyaa.Ionic.Grid (ionGrid_)
 import Nyaa.Ionic.Header (ionHeader)
 import Nyaa.Ionic.Row (ionRow_)
@@ -280,7 +276,7 @@ stuff =
 devAdmin
   :: { platform :: Platform }
   -> Effect Unit
-devAdmin opts = customComponent "dev-admin" {} (pure unit) (pure unit) \_ ->
+devAdmin opts = customComponent_ "dev-admin" {} \_ ->
   [ ionHeader (oneOf [ I.Translucent !:= true ])
       [ ionToolbar_
           [ ionButtons (oneOf [ I.Slot !:= "start" ])

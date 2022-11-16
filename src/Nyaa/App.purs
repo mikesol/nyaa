@@ -2,11 +2,8 @@ module Nyaa.App where
 
 import Prelude
 
-import Data.Array as A
 import Data.Filterable (filter)
 import Data.Foldable (oneOf)
-import Data.List (List(..), (:))
-import Data.List as L
 import Deku.Attribute ((!:=))
 import Deku.Control (text_)
 import Deku.Core (Domable, Nut)
@@ -15,7 +12,7 @@ import Effect (Effect)
 import Nyaa.Ionic.App (ionApp_)
 import Nyaa.Ionic.Attributes as I
 import Nyaa.Ionic.Content (ionContent)
-import Nyaa.Ionic.Custom (customComponent)
+import Nyaa.Ionic.Custom (customComponent_)
 import Nyaa.Ionic.Header (ionHeader)
 import Nyaa.Ionic.Item (ionItem)
 import Nyaa.Ionic.Label (ionLabel_)
@@ -88,7 +85,7 @@ levelPages =
 
 storybookCC :: Effect Unit
 storybookCC = do
-  customComponent "story-book" {} (pure unit) (pure unit) \_ -> do
+  customComponent_ "story-book" {} \_ -> do
     let
       basicEntries :: forall lock payload. Array (Domable lock payload)
       basicEntries = basicPages <#> \page ->

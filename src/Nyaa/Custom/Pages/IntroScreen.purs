@@ -17,7 +17,7 @@ import FRP.Event (Event)
 import Nyaa.Firebase.Firebase (Profile(..))
 import Nyaa.Ionic.Button (ionButton)
 import Nyaa.Ionic.Content (ionContent_)
-import Nyaa.Ionic.Custom (customComponent)
+import Nyaa.Ionic.Custom (customComponent_)
 import Nyaa.SignIn (signInFlow)
 import Nyaa.Some (get)
 import Type.Proxy (Proxy(..))
@@ -28,7 +28,7 @@ introScreen
   :: { profileState :: Event { profile :: Maybe Profile }
      }
   -> Effect Unit
-introScreen opts = customComponent "intro-screen" {} (pure unit) (pure unit) \_ ->
+introScreen opts = customComponent_ "intro-screen" {} \_ ->
   [ ionContent_
       [ D.div
           ( oneOf

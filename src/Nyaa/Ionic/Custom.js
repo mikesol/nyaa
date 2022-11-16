@@ -16,7 +16,7 @@ export const customComponentImpl =
           locals[localProps[i]] = this[localProps[i]];
         }
         this.deku$unsubscribe = run(this)(locals)();
-        connectedHook();
+        connectedHook(locals);
       }
     }
 
