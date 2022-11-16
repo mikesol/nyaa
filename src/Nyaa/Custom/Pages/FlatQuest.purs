@@ -1,13 +1,13 @@
-module Nyaa.Custom.Pages.EqualizeQuest where
+module Nyaa.Custom.Pages.FlatQuest where
 
 import Prelude
 
 import Effect (Effect)
 import Nyaa.Custom.Builders.QuestPage (questPage)
 
-equalizeQuest :: Effect Unit
-equalizeQuest = questPage
-  { name: "equalize-quest"
+flatQuest :: Effect Unit
+flatQuest = questPage
+  { name: "flat-quest"
   , title: "Unlock Flat!"
   , showFriend: true
   , battleRoute: "/newb-level"

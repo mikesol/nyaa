@@ -7,12 +7,13 @@ import Control.Plus (empty)
 import Control.Promise (toAffE)
 import Data.Compactable (compact)
 import Data.Foldable (oneOf)
+import Data.Maybe (Maybe(..))
 import Data.Newtype (unwrap)
 import Data.Tuple (Tuple(..))
 import Data.Tuple.Nested ((/\))
 import Deku.Attribute ((!:=), (:=))
 import Deku.Attributes (klass_)
-import Deku.Control (blank, text, text_)
+import Deku.Control (blank, switcher, text, text_)
 import Deku.Core (Domable, envy)
 import Deku.DOM as D
 import Deku.Do as Deku
@@ -30,7 +31,7 @@ import Nyaa.Constants.PlayGames as PGConstants
 import Nyaa.FRP.Dedup (dedup)
 import Nyaa.FRP.First (first)
 import Nyaa.FRP.MemoBeh (useMemoBeh)
-import Nyaa.Firebase.Firebase (Profile, updateAvatarUrl, updateName, uploadAvatar)
+import Nyaa.Firebase.Firebase (Profile(..), updateAvatarUrl, updateName, uploadAvatar)
 import Nyaa.GameCenter as GC
 import Nyaa.Ionic.Attributes as I
 import Nyaa.Ionic.BackButton (ionBackButton)
@@ -83,7 +84,7 @@ achievement opts = ionCard (oneOf [ opts.earned <#> not <#> (D.Disabled := _) ])
   [ D.img
       ( oneOf
           [ D.Alt !:= "Silhouette of mountains"
-          , D.Src !:= "https://ionicframework.com/docs/img/demos/card-media.png"
+          , D.Src !:= catURL
           ]
       )
       []
@@ -293,31 +294,41 @@ profilePage opts = customComponent "profile-page" {} \_ ->
                                 )
                                 [ text_ "Achievements" ]
                             ]
-                        , D.div (D.Class !:= "grid grid-cols-4 gap-4")
-                            [ achievement
-                                { earned: pure true, title: "Tutorial" }
-                            , achievement
-                                { earned: pure true, title: "Track 1" }
-                            , achievement { earned: pure true, title: "Flat" }
-                            , achievement { earned: pure true, title: "Buzz" }
-                            , achievement { earned: pure true, title: "Glide" }
-                            , achievement { earned: pure false, title: "Back" }
-                            , achievement
-                                { earned: pure false, title: "Track 2" }
-                            , achievement
-                                { earned: pure false, title: "Rotate" }
-                            , achievement { earned: pure false, title: "Hide" }
-                            , achievement
-                                { earned: pure false, title: "Dazzle" }
-                            , achievement
-                                { earned: pure false, title: "Track 3" }
-                            , achievement { earned: pure false, title: "Crush" }
-                            , achievement
-                                { earned: pure false, title: "Amplify" }
-                            , achievement { earned: pure false, title: "Nyā" }
-                            , achievement { earned: pure false, title: "Nyāā" }
-                            , achievement { earned: pure false, title: "Nyāāā" }
-                            ]
+                        , flip switcher opts.profileState
+                            \{ profile: Profile profile } -> do
+                              let
+                                store =
+                                  [ get (Proxy :: _ "hasCompletedTutorial")
+                                      profile /\ "Tutorial"
+                                  , get (Proxy :: _ "track1")
+                                      profile /\ "HYPERSYNTHETIC"
+                                  , get (Proxy :: _ "flat")
+                                      profile /\ "Flat"
+                                  , get (Proxy :: _ "buzz")
+                                      profile /\ "Buzz"
+                                  , get (Proxy :: _ "glide")
+                                      profile /\ "Glide"
+                                  , get (Proxy :: _ "back")
+                                      profile /\ "Back"
+                                  , get (Proxy :: _ "track2")
+                                      profile /\ "Show Me How"
+                                  , get (Proxy :: _ "rotate")
+                                      profile /\ "Rotate"
+                                  , get (Proxy :: _ "hide")
+                                      profile /\ "Hide"
+                                  , get (Proxy :: _ "dazzle")
+                                      profile /\ "Dazzle"
+                                  , get (Proxy :: _ "track3")
+                                      profile /\ "LVL.99"
+                                  , get (Proxy :: _ "crush")
+                                      profile /\ "Crush"
+                                  , get (Proxy :: _ "amplify")
+                                      profile /\ "Amplify"
+                                  ]
+                              D.div
+                                (D.Class !:= "grid grid-cols-4 gap-4")
+                                (store <#> \(earned /\ title) -> achievement
+                                { earned: pure (earned == Just true), title })
                         , envy $ getPlatformE <#> case _ of
                             Web -> blank
                             Android -> D.div empty

@@ -3,53 +3,95 @@ module Nyaa.Custom.Builders.Lounge where
 import Prelude
 
 import Data.Foldable (oneOf)
+import Data.Maybe (Maybe(..))
+import Data.Monoid (guard)
 import Deku.Attribute ((!:=))
 import Deku.Attributes (klass_)
-import Deku.Control (text_)
+import Deku.Control (switcher, text_)
+import Deku.Core (Domable, Nut)
 import Deku.DOM as D
-import Deku.Listeners (click_)
 import Effect (Effect)
+import FRP.Event (Event)
+import Nyaa.Firebase.Firebase (Profile(..), Profile')
 import Nyaa.Ionic.Attributes as I
 import Nyaa.Ionic.BackButton (ionBackButton)
-import Nyaa.Ionic.Button (ionButton)
 import Nyaa.Ionic.Buttons (ionButtons)
+import Nyaa.Ionic.Card (ionCard)
+import Nyaa.Ionic.CardContent (ionCardContent_)
+import Nyaa.Ionic.CardHeader (ionCardHeader_)
+import Nyaa.Ionic.CardSubtitle (ionCardSubtitle_)
+import Nyaa.Ionic.CardTitle (ionCardTitle_)
 import Nyaa.Ionic.Content (ionContent)
 import Nyaa.Ionic.Custom (customComponent)
 import Nyaa.Ionic.Header (ionHeader)
 import Nyaa.Ionic.Title (ionTitle_)
 import Nyaa.Ionic.Toolbar (ionToolbar_)
+import Nyaa.Some (Some)
+
+newtype Mission = Mission
+  { title :: String
+  , index :: Int
+  , description :: Nut
+  , img :: String
+  , path :: String
+  , unlocker :: Some Profile' -> Maybe Boolean
+  }
+
+achievement
+  :: forall lock payload
+   . Profile
+  -> Mission
+  -> Domable lock payload
+achievement (Profile profile) (Mission opts) = do
+  let profileNotUnlocked = opts.unlocker profile /= Just true
+  ionCard
+    ( oneOf
+        ( [ D.Disabled !:= profileNotUnlocked ] <> guard
+            (not profileNotUnlocked)
+            [ D.Href !:= opts.path ]
+        )
+    )
+    [ D.div (klass_ "flex")
+        [ D.div (klass_ "grow") []
+        , D.img
+            ( oneOf
+                [ klass_ "w-28"
+                , D.Alt !:=
+                    ("Image representing the " <> opts.title <> " achievement.")
+                , D.Src !:= opts.img
+                ]
+            )
+            []
+        , D.div (klass_ "grow") []
+        ]
+    , ionCardHeader_
+        [ ionCardTitle_ [ text_ opts.title ]
+        , ionCardSubtitle_ [ text_ ("Mission " <> show opts.index) ]
+        ]
+    , ionCardContent_
+        [ opts.description
+        ]
+    ]
 
 lounge
   :: { name :: String
      , title :: String
-     , img :: String
-     , text :: String
-     , next :: Effect Unit
+     , profileState :: Event { profile :: Profile }
+     , missions :: Array Mission
      }
   -> Effect Unit
 lounge i = customComponent i.name {} \_ ->
   [ ionHeader (oneOf [ I.Translucent !:= true ])
       [ ionToolbar_
           [ ionButtons (oneOf [ I.Slot !:= "start" ])
-              [ ionBackButton (oneOf []) []
-              , ionTitle_ [ text_ i.title ]
+              [ ionBackButton (oneOf [ I.DefaultHref !:= "/" ]) []
               ]
+          , ionTitle_ [ text_ i.title ]
           ]
       ]
   , ionContent (oneOf [ I.Fullscren !:= true ])
-      [ D.div (oneOf [ klass_ "w-full h-full grid grid-cols-3 grid-rows-3" ])
-          [ D.div
-              ( oneOf
-                  [ klass_ $ "row-start-1 row-span-3 col-start-1 col-span-1"
-                  ]
-              )
-              [ ionButton (oneOf [ click_ i.next ]) [ text_ "Play now" ] ]
-          , D.div
-              (oneOf [ klass_ "row-start-1 row-span-2 col-start-2 col-span-2" ])
-              [ text_ i.text ]
-          , D.div
-              (oneOf [ klass_ "row-start-3 row-span-1 col-start-3 col-span-1" ])
-              [ ionButton (oneOf [ click_ i.next ]) [ text_ "Continue" ] ]
-          ]
+      [ flip switcher i.profileState \{ profile } -> D.div
+          (oneOf [ klass_ "grid grid-cols-3 gap-4 w-full" ])
+          (i.missions <#> achievement profile)
       ]
   ]

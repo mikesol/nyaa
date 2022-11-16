@@ -33,11 +33,7 @@ import Nyaa.Ionic.Row (ionRow_)
 import Nyaa.Ionic.Title (ionTitle_)
 import Nyaa.Ionic.Toolbar (ionToolbar_)
 import Nyaa.PlayGames as PG
-
-chunk :: forall a. Int -> Array a -> Array (NonEmptyArray a)
-chunk i a = (map <<< map) snd
-  $ groupBy (\(x /\ _) (y /\ _) -> (x / i) == (y / i))
-  $ mapWithIndex Tuple a
+import Nyaa.Util.Chunk (chunk)
 
 stuff
   :: Array
