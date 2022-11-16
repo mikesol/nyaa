@@ -1,0 +1,7 @@
+{
+  "name": "Nyaa",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "custom"
+}

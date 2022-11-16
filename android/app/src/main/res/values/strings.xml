@@ -1,8 +1,14 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">Nyā</string>
-    <string name="title_activity_main">Nyā</string>
-    <string name="package_name">fm.joyride.nyaa</string>
-    <string name="custom_url_scheme">fm.joyride.nyaa</string>
-    <string name="app_id">339754466261</string>
+  <string name="app_name">Nyā</string>
+  <string name="title_activity_main">Nyā</string>
+  <string name="package_name">fm.joyride.nyaa</string>
+  <string name="custom_url_scheme">fm.joyride.nyaa</string>
+  <string name="app_id">339754466261</string>
+  <string name="ionic_app_id">02a17284</string>
+  <string name="ionic_channel_name">Production</string>
+  <string name="ionic_update_method">background</string>
+  <string name="ionic_max_versions">2</string>
+  <string name="ionic_min_background_duration">30</string>
+  <string name="ionic_update_api">https://api.ionicjs.com</string>
 </resources>
