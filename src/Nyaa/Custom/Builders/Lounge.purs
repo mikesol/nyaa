@@ -80,7 +80,7 @@ lounge
      , missions :: Array Mission
      }
   -> Effect Unit
-lounge i = customComponent i.name {} \_ ->
+lounge i = customComponent i.name {} (pure unit) (pure unit) \_ ->
   [ ionHeader (oneOf [ I.Translucent !:= true ])
       [ ionToolbar_
           [ ionButtons (oneOf [ I.Slot !:= "start" ])

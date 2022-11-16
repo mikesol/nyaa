@@ -280,7 +280,7 @@ stuff =
 devAdmin
   :: { platform :: Platform }
   -> Effect Unit
-devAdmin opts = customComponent "dev-admin" {} \_ ->
+devAdmin opts = customComponent "dev-admin" {} (pure unit) (pure unit) \_ ->
   [ ionHeader (oneOf [ I.Translucent !:= true ])
       [ ionToolbar_
           [ ionButtons (oneOf [ I.Slot !:= "start" ])

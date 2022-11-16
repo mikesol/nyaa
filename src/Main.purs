@@ -14,6 +14,8 @@ import Effect.Ref as Ref
 import Effect.Uncurried (mkEffectFn1, runEffectFn1)
 import FRP.Event (burning, createO)
 import Nyaa.App (app, storybook, storybookCC)
+import Nyaa.Assets (akiraURL)
+import Nyaa.Audio (newAudioContext)
 import Nyaa.Capacitor.Utils (Platform(..), getPlatform)
 import Nyaa.Custom.Pages.AmplifyQuest (amplifyQuest)
 import Nyaa.Custom.Pages.BackQuest (backQuest)
@@ -64,6 +66,7 @@ main = do
                 Nothing -> Nothing
             )
             profileState.event
+  audioContext <- newAudioContext
   launchAff_ do
     when (platform == Android) do
       toAffE androidFullScreen
@@ -91,10 +94,10 @@ main = do
         }
       deityLounge { profileState: compactedProfile
         }
-      tutorialLevel
-      newbLevel
-      proLevel
-      deityLevel
+      tutorialLevel { audioContext, audioUri: akiraURL }
+      newbLevel { audioContext, audioUri: akiraURL }
+      proLevel { audioContext, audioUri: akiraURL }
+      deityLevel { audioContext, audioUri: akiraURL }
       loungePicker
       devAdmin { platform }
       pathTest
