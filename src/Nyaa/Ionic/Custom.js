@@ -1,5 +1,5 @@
 export const customComponentImpl =
-  (componentName) => (localProps) => (connectedHook) => (disconnectedHook) => (run) => () => {
+    (componentName) => (localProps) => (connectedHook) => (disconnectedHook) => (run) => () => {
     class CustomComponent extends HTMLElement {
       constructor() {
         super();
@@ -7,8 +7,8 @@ export const customComponentImpl =
       }
       disconnectedCallback() {
         this.deku$unsubscribe && this.deku$unsubscribe();
-          this.deku$unsubscribe = undefined;
-          disconnectedHook();
+        this.deku$unsubscribe = undefined;
+        disconnectedHook(locals)();
       }
       connectedCallback() {
         const locals = {};
@@ -16,7 +16,7 @@ export const customComponentImpl =
           locals[localProps[i]] = this[localProps[i]];
         }
         this.deku$unsubscribe = run(this)(locals)();
-        connectedHook(locals);
+        connectedHook(locals)();
       }
     }
 
