@@ -28,6 +28,7 @@ import Web.HTML.Window (document)
 foreign import startGame
   :: HTMLCanvasElement
   -> String
+  -> String
   -> AudioContext
   -> BrowserAudioBuffer
   -> Effect { start :: Effect Unit, kill :: Effect Unit }
@@ -41,7 +42,7 @@ game
 game { name, audioContext, audioUri } = do
   killRef <- Ref.new (pure unit)
   let
-    gameStart _ = launchAff_ do
+    gameStart { roomId } = launchAff_ do
       audioBuffer <- decodeAudioDataFromUri audioContext audioUri
       liftEffect do
         w <- window
@@ -49,7 +50,7 @@ game { name, audioContext, audioUri } = do
         c <- getElementById (name <> "-canvas") $ toNonElementParentNode $ toDocument d
         case c >>= HTMLCanvasElement.fromElement of
           Just canvas -> do
-            controls <- startGame canvas "nyaa!" audioContext audioBuffer
+            controls <- startGame canvas "nyaa!" roomId audioContext audioBuffer
             controls.start
             Ref.write controls.kill killRef
           Nothing ->
