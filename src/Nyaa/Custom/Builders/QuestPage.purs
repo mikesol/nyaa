@@ -25,7 +25,7 @@ questPage
      , battleRoute :: String
      }
   -> Effect Unit
-questPage i = customComponent i.name {} \_ ->
+questPage i = customComponent i.name {} (pure unit) (pure unit) \_ ->
   [ionHeader (oneOf [ I.Translucent !:= true ])
       [ ionToolbar_
           [ ionButtons (oneOf [ I.Slot !:= "start" ])

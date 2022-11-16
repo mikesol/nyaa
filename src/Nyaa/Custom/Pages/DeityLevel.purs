@@ -4,8 +4,11 @@ import Prelude
 
 import Effect (Effect)
 import Nyaa.Custom.Builders.Game (game)
+import Ocarina.WebAPI (AudioContext)
 
-deityLevel :: Effect Unit
-deityLevel = game
+deityLevel :: { audioContext :: AudioContext, audioUri :: String } -> Effect Unit
+deityLevel { audioContext, audioUri } = game
   { name: "deity-level"
+  , audioContext
+  , audioUri
   }

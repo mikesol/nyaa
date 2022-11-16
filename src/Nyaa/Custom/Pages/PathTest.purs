@@ -35,7 +35,7 @@ import Nyaa.Ionic.Toolbar (ionToolbar_)
 import Nyaa.PlayGames as PG
 
 pathTest :: Effect Unit
-pathTest = customComponent "path-test" { sessionId: "" }
+pathTest = customComponent "path-test" { sessionId: "" } (pure unit) (pure unit)
   \{ sessionId } ->
     [ ionHeader (oneOf [ I.Translucent !:= true ])
         [ ionToolbar_

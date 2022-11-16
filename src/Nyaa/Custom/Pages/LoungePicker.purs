@@ -17,7 +17,7 @@ import Nyaa.Ionic.List (ionList_)
 import Nyaa.Ionic.RouterLink (ionRouterLink)
 
 loungePicker :: Effect Unit
-loungePicker = customComponent "lounge-picker" {} \_ ->
+loungePicker = customComponent "lounge-picker" {} (pure unit) (pure unit) \_ ->
   [ ionContent (oneOf [ I.Fullscren !:= true ])
       [ D.div
           ( oneOf

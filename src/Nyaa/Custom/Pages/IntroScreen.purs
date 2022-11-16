@@ -28,7 +28,7 @@ introScreen
   :: { profileState :: Event { profile :: Maybe Profile }
      }
   -> Effect Unit
-introScreen opts = customComponent "intro-screen" {} \_ ->
+introScreen opts = customComponent "intro-screen" {} (pure unit) (pure unit) \_ ->
   [ ionContent_
       [ D.div
           ( oneOf

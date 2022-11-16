@@ -83,7 +83,7 @@ pages =
 
 storybookCC :: Effect Unit
 storybookCC = do
-  customComponent "story-book" {} \_ -> do
+  customComponent "story-book" {} (pure unit) (pure unit) \_ -> do
     let
       go2 Nil = Nil
       go2 ((shead /\ head) : tail) = do
