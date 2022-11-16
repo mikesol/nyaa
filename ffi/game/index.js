@@ -257,6 +257,7 @@ export function startGameImpl(canvas, userId, audioContext, audioBuffer) {
             hits.destroy();
             reference.destroy();
             audioTrack.stop();
+            audioContext.suspend();
         }
     };
 }
