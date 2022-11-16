@@ -7,7 +7,6 @@ import Data.Filterable (filter)
 import Data.Foldable (oneOf)
 import Data.List (List(..), (:))
 import Data.List as L
-import Data.Tuple.Nested ((/\))
 import Deku.Attribute ((!:=))
 import Deku.Control (text_)
 import Deku.Core (Domable, Nut)
@@ -54,8 +53,8 @@ import Nyaa.Ionic.Toolbar (ionToolbar_)
 -- Invite accept & wait page
 -- Invite reject page
 
-pages :: Array String
-pages =
+basicPages :: Array String
+basicPages =
   [ "story-book"
   , "intro-screen"
   , "dev-admin"
@@ -75,41 +74,34 @@ pages =
   , "newb-lounge"
   , "pro-lounge"
   , "deity-lounge"
-  , "tutorial-level"
+  , "lounge-picker"
+  , "profile-page"
+  ]
+
+levelPages :: Array String
+levelPages =
+  [ "tutorial-level"
   , "newb-level"
   , "pro-level"
   , "deity-level"
-  , "lounge-picker"
-  , "profile-page"
   ]
 
 storybookCC :: Effect Unit
 storybookCC = do
   customComponent "story-book" {} (pure unit) (pure unit) \_ -> do
     let
-      go2 Nil = Nil
-      go2 ((shead /\ head) : tail) = do
-        ( ionItem (oneOf [ I.Button !:= true, D.Href !:= shead ])
-            [ ionLabel_ [ D.h3_ [ text_ head ] ] ]
-        ) : go2 tail
-
-      elts = go2
-        ( L.fromFoldable
-            ( map
-                ( \i ->
-                    if i == "path-test" then ("/path-test/foo-bar-baz" /\ i)
-                    else (i /\ i)
-                )
-                pages
-            )
-        )
+      basicEntries :: forall lock payload. Array (Domable lock payload)
+      basicEntries = basicPages <#> \page ->
+        ionItem (oneOf [ I.Button !:= true, D.Href !:= "/" <> page ])
+          [ ionLabel_ [ D.h3_ [ text_ page ] ]
+          ]
     [ ionHeader (oneOf [ I.Translucent !:= true ])
         [ ionToolbar_
             [ ionTitle_ [ text_ "Storybook" ]
             ]
         ]
     , ionContent (oneOf [ I.Fullscren !:= true ])
-        [ ionList_ (A.fromFoldable elts) ]
+        [ ionList_ basicEntries ]
     ]
 
 makeApp :: forall lock payload. Boolean -> String -> Domable lock payload
@@ -117,21 +109,18 @@ makeApp withAdmin homeIs = ionApp_
   [ ionRouter_
       ( [ ionRoute (oneOf [ I.Url !:= "/", I.Component !:= homeIs ])
             []
-        ] <> A.fromFoldable basicIonRoutes
+        ] <> basicIonRoutes
 
       )
   , ionNav_ []
   ]
   where
-  basicIonRoutes :: List (Domable lock payload)
-  basicIonRoutes = go Nil basicRoutes
-    where
-    go a Nil = a
-    go a (h : t) = do
-      go (ionRoute (oneOf [ I.Url !:= (h :: String), I.Component !:= h ]) [] : a) t
+  basicIonRoutes :: Array (Domable lock payload)
+  basicIonRoutes = basicRoutes <#> \page ->
+    ionRoute (oneOf [ I.Url !:= "/" <> page, I.Component !:= page ]) []
 
-  basicRoutes :: List String
-  basicRoutes = L.fromFoldable $ (if withAdmin then identity else filter (_ /= "dev-admin")) pages
+  basicRoutes :: Array String
+  basicRoutes = (if withAdmin then identity else filter (_ /= "dev-admin")) basicPages
 
 storybook :: Nut
 storybook = makeApp true "story-book"
