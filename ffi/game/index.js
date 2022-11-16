@@ -16,8 +16,6 @@ async function sleep(ms) {
 }
 
 export function startGameImpl(canvas, userId, roomId, audioContext, audioBuffer) {
-    console.log(roomId);
-
     // SECTION START - THREE //
 
     const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
