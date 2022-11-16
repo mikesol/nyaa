@@ -3,12 +3,13 @@ module Main where
 import Prelude
 
 import Control.Promise (toAffE)
-import Data.Nullable (null, toMaybe)
+import Data.Compactable (compact)
+import Data.Maybe (Maybe(..))
+import Data.Nullable (toMaybe)
 import Deku.Toplevel (runInBody)
 import Effect (Effect)
 import Effect.Aff (apathize, launchAff_)
 import Effect.Class (liftEffect)
-import Effect.Console (log)
 import Effect.Ref as Ref
 import Effect.Uncurried (mkEffectFn1, runEffectFn1)
 import FRP.Event (burning, createO)
@@ -31,6 +32,7 @@ import Nyaa.Custom.Pages.IntroScreen (introScreen)
 import Nyaa.Custom.Pages.LoungePicker (loungePicker)
 import Nyaa.Custom.Pages.NewbLevel (newbLevel)
 import Nyaa.Custom.Pages.NewbLounge (newbLounge)
+import Nyaa.Custom.Pages.PathTest (pathTest)
 import Nyaa.Custom.Pages.ProLevel (proLevel)
 import Nyaa.Custom.Pages.ProLounge (proLounge)
 import Nyaa.Custom.Pages.ProfilePage (profilePage)
@@ -38,23 +40,22 @@ import Nyaa.Custom.Pages.RotateQuest (rotateQuest)
 import Nyaa.Custom.Pages.TutorialLevel (tutorialLevel)
 import Nyaa.Custom.Pages.TutorialQuest (tutorialQuest)
 import Nyaa.FRP.Dedup (dedup)
-import Nyaa.Firebase.Firebase (Profile(..), gameCenterEagerAuth, getCurrentUser, listenToAuthStateChange, reactToNewUser, signInWithGameCenter, signInWithPlayGames)
+import Nyaa.Firebase.Firebase (getCurrentUser, listenToAuthStateChange, reactToNewUser, signInWithGameCenter, signInWithPlayGames)
 import Nyaa.Fullscreen (androidFullScreen)
 import Nyaa.Ionic.Loading (brackedWithLoading)
-import Nyaa.Some (some)
 import Routing.Hash (getHash, setHash)
 
 foreign import prod :: Effect Boolean
 
 main :: Effect Unit
 main = do
-  isProd <- prod
+  -- isProd <- prod
   unsubProfileListener <- Ref.new (pure unit)
   authListener <- createO
   profileListener <- createO
   platform <- getPlatform
-  authState <- burning { user: null } (dedup authListener.event)
-  profileState <- burning { profile: Profile (some {}) }
+  -- authState <- burning { user: null } (dedup authListener.event)
+  profileState <- burning { profile: Nothing }
     (dedup profileListener.event)
   audioContext <- newAudioContext
   launchAff_ do
@@ -62,7 +63,9 @@ main = do
       toAffE androidFullScreen
     -- register components
     liftEffect do
-      introScreen { authState: authState.event }
+      introScreen
+        { profileState: profileState.event
+        }
       tutorialQuest
       equalizeQuest
       cameraQuest
@@ -82,7 +85,17 @@ main = do
       deityLevel { audioContext, audioUri: akiraURL }
       loungePicker
       devAdmin { platform }
-      profilePage { platform, profileState: profileState.event }
+      pathTest
+      profilePage
+        { platform
+        , clearProfile: runEffectFn1 profileListener.push { profile: Nothing }
+        , profileState: compact $ map
+            ( \x -> case x.profile of
+                Just x -> Just { profile: x }
+                Nothing -> Nothing
+            )
+            profileState.event
+        }
     -- do this just for the init side effect
     -- isProd <- liftEffect prod
     -- unless isProd do
@@ -100,17 +113,18 @@ main = do
         cu <- liftEffect getCurrentUser
         liftEffect do
           runEffectFn1 authListener.push { user: cu }
+          let profileF1 = mkEffectFn1 \{ profile } -> do
+               runEffectFn1 profileListener.push { profile: Just profile }
           reactToNewUser
             { user: toMaybe cu
-            , push: profileListener.push
+            , push: profileF1
             , unsubProfileListener
             }
           _ <- listenToAuthStateChange $ mkEffectFn1 \u -> do
-            log ("ASCHANGE: " <> show u)
             runEffectFn1 authListener.push { user: u }
             reactToNewUser
               { user: toMaybe u
-              , push: profileListener.push
+              , push: profileF1
               , unsubProfileListener
               }
           pure unit
