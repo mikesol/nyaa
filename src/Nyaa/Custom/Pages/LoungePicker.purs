@@ -3,50 +3,125 @@ module Nyaa.Custom.Pages.LoungePicker where
 import Prelude
 
 import Data.Foldable (oneOf)
+import Data.Maybe (Maybe(..))
+import Data.Monoid (guard)
 import Deku.Attribute ((!:=))
 import Deku.Attributes (klass_)
-import Deku.Control (text_)
+import Deku.Control (switcher, text_)
+import Deku.Core (Domable)
 import Deku.DOM as D
 import Effect (Effect)
-import Nyaa.Components.UpperLeftBackButton (upperLeftBackButton)
+import FRP.Event (Event)
+import Nyaa.Assets (catURL)
+import Nyaa.Firebase.Firebase (Profile(..), Profile')
 import Nyaa.Ionic.Attributes as I
+import Nyaa.Ionic.BackButton (ionBackButton)
+import Nyaa.Ionic.Buttons (ionButtons)
+import Nyaa.Ionic.Card (ionCard)
+import Nyaa.Ionic.CardHeader (ionCardHeader_)
+import Nyaa.Ionic.CardSubtitle (ionCardSubtitle_)
+import Nyaa.Ionic.CardTitle (ionCardTitle_)
 import Nyaa.Ionic.Content (ionContent)
 import Nyaa.Ionic.Custom (customComponent)
-import Nyaa.Ionic.Item (ionItem_)
-import Nyaa.Ionic.List (ionList_)
-import Nyaa.Ionic.RouterLink (ionRouterLink)
+import Nyaa.Ionic.Header (ionHeader)
+import Nyaa.Ionic.Title (ionTitle_)
+import Nyaa.Ionic.Toolbar (ionToolbar_)
+import Nyaa.Some (Some)
+import Nyaa.Some (get)
+import Type.Proxy (Proxy(..))
 
-loungePicker :: Effect Unit
-loungePicker = customComponent "lounge-picker" {} (pure unit) (pure unit) \_ ->
-  [ ionContent (oneOf [ I.Fullscren !:= true ])
-      [ D.div
-          ( oneOf
-              [ klass_
-                  "w-full h-full grid grid-cols-3 grid-rows-3"
-              ]
-          )
-          [ upperLeftBackButton
-          , D.div
-              ( oneOf
-                  [ klass_
-                      "col-start-1 row-start-1 col-span-3 row-span-3"
-                  ]
-              )
-              [ ionList_
-                  [ ionItem_
-                      [ ionRouterLink (D.Href !:= "/newb-level")
-                          [ text_ "Lounge 1" ]
-                      ]
-                  , ionItem_
-                      [ ionRouterLink (D.Href !:= "/pro-level")
-                          [ text_ "Lounge 2" ]
-                      ]
-                  , ionItem_
-                      [ ionRouterLink (D.Href !:= "/deity-level")
-                          [ text_ "Lounge 3" ]
-                      ]
-                  ]
-              ]
-          ]
-      ]
+newtype Lounge = Lounge
+  { title :: String
+  , index :: Int
+  , img :: String
+  , path :: String
+  , unlocker :: Some Profile' -> Maybe Boolean
+  }
+
+lounge
+  :: forall lock payload
+   . Profile
+  -> Lounge
+  -> Domable lock payload
+lounge (Profile profile) (Lounge opts) = do
+  let profileNotUnlocked = opts.unlocker profile /= Just true
+  ionCard
+    ( oneOf
+        ( [ D.Disabled !:= profileNotUnlocked ] <> guard
+            (not profileNotUnlocked)
+            [ D.Href !:= opts.path ]
+        )
+    )
+    [ D.div (klass_ "flex")
+        [ D.div (klass_ "grow") []
+        , D.img
+            ( oneOf
+                [ klass_ "w-28"
+                , D.Alt !:=
+                    ("Image representing the " <> opts.title <> " achievement.")
+                , D.Src !:= opts.img
+                ]
+            )
+            []
+        , D.div (klass_ "grow") []
+        ]
+    , ionCardHeader_
+        [ ionCardTitle_ [ text_ opts.title ]
+        , ionCardSubtitle_ [ text_ ("Mission " <> show opts.index) ]
+        ]
+    -- , ionCardContent_
+    --     [ opts.description
+    --     ]
+    ]
+
+lounges :: Array Lounge
+lounges =
+  [ Lounge
+      { title: "HYPERSYNTHETIC"
+      , index: 1
+      , img: catURL
+      , path: "/nweb-lounge"
+      , unlocker: get (Proxy :: Proxy
+ "hasCompletedTutorial")
+      }
+  , Lounge
+      { title: "Show Me How"
+      , index: 1
+      , img: catURL
+      , path: "/nweb-lounge"
+      , unlocker: get (Proxy :: Proxy
+ "back")
+      }
+  , Lounge
+      { title: "LVL.99"
+      , index: 1
+      , img: catURL
+      , path: "/nweb-lounge"
+      , unlocker: \p -> (&&) <$> get (Proxy :: Proxy
+ "dazzle") p <*> get
+          (Proxy :: Proxy
+ "hasPaid")
+          p
+      }
   ]
+
+loungePicker
+  :: { profileState :: Event { profile :: Profile }
+     }
+  -> Effect Unit
+loungePicker i = customComponent "lounge-picker" {} (pure unit) (pure unit)
+  \_ ->
+    [ ionHeader (oneOf [ I.Translucent !:= true ])
+        [ ionToolbar_
+            [ ionButtons (oneOf [ I.Slot !:= "start" ])
+                [ ionBackButton (oneOf [ I.DefaultHref !:= "/" ]) []
+                ]
+            , ionTitle_ [ text_ "Pick a Track" ]
+            ]
+        ]
+    , ionContent (oneOf [ I.Fullscren !:= true ])
+        [ flip switcher i.profileState \{ profile } -> D.div
+            (oneOf [ klass_ "grid grid-cols-3 gap-4 w-full" ])
+            (lounges <#> lounge profile)
+        ]
+    ]

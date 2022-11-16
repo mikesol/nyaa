@@ -98,7 +98,8 @@ main = do
       newbLevel { audioContext, audioUri: akiraURL }
       proLevel { audioContext, audioUri: akiraURL }
       deityLevel { audioContext, audioUri: akiraURL }
-      loungePicker
+      loungePicker { profileState: compactedProfile
+        }
       devAdmin { platform }
       pathTest
       profilePage

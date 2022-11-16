@@ -57,6 +57,7 @@ type Profile' =
   , track3 :: Boolean
   , crush :: Boolean
   , amplify :: Boolean
+  , hasPaid :: Boolean
   , highScoreTrack1 :: Int
   , highScoreTrack2 :: Int
   , highScoreTrack3 :: Int
