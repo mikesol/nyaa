@@ -95,13 +95,18 @@ storybookCC = do
         ionItem (oneOf [ I.Button !:= true, D.Href !:= "/" <> page ])
           [ ionLabel_ [ D.h3_ [ text_ page ] ]
           ]
+      levelEntries :: forall lock payload. Array (Domable lock payload)
+      levelEntries = levelPages <#> \page ->
+        ionItem (oneOf [ I.Button !:= true, D.Href !:= "/" <> page <> "/debug-room" ])
+          [ ionLabel_ [ D.h3_ [ text_ page ] ]
+          ]
     [ ionHeader (oneOf [ I.Translucent !:= true ])
         [ ionToolbar_
             [ ionTitle_ [ text_ "Storybook" ]
             ]
         ]
     , ionContent (oneOf [ I.Fullscren !:= true ])
-        [ ionList_ basicEntries ]
+        [ ionList_ $ basicEntries <> levelEntries ]
     ]
 
 makeApp :: forall lock payload. Boolean -> String -> Domable lock payload
@@ -109,7 +114,7 @@ makeApp withAdmin homeIs = ionApp_
   [ ionRouter_
       ( [ ionRoute (oneOf [ I.Url !:= "/", I.Component !:= homeIs ])
             []
-        ] <> basicIonRoutes
+        ] <> basicIonRoutes <> levelIonRoutes
 
       )
   , ionNav_ []
@@ -118,6 +123,10 @@ makeApp withAdmin homeIs = ionApp_
   basicIonRoutes :: Array (Domable lock payload)
   basicIonRoutes = basicRoutes <#> \page ->
     ionRoute (oneOf [ I.Url !:= "/" <> page, I.Component !:= page ]) []
+
+  levelIonRoutes :: Array (Domable lock payload)
+  levelIonRoutes = levelPages <#> \page ->
+    ionRoute (oneOf [ I.Url !:= "/" <> page <> "/:roomId", I.Component !:= page ]) []
 
   basicRoutes :: Array String
   basicRoutes = (if withAdmin then identity else filter (_ /= "dev-admin")) basicPages
