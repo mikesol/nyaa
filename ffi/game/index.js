@@ -258,6 +258,7 @@ export function startGameImpl(canvas, userId, roomId, audioContext, audioBuffer)
             reference.destroy();
             audioTrack.stop();
             audioContext.suspend();
+            pubnub.unsubscribeAll();
         }
     };
 }
