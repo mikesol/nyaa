@@ -59,7 +59,6 @@ pages =
   [ "story-book"
   , "intro-screen"
   , "dev-admin"
-  , "path-test"
   , "tutorial-quest"
   , "hypersynthetic-quest"
   , "flat-quest"
@@ -94,7 +93,16 @@ storybookCC = do
             [ ionLabel_ [ D.h3_ [ text_ head ] ] ]
         ) : go2 tail
 
-      elts = go2 (L.fromFoldable (map (\i -> if i == "path-test" then ("/path-test/foo-bar-baz" /\ i) else (i /\ i)) pages))
+      elts = go2
+        ( L.fromFoldable
+            ( map
+                ( \i ->
+                    if i == "path-test" then ("/path-test/foo-bar-baz" /\ i)
+                    else (i /\ i)
+                )
+                pages
+            )
+        )
     [ ionHeader (oneOf [ I.Translucent !:= true ])
         [ ionToolbar_
             [ ionTitle_ [ text_ "Storybook" ]
@@ -109,24 +117,21 @@ makeApp withAdmin homeIs = ionApp_
   [ ionRouter_
       ( [ ionRoute (oneOf [ I.Url !:= "/", I.Component !:= homeIs ])
             []
-        ] <> A.fromFoldable routes
+        ] <> A.fromFoldable basicIonRoutes
 
       )
   , ionNav_ []
   ]
   where
+  basicIonRoutes :: List (Domable lock payload)
+  basicIonRoutes = go Nil basicRoutes
+    where
+    go a Nil = a
+    go a (h : t) = do
+      go (ionRoute (oneOf [ I.Url !:= (h :: String), I.Component !:= h ]) [] : a) t
 
-  go Nil = Nil
-  go ((shead /\ head) : tail) = do
-    (ionRoute (oneOf [ I.Url !:= shead, I.Component !:= head ]) []) :
-      go tail
-
-  routes = go
-    ( L.fromFoldable
-        ( map (\i -> if i == "path-test" then ("/path-test/:sessionId" /\ i) else (i /\ i)) $
-            (if withAdmin then identity else filter (_ /= "dev-admin")) pages
-        )
-    )
+  basicRoutes :: List String
+  basicRoutes = L.fromFoldable $ (if withAdmin then identity else filter (_ /= "dev-admin")) pages
 
 storybook :: Nut
 storybook = makeApp true "story-book"
