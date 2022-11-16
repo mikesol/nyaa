@@ -47,7 +47,7 @@ lounge (Profile profile) (Lounge opts) = do
   let profileNotUnlocked = opts.unlocker profile /= Just true
   ionCard
     ( oneOf
-        ( [ D.Disabled !:= profileNotUnlocked ] <> guard
+        ( [ D.Disabled !:= profileNotUnlocked, klass_ "grow" ] <> guard
             (not profileNotUnlocked)
             [ D.Href !:= opts.path ]
         )
@@ -81,27 +81,41 @@ lounges =
       , index: 1
       , img: catURL
       , path: "/nweb-lounge"
-      , unlocker: get (Proxy :: Proxy
- "hasCompletedTutorial")
+      , unlocker: get
+          ( Proxy
+              :: Proxy
+                   "hasCompletedTutorial"
+          )
       }
   , Lounge
       { title: "Show Me How"
       , index: 1
       , img: catURL
       , path: "/nweb-lounge"
-      , unlocker: get (Proxy :: Proxy
- "back")
+      , unlocker: get
+          ( Proxy
+              :: Proxy
+                   "back"
+          )
       }
   , Lounge
       { title: "LVL.99"
       , index: 1
       , img: catURL
       , path: "/nweb-lounge"
-      , unlocker: \p -> (&&) <$> get (Proxy :: Proxy
- "dazzle") p <*> get
-          (Proxy :: Proxy
- "hasPaid")
-          p
+      , unlocker: \p -> (&&)
+          <$> get
+            ( Proxy
+                :: Proxy
+                     "dazzle"
+            )
+            p
+          <*> get
+            ( Proxy
+                :: Proxy
+                     "hasPaid"
+            )
+            p
       }
   ]
 
@@ -121,7 +135,10 @@ loungePicker i = customComponent "lounge-picker" {} (pure unit) (pure unit)
         ]
     , ionContent (oneOf [ I.Fullscren !:= true ])
         [ flip switcher i.profileState \{ profile } -> D.div
-            (oneOf [ klass_ "grid grid-cols-3 gap-4 w-full" ])
-            (lounges <#> lounge profile)
+            (oneOf [ klass_ "flex-col flex w-full h-full" ])
+            [ D.div (klass_ "grow") []
+            , D.div (klass_ "flex flex-row") (lounges <#> lounge profile)
+            , D.div (klass_ "grow") []
+            ]
         ]
     ]
