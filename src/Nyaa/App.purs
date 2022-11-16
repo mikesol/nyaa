@@ -86,14 +86,12 @@ storybookCC = do
   customComponent "story-book" {} \_ -> do
     let
       go2 Nil = Nil
-      go2 (head : tail) = do
-        let
-          shead = "/" <> head
+      go2 ((shead /\ head) : tail) = do
         ( ionItem (oneOf [ I.Button !:= true, D.Href !:= shead ])
             [ ionLabel_ [ D.h3_ [ text_ head ] ] ]
         ) : go2 tail
 
-      elts = go2 (L.fromFoldable pages)
+      elts = go2 (L.fromFoldable (map (\i -> if i == "path-test" then ("/path-test/foo-bar-baz" /\ i) else (i /\ i)) pages))
     [ ionHeader (oneOf [ I.Translucent !:= true ])
         [ ionToolbar_
             [ ionTitle_ [ text_ "Storybook" ]
