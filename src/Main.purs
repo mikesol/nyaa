@@ -6,13 +6,13 @@ import Control.Promise (toAffE)
 import Data.Nullable (null, toMaybe)
 import Deku.Toplevel (runInBody)
 import Effect (Effect)
-import Effect.Aff (launchAff_)
+import Effect.Aff (apathize, launchAff_)
 import Effect.Class (liftEffect)
 import Effect.Console (log)
 import Effect.Ref as Ref
 import Effect.Uncurried (mkEffectFn1, runEffectFn1)
 import FRP.Event (burning, createO)
-import Nyaa.App (storybook, storybookCC)
+import Nyaa.App (app, storybook, storybookCC)
 import Nyaa.Assets (akiraURL)
 import Nyaa.Audio (newAudioContext)
 import Nyaa.Capacitor.Utils (Platform(..), getPlatform)
@@ -23,6 +23,7 @@ import Nyaa.Custom.Pages.CrushQuest (crushQuest)
 import Nyaa.Custom.Pages.DazzleQuest (dazzleQuest)
 import Nyaa.Custom.Pages.DeityLevel (deityLevel)
 import Nyaa.Custom.Pages.DeityLounge (deityLounge)
+import Nyaa.Custom.Pages.DevAdmin (devAdmin)
 import Nyaa.Custom.Pages.EqualizeQuest (equalizeQuest)
 import Nyaa.Custom.Pages.GlideQuest (glideQuest)
 import Nyaa.Custom.Pages.HideQuest (hideQuest)
@@ -37,22 +38,27 @@ import Nyaa.Custom.Pages.RotateQuest (rotateQuest)
 import Nyaa.Custom.Pages.TutorialLevel (tutorialLevel)
 import Nyaa.Custom.Pages.TutorialQuest (tutorialQuest)
 import Nyaa.FRP.Dedup (dedup)
-import Nyaa.Firebase.Firebase (Profile(..), reactToNewUser, getCurrentUser, listenToAuthStateChange)
+import Nyaa.Firebase.Firebase (Profile(..), gameCenterEagerAuth, getCurrentUser, listenToAuthStateChange, reactToNewUser, signInWithGameCenter, signInWithPlayGames)
 import Nyaa.Fullscreen (androidFullScreen)
+import Nyaa.Ionic.Loading (brackedWithLoading)
 import Nyaa.Some (some)
 import Routing.Hash (getHash, setHash)
 
+foreign import prod :: Effect Boolean
+
 main :: Effect Unit
 main = do
+  isProd <- prod
   unsubProfileListener <- Ref.new (pure unit)
   authListener <- createO
   profileListener <- createO
+  platform <- getPlatform
   authState <- burning { user: null } (dedup authListener.event)
   profileState <- burning { profile: Profile (some {}) }
     (dedup profileListener.event)
   audioContext <- newAudioContext
   launchAff_ do
-    whenM (liftEffect (getPlatform <#> (_ == Android))) do
+    when (platform == Android) do
       toAffE androidFullScreen
     -- register components
     liftEffect do
@@ -75,7 +81,8 @@ main = do
       proLevel { audioContext, audioUri: akiraURL }
       deityLevel { audioContext, audioUri: akiraURL }
       loungePicker
-      profilePage { profileState: profileState.event }
+      devAdmin { platform }
+      profilePage { platform, profileState: profileState.event }
     -- do this just for the init side effect
     -- isProd <- liftEffect prod
     -- unless isProd do
@@ -84,11 +91,11 @@ main = do
       h <- getHash
       when (h == "") do
         setHash "/"
-      --
-      -- runInBody app
-      storybookCC
-      runInBody storybook
-      --
+      if false then do
+        runInBody app
+      else do
+        storybookCC
+        runInBody storybook
       launchAff_ do
         cu <- liftEffect getCurrentUser
         liftEffect do
@@ -107,4 +114,9 @@ main = do
               , unsubProfileListener
               }
           pure unit
+        apathize $ brackedWithLoading "Setting phasers on stun..." do
+          case platform of
+            IOS -> toAffE signInWithGameCenter
+            Android -> toAffE signInWithPlayGames
+            Web -> pure unit
       pure unit

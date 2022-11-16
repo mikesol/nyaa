@@ -2,16 +2,17 @@ module Nyaa.Firebase.Firebase where
 
 import Prelude
 
-import Data.Nullable (Nullable)
-import Effect (Effect)
-import Effect.Uncurried (EffectFn1)
 import Control.Promise (Promise, toAffE)
+import Data.ArrayBuffer.Types (Uint8Array)
 import Data.Foldable (for_)
 import Data.Maybe (Maybe(..))
 import Data.Newtype (class Newtype)
+import Data.Nullable (Nullable)
+import Effect (Effect)
 import Effect.Aff (launchAff_)
 import Effect.Class (liftEffect)
 import Effect.Ref as Ref
+import Effect.Uncurried (EffectFn1)
 import Nyaa.Capacitor.Preferences (getObject)
 import Nyaa.Some (Some)
 
@@ -25,6 +26,7 @@ type User =
   , uid :: String
   }
 
+foreign import gameCenterEagerAuth :: Effect (Promise Unit)
 foreign import getCurrentUser :: Effect (Nullable User)
 foreign import signInWithGameCenter :: Effect (Promise Unit)
 
@@ -101,3 +103,7 @@ reactToNewUser { user, push, unsubProfileListener } = for_ user
       , push
       }
     liftEffect $ Ref.write unsub unsubProfileListener
+
+foreign import updateName :: { username :: String } -> Effect (Promise Unit)
+foreign import updateAvatarUrl :: { avatarUrl :: String } -> Effect (Promise Unit)
+foreign import uploadAvatar :: Uint8Array -> Effect (Promise String)

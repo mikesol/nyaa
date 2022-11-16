@@ -14,6 +14,7 @@ public class MainActivity extends BridgeActivity {
     public void onCreate(Bundle savedInstanceState) {
         registerPlugin(FriendsPlugin.class);
         registerPlugin(PlayGamesAuthPlugin.class);
+        registerPlugin(PlayGamesPlugin.class);
         PlayGamesSdk.initialize(this);
         super.onCreate(savedInstanceState);
     }

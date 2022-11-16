@@ -8,6 +8,7 @@ import Nyaa.Custom.Builders.QuestPage (questPage)
 dazzleQuest :: Effect Unit
 dazzleQuest = questPage
   { name: "dazzle-quest"
+  , title: "Unlock Dazzle!"
   , showFriend: true
   , battleRoute: "/pro-level"
   }

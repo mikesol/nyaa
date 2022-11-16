@@ -8,6 +8,7 @@ import Nyaa.Custom.Builders.QuestPage (questPage)
 rotateQuest :: Effect Unit
 rotateQuest = questPage
   { name: "rotate-quest"
+  , title: "Unlock Rotate!"
   , showFriend: true
   , battleRoute: "/pro-level"
   }

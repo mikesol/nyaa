@@ -172,12 +172,13 @@ public class GameCenterAuthPlugin: CAPPlugin {
     }
     
     @objc func signIn(_ call: CAPPluginCall) {
-        print("starting")
+        print("starting sign in")
         if (GKLocalPlayer.local.isAuthenticated) {
             GameCenterAuthPlugin.signInCont(call)
         } else {
             GKLocalPlayer.local.authenticateHandler = { viewController, error in
                 if let viewController = viewController {
+                    print("presenting view controller for game center sign in")
                     // Present the view controller so the player can sign in.
                     DispatchQueue.main.async {
                         self.bridge?.viewController?.present(viewController, animated: true, completion: nil)
@@ -185,14 +186,42 @@ public class GameCenterAuthPlugin: CAPPlugin {
                     return
                 }
                 if error != nil {
+                    print("got an error for game center")
                     // Player could not be authenticated.
                     // Disable Game Center in the game.
                     call.reject("Game center threw an error. \(String(describing: error))")
                     return
                 }
+                print("continuing sign in")
                 GameCenterAuthPlugin.signInCont(call)
             }
         }
-
+    }
+    @objc func eagerAuth(_ call: CAPPluginCall) {
+        print("starting eager auth")
+        if (GKLocalPlayer.local.isAuthenticated) {
+            call.resolve()
+        } else {
+            GKLocalPlayer.local.authenticateHandler = { viewController, error in
+                if let viewController = viewController {
+                    print("presenting view controller for game center sign in")
+                    // Present the view controller so the player can sign in.
+                    DispatchQueue.main.async {
+                        self.bridge?.viewController?.present(viewController, animated: true, completion: nil)
+                    }
+                    return
+                }
+                if error != nil {
+                    print("got an error for game center \(String(describing: error))")
+                    // Player could not be authenticated.
+                    // resolve for now, cross fingers
+                    // that this will be handled at the sign-in stage
+                    call.resolve()
+                    return
+                }
+                print("continuing sign in")
+                call.resolve()
+            }
+        }
     }
 }

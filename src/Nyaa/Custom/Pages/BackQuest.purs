@@ -8,6 +8,7 @@ import Nyaa.Custom.Builders.QuestPage (questPage)
 backQuest :: Effect Unit
 backQuest = questPage
   { name: "back-quest"
+  , title: "Unlock Back!"
   , showFriend: true
   , battleRoute: "/newb-level"
   }

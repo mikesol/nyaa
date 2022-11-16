@@ -10,7 +10,8 @@ module.exports = {
         quest: "url('/assets/quest.png')",
         splash: "url('/assets/splash.png')",
         spacecat: "url('/assets/spaceCat.png')",
-      },
+        beach: "url('/assets/nyaaBeach.jpg')",
+      }
     },
   },
   plugins: [require("flowbite/plugin")],

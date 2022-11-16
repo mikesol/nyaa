@@ -12,3 +12,7 @@
 .background-cat {
   --background: url(./assets/spaceCat.png) no-repeat fixed center;
 }
+
+.moichy-font {
+    font-family: "Mochiy Pop P One";
+}

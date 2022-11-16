@@ -8,6 +8,7 @@ import Nyaa.Custom.Builders.QuestPage (questPage)
 equalizeQuest :: Effect Unit
 equalizeQuest = questPage
   { name: "equalize-quest"
+  , title: "Unlock Flat!"
   , showFriend: true
   , battleRoute: "/newb-level"
   }
