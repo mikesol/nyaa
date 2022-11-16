@@ -7,6 +7,7 @@ import Data.Filterable (filter)
 import Data.Foldable (oneOf)
 import Data.List (List(..), (:))
 import Data.List as L
+import Data.Tuple.Nested ((/\))
 import Deku.Attribute ((!:=))
 import Deku.Control (text_)
 import Deku.Core (Domable, Nut)
@@ -53,13 +54,12 @@ import Nyaa.Ionic.Toolbar (ionToolbar_)
 -- Invite accept & wait page
 -- Invite reject page
 
-
-
 pages :: Array String
 pages =
   [ "story-book"
   , "intro-screen"
   , "dev-admin"
+  , "path-test"
   , "tutorial-quest"
   , "equalize-quest"
   , "camera-quest"
@@ -116,13 +116,16 @@ makeApp withAdmin homeIs = ionApp_
   where
 
   go Nil = Nil
-  go (head : tail) = do
-    let
-      shead = "/" <> head
+  go ((shead /\ head) : tail) = do
     (ionRoute (oneOf [ I.Url !:= shead, I.Component !:= head ]) []) :
       go tail
 
-  routes = go (L.fromFoldable ((if withAdmin then identity else filter (_ /= "dev-admin")) pages))
+  routes = go
+    ( L.fromFoldable
+        ( map (\i -> if i == "path-test" then ("/path-test/:sessionId" /\ i) else (i /\ i)) $
+            (if withAdmin then identity else filter (_ /= "dev-admin")) pages
+        )
+    )
 
 storybook :: Nut
 storybook = makeApp true "story-book"

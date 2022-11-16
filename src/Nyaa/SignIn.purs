@@ -5,15 +5,16 @@ import Prelude
 import Control.Alt ((<|>))
 import Control.Promise (toAffE)
 import Data.Maybe (Maybe(..))
-import Effect.Aff (Aff)
+import Effect (Effect)
+import Effect.Aff (Aff, Milliseconds(..))
 import Effect.Class (liftEffect)
 import Nyaa.Capacitor.Utils (Platform(..), getPlatform)
 import Nyaa.Firebase.Firebase (signInWithGoogle, signInWithGameCenter, signInWithPlayGames, signOut)
 import Nyaa.Ionic.Alert (alert)
-import Nyaa.Ionic.Loading (brackedWithLoading)
+import Nyaa.Ionic.Loading (brackedWithLoading')
 
 signInFlow :: Aff Unit
-signInFlow = brackedWithLoading "Signing in..."
+signInFlow = brackedWithLoading' (Milliseconds 400.0) "Signing in..."
   ( ( do
         platform <- liftEffect getPlatform
         case platform of
@@ -23,5 +24,7 @@ signInFlow = brackedWithLoading "Signing in..."
     ) <|> (alert "Login Failed" Nothing (Just "Please try again later") "OK")
   )
 
-signOutFlow :: Aff Unit
-signOutFlow = toAffE signOut
+signOutFlow :: { clearProfile :: Effect Unit } -> Aff Unit
+signOutFlow i = do
+  liftEffect i.clearProfile
+  toAffE signOut

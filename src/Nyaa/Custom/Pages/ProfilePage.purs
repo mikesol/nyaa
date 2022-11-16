@@ -42,7 +42,7 @@ import Nyaa.Ionic.CardTitle (ionCardTitle_)
 import Nyaa.Ionic.Col (ionCol)
 import Nyaa.Ionic.Content (ionContent)
 import Nyaa.Ionic.Custom (customComponent)
-import Nyaa.Ionic.Enums (buttonexpandFull, labelStacked)
+import Nyaa.Ionic.Enums (buttonexpandBlock, buttonexpandFull, danger, labelStacked)
 import Nyaa.Ionic.Grid (ionGrid_)
 import Nyaa.Ionic.Header (ionHeader, ionHeader_)
 import Nyaa.Ionic.Icon (ionIcon)
@@ -55,6 +55,7 @@ import Nyaa.Ionic.Row (ionRow_)
 import Nyaa.Ionic.Title (ionTitle_)
 import Nyaa.Ionic.Toolbar (ionToolbar_)
 import Nyaa.PlayGames as PG
+import Nyaa.SignIn (signOutFlow)
 import Nyaa.Some (get)
 import Simple.JSON as JSON
 import Type.Proxy (Proxy(..))
@@ -97,7 +98,10 @@ achievement opts = ionCard (oneOf [ opts.earned <#> not <#> (D.Disabled := _) ])
   ]
 
 profilePage
-  :: { platform :: Platform, profileState :: Event { profile :: Profile } }
+  :: { clearProfile :: Effect Unit
+     , platform :: Platform
+     , profileState :: Event { profile :: Profile }
+     }
   -> Effect Unit
 profilePage opts = customComponent "profile-page" {} \_ ->
   [ ionHeader (oneOf [ I.Translucent !:= true ])
@@ -357,7 +361,23 @@ profilePage opts = customComponent "profile-page" {} \_ ->
                               , ionButton (oneOf [ klass_ "mt-4" ])
                                   [ text_ "Share Nyā" ]
                               ]
-                        ]
+                        ] <>
+                          [ ionButton
+                              ( oneOf
+                                  [ D.Href !:= "/"
+                                  , D.Color !:= danger
+                                  , I.Expand !:= buttonexpandBlock
+                                  , click_
+                                      ( launchAff_
+                                          ( signOutFlow
+                                              { clearProfile: opts.clearProfile
+                                              }
+                                          )
+                                      )
+                                  ]
+                              )
+                              [ text_ "Sign out" ]
+                          ]
                 )
             ]
         , ionModal

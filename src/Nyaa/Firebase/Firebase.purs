@@ -45,18 +45,18 @@ type Profile' =
   ( avatarUrl :: String
   , username :: String
   , hasCompletedTutorial :: Boolean
-  , quest1 :: Boolean
-  , quest2 :: Boolean
-  , quest3 :: Boolean
-  , quest4 :: Boolean
-  , quest5 :: Boolean
-  , quest6 :: Boolean
-  , quest7 :: Boolean
-  , quest8 :: Boolean
-  , quest9 :: Boolean
-  , questNya :: Boolean
-  , questNyaa :: Boolean
-  , questNyaaa :: Boolean
+  , track1 :: Boolean
+  , flat :: Boolean
+  , buzz :: Boolean
+  , glide :: Boolean
+  , back :: Boolean
+  , track2 :: Boolean
+  , rotate :: Boolean
+  , hide :: Boolean
+  , dazzle :: Boolean
+  , track3 :: Boolean
+  , crush :: Boolean
+  , amplify :: Boolean
   , highScoreTrack1 :: Int
   , highScoreTrack2 :: Int
   , highScoreTrack3 :: Int
