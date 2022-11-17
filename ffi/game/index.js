@@ -279,14 +279,15 @@ export function startGameImpl(
             await sleep(1000);
         }
     };
+
     const unsubFromEffects = subToEffects(({ fx, startTime }) => () => {
         pubnub.publish({
-            channel: `${roomId}-nyaa-score`,
+            channel: `${roomId}-nyaa-effect`,
             message: {
                 effect: fx,
-                startTime,
-                duration: 0.31416,
-                offset: 0.42
+                startTime: startTime + 1.0,
+                duration: 4.0,
+                offset: 0.25,
             },
           });
       })();
