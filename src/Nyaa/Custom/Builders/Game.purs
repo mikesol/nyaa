@@ -15,6 +15,7 @@ import Deku.Listeners (click_)
 import Effect (Effect)
 import Effect.Aff (Milliseconds(..), launchAff_)
 import Effect.Class (liftEffect)
+import Effect.Class.Console (logShow)
 import Effect.Console (log)
 import Effect.Ref as Ref
 import FRP.Event (EventIO, subscribe)
@@ -57,6 +58,7 @@ foreign import startGame
   -> ((FxData -> Effect Unit) -> Effect (Effect Unit))
   -> String
   -> String
+  -> Boolean
   -> AudioContext
   -> BrowserAudioBuffer
   -> Effect { time :: Milliseconds, diff :: Number, pdiff :: Number }
@@ -103,7 +105,7 @@ game { name, audioContext, audioUri, fxEvent } = do
   let fx = fxEvent.event
   killRef <- Ref.new (pure unit)
   let
-    gameStart { roomId } = launchAff_ do
+    gameStart { roomId, isHost } = launchAff_ do
       audioBuffer <- decodeAudioDataFromUri audioContext audioUri
       liftEffect do
         n <- coordinatedNow
@@ -115,7 +117,7 @@ game { name, audioContext, audioUri, fxEvent } = do
           toDocument d
         case c >>= HTMLCanvasElement.fromElement of
           Just canvas -> do
-            controls <- startGame canvas (subscribe fx) "nyaa!" roomId audioContext audioBuffer n.now
+            controls <- startGame canvas (subscribe fx) "nyaa!" roomId (isHost == "true") audioContext audioBuffer n.now
             controls.start
             Ref.write (controls.kill *> n.cancelNow) killRef
           Nothing ->
@@ -123,7 +125,7 @@ game { name, audioContext, audioUri, fxEvent } = do
     gameEnd _ = do
       v <- Ref.read killRef
       v
-  customComponent name  { roomId: "debug-room" } gameStart gameEnd \_ ->
+  customComponent name  { roomId: "debug-room", isHost: "false" } gameStart gameEnd \_ ->
     [ do
         let fxButton = fxButton' (getTime >>> Milliseconds <$> now) setFx
         ionContent (oneOf [ I.Fullscren !:= true ])
