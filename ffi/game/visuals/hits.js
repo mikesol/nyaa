@@ -1,7 +1,7 @@
 "use strict";
 
 import * as THREE from "three";
-import { DEFAULT_cPlayerTerminal } from "./common.js";
+import { activateCommon, DEFAULT_cPlayerTerminal } from "./common.js";
 
 function interpolate(value, r1, r2) {
     return (value - r1[0]) * (r2[1] - r2[0]) / (r1[1] - r1[0]) + r2[0];
@@ -46,8 +46,6 @@ export class Hits {
             this.equalize.endTime = startTime + duration;
             this.equalize.offset = offset;
             this.equalize.isActive = true;
-        } else {
-            throw new Error(`This is not a valid effect ${effectId}`);
         }
     }
 
