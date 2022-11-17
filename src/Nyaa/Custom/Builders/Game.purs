@@ -2,6 +2,8 @@ module Nyaa.Custom.Builders.Game where
 
 import Prelude
 
+import Control.Alt ((<|>))
+import Control.Plus (empty)
 import Data.Foldable (oneOf)
 import Data.Int (floor)
 import Data.Maybe (Maybe(..))
@@ -10,7 +12,6 @@ import Data.Newtype (unwrap)
 import Deku.Attribute ((!:=))
 import Deku.Attributes (id_, klass, klass_)
 import Deku.Control (switcher, text, text_)
-import Control.Alt ((<|>))
 import Deku.Core (Nut)
 import Deku.DOM as D
 import Deku.Listeners (click)
@@ -27,7 +28,7 @@ import Nyaa.Firebase.Firebase (Profile(..))
 import Nyaa.Ionic.Attributes as I
 import Nyaa.Ionic.Content (ionContent)
 import Nyaa.Ionic.Custom (customComponent)
-import Nyaa.Some (get)
+import Nyaa.Some (get, some)
 import Nyaa.Util.Countdown (countdown)
 import Ocarina.Interpret (decodeAudioDataFromUri)
 import Ocarina.WebAPI (AudioContext, BrowserAudioBuffer)
@@ -256,97 +257,102 @@ game { name, audioContext, audioUri, fxEvent, profile } = do
                     [ text_ "..."
                     ]
                 ]
-            , flip switcher profile \(Profile p) -> D.div (klass_ "absolute")
-                [ fxButton
-                    { active: get (Proxy :: _ "flat") p
-                    , icon: "😬"
-                    , fx: flatFx
-                    , color: "bg-red-200"
-                    , timing: effectTimings.flat
-                    } --
-                , fxButton
-                    { active: get (Proxy :: _ "buzz") p
-                    , icon: "🎥"
-                    , fx: buzzFx
-                    , color: "bg-orange-100"
-                    , timing: effectTimings.buzz
-                    } --
-                , fxButton
-                    { active: get (Proxy :: _ "glide") p
-                    , icon: "🚀"
-                    , fx: glideFx
-                    , color: "bg-amber-100"
-                    , timing: effectTimings.glide
-                    } --
-                , fxButton
-                    { active: get (Proxy :: _ "back") p
-                    , icon: "☝️"
-                    , fx: backFx
-                    , color: "bg-lime-100"
-                    , timing: effectTimings.back
-                    } --
-                , fxButton
-                    { active: get (Proxy :: _ "rotate") p
-                    , icon: "🌀"
-                    , fx: rotateFx
-                    , color: "bg-purple-100"
-                    , timing: effectTimings.rotate
-                    } --
-                , fxButton
-                    { active: get (Proxy :: _ "hide") p
-                    , icon: "🙈"
-                    , fx: hideFx
-                    , color: "bg-emerald-100"
-                    , timing: effectTimings.hide
-                    } --
-                , fxButton
-                    { active: get (Proxy :: _ "dazzle") p
-                    , icon: "✨"
-                    , fx: dazzleFx
-                    , color: "bg-indigo-300"
-                    , timing: effectTimings.dazzle
-                    } --
-                , fxButton
-                    { active: get (Proxy :: _ "crush") p
-                    , icon: "🤘"
-                    , fx: audioFx
-                    , color: "bg-rose-200"
-                    , timing: effectTimings.crush
-                    } --
-                , fxButton
-                    { active: get (Proxy :: _ "amplify") p
-                    , icon: "📣"
-                    , fx: amplifyFx
-                    , color: "bg-neutral-200"
-                    , timing: effectTimings.amplify
-                    } --
-                , D.span
-                    ( oneOf
-                        [ id_ "my-time-remaining"
-                        , klass
-                            ( dedup (myCountdownIsOn.event <|> pure false) <#>
-                                \isOn ->
-                                  "text-blue-500 text-xl ml-2 mt-1 font-mono" <>
-                                    (if not isOn then " invisible" else "")
-                            )
-                        ]
-                    )
-                    [ text (show <$> myCountdownNumber.event)
-                    ]
-                , D.span
-                    ( oneOf
-                        [ id_ "their-time-remaining"
-                        , klass
-                            ( dedup (theirCountdownIsOn.event <|> pure false)
-                                <#> \isOn ->
-                                  "text-green-500 text-xl ml-2 mt-1 font-mono"
-                                    <>
-                                      (if not isOn then " invisible" else "")
-                            )
-                        ]
-                    )
-                    [ text (show <$> theirCountdownNumber.event)
-                    ]
-                ]
+            , flip switcher
+                ( profile <|>
+                    (if godMode then (pure $ Profile (some {})) else empty)
+                )
+                \(Profile p) -> D.div (klass_ "absolute")
+                  [ fxButton
+                      { active: get (Proxy :: _ "flat") p
+                      , icon: "😬"
+                      , fx: flatFx
+                      , color: "bg-red-200"
+                      , timing: effectTimings.flat
+                      } --
+                  , fxButton
+                      { active: get (Proxy :: _ "buzz") p
+                      , icon: "🎥"
+                      , fx: buzzFx
+                      , color: "bg-orange-100"
+                      , timing: effectTimings.buzz
+                      } --
+                  , fxButton
+                      { active: get (Proxy :: _ "glide") p
+                      , icon: "🚀"
+                      , fx: glideFx
+                      , color: "bg-amber-100"
+                      , timing: effectTimings.glide
+                      } --
+                  , fxButton
+                      { active: get (Proxy :: _ "back") p
+                      , icon: "☝️"
+                      , fx: backFx
+                      , color: "bg-lime-100"
+                      , timing: effectTimings.back
+                      } --
+                  , fxButton
+                      { active: get (Proxy :: _ "rotate") p
+                      , icon: "🌀"
+                      , fx: rotateFx
+                      , color: "bg-purple-100"
+                      , timing: effectTimings.rotate
+                      } --
+                  , fxButton
+                      { active: get (Proxy :: _ "hide") p
+                      , icon: "🙈"
+                      , fx: hideFx
+                      , color: "bg-emerald-100"
+                      , timing: effectTimings.hide
+                      } --
+                  , fxButton
+                      { active: get (Proxy :: _ "dazzle") p
+                      , icon: "✨"
+                      , fx: dazzleFx
+                      , color: "bg-indigo-300"
+                      , timing: effectTimings.dazzle
+                      } --
+                  , fxButton
+                      { active: get (Proxy :: _ "crush") p
+                      , icon: "🤘"
+                      , fx: audioFx
+                      , color: "bg-rose-200"
+                      , timing: effectTimings.crush
+                      } --
+                  , fxButton
+                      { active: get (Proxy :: _ "amplify") p
+                      , icon: "📣"
+                      , fx: amplifyFx
+                      , color: "bg-neutral-200"
+                      , timing: effectTimings.amplify
+                      } --
+                  , D.span
+                      ( oneOf
+                          [ id_ "my-time-remaining"
+                          , klass
+                              ( dedup (myCountdownIsOn.event <|> pure false) <#>
+                                  \isOn ->
+                                    "text-blue-500 text-xl ml-2 mt-1 font-mono"
+                                      <>
+                                        (if not isOn then " invisible" else "")
+                              )
+                          ]
+                      )
+                      [ text (show <$> myCountdownNumber.event)
+                      ]
+                  , D.span
+                      ( oneOf
+                          [ id_ "their-time-remaining"
+                          , klass
+                              ( dedup (theirCountdownIsOn.event <|> pure false)
+                                  <#> \isOn ->
+                                    "text-green-500 text-xl ml-2 mt-1 font-mono"
+                                      <>
+                                        (if not isOn then " invisible" else "")
+                              )
+                          ]
+                      )
+                      [ text (show <$> theirCountdownNumber.event)
+                      ]
+                  ]
             ]
       ]
