@@ -18,6 +18,7 @@ import Effect.Console (log)
 import Effect.Ref as Ref
 import FRP.Event (Event, EventIO, create, subscribe)
 import Nyaa.CoordinatedNow (coordinatedNow)
+import Nyaa.Firebase.Firebase (Profile(..))
 import Nyaa.Ionic.Attributes as I
 import Nyaa.Ionic.Content (ionContent)
 import Nyaa.Ionic.Custom (customComponent)
@@ -100,6 +101,7 @@ game
   :: { name :: String
      , audioContext :: AudioContext
      , audioUri :: String
+     , profile :: Event Profile
      , fxEvent :: EventIO FxData
      }
   -> Effect Unit

@@ -101,10 +101,30 @@ main = do
       deityLounge
         { profileState: compactedProfile
         }
-      tutorialLevel { audioContext, audioUri: akiraURL, fxEvent }
-      newbLevel { audioContext, audioUri: akiraURL, fxEvent }
-      proLevel { audioContext, audioUri: akiraURL, fxEvent }
-      deityLevel { audioContext, audioUri: akiraURL, fxEvent }
+      tutorialLevel
+        { audioContext
+        , audioUri: akiraURL
+        , fxEvent
+        , profile: _.profile <$> compactedProfile
+        }
+      newbLevel
+        { audioContext
+        , audioUri: akiraURL
+        , fxEvent
+        , profile: _.profile <$> compactedProfile
+        }
+      proLevel
+        { audioContext
+        , audioUri: akiraURL
+        , fxEvent
+        , profile: _.profile <$> compactedProfile
+        }
+      deityLevel
+        { audioContext
+        , audioUri: akiraURL
+        , fxEvent
+        , profile: _.profile <$> compactedProfile
+        }
       loungePicker
         { profileState: compactedProfile
         }
