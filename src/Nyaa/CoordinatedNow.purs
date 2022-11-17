@@ -29,14 +29,14 @@ iTime = 2000
 halfITime :: Int
 halfITime = iTime / 2
 
-coordinatedNow
-  :: Effect
-       { now ::
-           Effect
-             { time :: Milliseconds
+type NowIs = { time :: Milliseconds
              , diff :: Number
              , pdiff :: Number
              }
+
+coordinatedNow
+  :: Effect
+       { now :: Effect NowIs
        , cancelNow :: Effect Unit
        }
 coordinatedNow = do
