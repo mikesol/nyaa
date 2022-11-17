@@ -3,6 +3,7 @@ module Nyaa.Custom.Builders.Game where
 import Prelude
 
 import Data.Foldable (oneOf)
+import Data.Int (floor)
 import Data.Maybe (Maybe(..))
 import Data.Monoid (guard)
 import Data.Newtype (unwrap)
@@ -11,7 +12,6 @@ import Deku.Attributes (klass_, id_)
 import Deku.Control (switcher, text_)
 import Deku.Core (Nut)
 import Deku.DOM as D
-import Deku.Do as Deku
 import Deku.Listeners (click)
 import Effect (Effect)
 import Effect.Aff (Milliseconds, launchAff_)
@@ -19,14 +19,14 @@ import Effect.Class (liftEffect)
 import Effect.Console (log)
 import Effect.Ref as Ref
 import FRP.Event (Event, EventIO, create, subscribe)
-import Nyaa.Constants.Effects (EffectTiming(..), effectTimings)
+import Nyaa.Constants.Effects (EffectTiming, effectTimings)
 import Nyaa.CoordinatedNow (coordinatedNow)
 import Nyaa.Firebase.Firebase (Profile(..))
 import Nyaa.Ionic.Attributes as I
 import Nyaa.Ionic.Content (ionContent)
 import Nyaa.Ionic.Custom (customComponent)
 import Nyaa.Some (get)
-import Nyaa.Util.RandomId (makeId)
+import Nyaa.Util.Countdown (countdown)
 import Ocarina.Interpret (decodeAudioDataFromUri)
 import Ocarina.WebAPI (AudioContext, BrowserAudioBuffer)
 import Type.Proxy (Proxy(..))
@@ -139,8 +139,34 @@ game
      }
   -> Effect Unit
 game { name, audioContext, audioUri, fxEvent, profile } = do
+  myCountdownRef <- Ref.new (pure unit)
+  theirCountdownRef <- Ref.new (pure unit)
+  myCountdownNumber <- create
+  theirCountdownNumber <- create
+  myCountdownIsOn <- create
+  theirCountdownIsOn <- create
   myEffect <- create
   theirEffect <- create
+  let
+    myEffectPuhser = \n@(FxData fxData) -> do
+      myCountdown <- countdown 1000.0 (floor fxData.duration)
+        ( \i -> do
+            myCountdownNumber.push i
+            myCountdownIsOn.push true
+        )
+        (myCountdownIsOn.push false)
+      Ref.write myCountdown myCountdownRef
+      myEffect.push n
+  let
+    theirEffectPusher = \n@(FxData fxData) -> do
+      theirCountdown <- countdown 1000.0 (floor fxData.duration)
+        ( \i -> do
+            theirCountdownNumber.push i
+            theirCountdownIsOn.push true
+        )
+        (theirCountdownIsOn.push false)
+      Ref.write theirCountdown theirCountdownRef
+      theirEffect.push n
   currentTimeEvent <- create
   let setFx = fxEvent.push
   let fx = fxEvent.event
@@ -162,8 +188,8 @@ game { name, audioContext, audioUri, fxEvent, profile } = do
               canvas
               (subscribe fx)
               (currentTimeEvent.push)
-              myEffect.push
-              theirEffect.push
+              myEffectPuhser
+              theirEffectPusher
               "nyaa!"
               roomId
               (isHost == "true")
