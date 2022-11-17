@@ -22,6 +22,7 @@
   , "homogeneous"
   , "hyrule"
   , "integers"
+  , "js-date"
   , "js-timers"
   , "lcg"
   , "lists"

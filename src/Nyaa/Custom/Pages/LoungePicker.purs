@@ -26,8 +26,7 @@ import Nyaa.Ionic.Custom (customComponent)
 import Nyaa.Ionic.Header (ionHeader)
 import Nyaa.Ionic.Title (ionTitle_)
 import Nyaa.Ionic.Toolbar (ionToolbar_)
-import Nyaa.Some (Some)
-import Nyaa.Some (get)
+import Nyaa.Some (Some, get)
 import Type.Proxy (Proxy(..))
 
 newtype Lounge = Lounge
