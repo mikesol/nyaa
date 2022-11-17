@@ -12,6 +12,7 @@ dist
 dist-ssr
 *.local
 android/app/debug
+android/app/release
 
 # Editor directories and files
 .vscode/*
