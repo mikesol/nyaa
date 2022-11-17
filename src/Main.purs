@@ -12,7 +12,7 @@ import Effect.Aff (apathize, launchAff_)
 import Effect.Class (liftEffect)
 import Effect.Ref as Ref
 import Effect.Uncurried (mkEffectFn1, runEffectFn1)
-import FRP.Event (burning, createO)
+import FRP.Event (burning, create, createO)
 import Nyaa.App (app, storybook, storybookCC)
 import Nyaa.Assets (akiraURL)
 import Nyaa.Audio (newAudioContext)
@@ -54,6 +54,7 @@ foreign import noStory :: Effect Boolean
 main :: Effect Unit
 main = do
   -- isProd <- prod
+  fxEvent <- create
   isRealDeal <- noStory
   unsubProfileListener <- Ref.new (pure unit)
   authListener <- createO
@@ -62,12 +63,13 @@ main = do
   -- authState <- burning { user: null } (dedup authListener.event)
   profileState <- burning { profile: Nothing }
     (dedup profileListener.event)
-  let compactedProfile = compact $ map
-            ( \x -> case x.profile of
-                Just p -> Just { profile: p }
-                Nothing -> Nothing
-            )
-            profileState.event
+  let
+    compactedProfile = compact $ map
+      ( \x -> case x.profile of
+          Just p -> Just { profile: p }
+          Nothing -> Nothing
+      )
+      profileState.event
   audioContext <- newAudioContext
   launchAff_ do
     when (platform == Android) do
@@ -90,17 +92,21 @@ main = do
       lvl99Quest
       crushQuest
       amplifyQuest
-      newbLounge { profileState: compactedProfile
+      newbLounge
+        { profileState: compactedProfile
         }
-      proLounge { profileState: compactedProfile
+      proLounge
+        { profileState: compactedProfile
         }
-      deityLounge { profileState: compactedProfile
+      deityLounge
+        { profileState: compactedProfile
         }
-      tutorialLevel { audioContext, audioUri: akiraURL }
-      newbLevel { audioContext, audioUri: akiraURL }
-      proLevel { audioContext, audioUri: akiraURL }
-      deityLevel { audioContext, audioUri: akiraURL }
-      loungePicker { profileState: compactedProfile
+      tutorialLevel { audioContext, audioUri: akiraURL, fxEvent }
+      newbLevel { audioContext, audioUri: akiraURL, fxEvent }
+      proLevel { audioContext, audioUri: akiraURL, fxEvent }
+      deityLevel { audioContext, audioUri: akiraURL, fxEvent }
+      loungePicker
+        { profileState: compactedProfile
         }
       devAdmin { platform }
       pathTest
@@ -126,8 +132,9 @@ main = do
         cu <- liftEffect getCurrentUser
         liftEffect do
           runEffectFn1 authListener.push { user: cu }
-          let profileF1 = mkEffectFn1 \{ profile } -> do
-               runEffectFn1 profileListener.push { profile: Just profile }
+          let
+            profileF1 = mkEffectFn1 \{ profile } -> do
+              runEffectFn1 profileListener.push { profile: Just profile }
           reactToNewUser
             { user: toMaybe cu
             , push: profileF1
