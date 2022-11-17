@@ -18,7 +18,6 @@ import Effect.Class (liftEffect)
 import Effect.Console (log)
 import Effect.Ref as Ref
 import FRP.Event (EventIO, subscribe)
-import Nyaa.Components.UpperLeftBackButton (upperLeftBackButton)
 import Nyaa.CoordinatedNow (coordinatedNow)
 import Nyaa.Ionic.Attributes as I
 import Nyaa.Ionic.Content (ionContent)
