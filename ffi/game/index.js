@@ -15,7 +15,7 @@ async function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-export function startGameImpl(canvas, userId, audioContext, audioBuffer) {
+export function startGameImpl(canvas, userId, roomId, audioContext, audioBuffer, getTime) {
     // SECTION START - THREE //
 
     const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
@@ -163,6 +163,8 @@ export function startGameImpl(canvas, userId, audioContext, audioBuffer) {
 
     // SECTION START - PUBNUB //
 
+    userId = `${userId}-${Math.random()}`;
+
     const pubnub = new PubNub({
         publishKey: "pub-c-494ce265-0510-4bb9-8871-5039406a833a",
         subscribeKey: "sub-c-829590e3-62e9-40a8-9354-b8161c2fbcd8",
@@ -180,17 +182,21 @@ export function startGameImpl(canvas, userId, audioContext, audioBuffer) {
                 console.log("[PubNub] Ignoring message from self...");
                 return;
             }
-            if (audioContext.state === "suspended") {
+            if ( audioContext.state === "suspended"
+                 && ( messageEvent.channel === `${roomId}-nyaa-score`
+                      || messageEvent.channel === `${roomId}-nyaa-effect`
+                    )
+               ) {
                 console.log("[PubNub] Not ready...");
                 return;
             }
             switch (messageEvent.channel) {
-                case "nyaa-score":
+                case `${roomId}-nyaa-score`:
                     const { score } = messageEvent.message;
                     uiState.enemyScore = score.toString().padStart(7, "0");
                     uiState.needsUpdate = true;
                     break;
-                case "nyaa-effect":
+                case `${roomId}-nyaa-effect`:
                     const { effect, startTime, duration, offset } = messageEvent.message;
                     if (effect === "camera") {
                         cameraEffect.activate(startTime, duration, offset);
@@ -201,19 +207,44 @@ export function startGameImpl(canvas, userId, audioContext, audioBuffer) {
                         guides.activate(effect, startTime, duration, offset);
                         hits.activate(effect, startTime, duration, offset);
                     }
-                case "nyaa-info":
+                    break;
+                case `${roomId}-nyaa-info`:
+                    switch (messageEvent.message.action) {
+                        case "start":
+                            const targetTime = messageEvent.message.targetTime;
+                            const currentTime = getTime().time;
+                            setTimeout(() => {
+                                startAudio();
+                                sendScore().then(() => {
+                                    console.log("[PubNub] Finished sending scores...");
+                                });
+                            }, (targetTime - currentTime) * 1000);
+                    }
                     break;
             }
         },
+        presence: (presenceEvent) => {
+            if (presenceEvent.action === "join" && presenceEvent.occupancy >= 2 && presenceEvent.channel === `${roomId}-nyaa-info`) {
+                const currentTime = getTime().time;
+                pubnub.publish({
+                    channel: `${roomId}-nyaa-info`,
+                    message: {
+                        action: "start",
+                        targetTime: currentTime + 2,
+                    },
+                });
+            }
+        }
     };
 
     pubnub.addListener(listener);
     pubnub.subscribe({
         channels: [
-            "nyaa-score",
-            "nyaa-effect",
-            "nyaa-info",
+            `${roomId}-nyaa-score`,
+            `${roomId}-nyaa-effect`,
+            `${roomId}-nyaa-info`,
         ],
+        withPresence: true,
     });
 
     const sendScore = async () => {
@@ -222,7 +253,7 @@ export function startGameImpl(canvas, userId, audioContext, audioBuffer) {
                 return;
             }
             await pubnub.publish({
-                channel: "nyaa-score",
+                channel: `${roomId}-nyaa-score`,
                 message: {
                     score: uiState.playerScore,
                 },
@@ -245,10 +276,6 @@ export function startGameImpl(canvas, userId, audioContext, audioBuffer) {
         start() {
             renderer.render(scene, camera);
             requestAnimationFrame(render);
-            startAudio();
-            sendScore().then(() => {
-                console.log("[PubNub] Finished sending scores...");
-            });
         },
         kill() {
             isFinished = true;
@@ -258,6 +285,7 @@ export function startGameImpl(canvas, userId, audioContext, audioBuffer) {
             reference.destroy();
             audioTrack.stop();
             audioContext.suspend();
+            pubnub.unsubscribeAll();
         }
     };
 }

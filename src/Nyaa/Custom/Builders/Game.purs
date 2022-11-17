@@ -5,6 +5,7 @@ import Prelude
 import Data.Foldable (oneOf)
 import Data.JSDate (getTime, now)
 import Data.Maybe (Maybe(..))
+import Data.Newtype (unwrap)
 import Deku.Attribute ((!:=))
 import Deku.Attributes (klass_, id_)
 import Deku.Control (text_)
@@ -14,8 +15,11 @@ import Deku.Listeners (click_)
 import Effect (Effect)
 import Effect.Aff (Milliseconds(..), launchAff_)
 import Effect.Class (liftEffect)
+import Effect.Console (log)
 import Effect.Ref as Ref
 import FRP.Event (EventIO, subscribe)
+import Nyaa.Components.UpperLeftBackButton (upperLeftBackButton)
+import Nyaa.CoordinatedNow (coordinatedNow)
 import Nyaa.Ionic.Attributes as I
 import Nyaa.Ionic.Content (ionContent)
 import Nyaa.Ionic.Custom (customComponent)
@@ -53,8 +57,10 @@ foreign import startGame
   :: HTMLCanvasElement
   -> ((FxData -> Effect Unit) -> Effect (Effect Unit))
   -> String
+  -> String
   -> AudioContext
   -> BrowserAudioBuffer
+  -> Effect { time :: Milliseconds, diff :: Number, pdiff :: Number }
   -> Effect { start :: Effect Unit, kill :: Effect Unit }
 
 newtype Fx = Fx String
@@ -98,24 +104,27 @@ game { name, audioContext, audioUri, fxEvent } = do
   let fx = fxEvent.event
   killRef <- Ref.new (pure unit)
   let
-    gameStart = launchAff_ do
+    gameStart { roomId } = launchAff_ do
       audioBuffer <- decodeAudioDataFromUri audioContext audioUri
       liftEffect do
+        n <- coordinatedNow
+        t <- n.now
+        log $ "[Game] Initial timestamp is set at " <> show (unwrap t.time)
         w <- window
         d <- document w
         c <- getElementById (name <> "-canvas") $ toNonElementParentNode $
           toDocument d
         case c >>= HTMLCanvasElement.fromElement of
           Just canvas -> do
-            controls <- startGame canvas (subscribe fx) "nyaa!" audioContext audioBuffer
+            controls <- startGame canvas (subscribe fx) "nyaa!" roomId audioContext audioBuffer n.now
             controls.start
-            Ref.write controls.kill killRef
+            Ref.write (controls.kill *> n.cancelNow) killRef
           Nothing ->
             pure unit
-    gameEnd = do
+    gameEnd _ = do
       v <- Ref.read killRef
       v
-  customComponent name {} gameStart gameEnd \_ ->
+  customComponent name  { roomId: "debug-room" } gameStart gameEnd \_ ->
     [ do
         let fxButton = fxButton' (getTime >>> Milliseconds <$> now) setFx
         ionContent (oneOf [ I.Fullscren !:= true ])
