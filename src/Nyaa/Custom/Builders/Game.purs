@@ -4,10 +4,11 @@ import Prelude
 
 import Data.Foldable (oneOf)
 import Data.Maybe (Maybe(..))
+import Data.Monoid (guard)
 import Data.Newtype (unwrap)
 import Deku.Attribute ((!:=))
 import Deku.Attributes (klass_, id_)
-import Deku.Control (text_)
+import Deku.Control (switcher, text_)
 import Deku.Core (Nut)
 import Deku.DOM as D
 import Deku.Listeners (click)
@@ -22,8 +23,10 @@ import Nyaa.Firebase.Firebase (Profile(..))
 import Nyaa.Ionic.Attributes as I
 import Nyaa.Ionic.Content (ionContent)
 import Nyaa.Ionic.Custom (customComponent)
+import Nyaa.Some (get)
 import Ocarina.Interpret (decodeAudioDataFromUri)
 import Ocarina.WebAPI (AudioContext, BrowserAudioBuffer)
+import Type.Proxy (Proxy(..))
 import Web.DOM.Document (toNonElementParentNode)
 import Web.DOM.NonElementParentNode (getElementById)
 import Web.HTML (HTMLCanvasElement, window)
@@ -31,10 +34,9 @@ import Web.HTML.HTMLCanvasElement as HTMLCanvasElement
 import Web.HTML.HTMLDocument (toDocument)
 import Web.HTML.Window (document)
 
+godMode = false
 newtype FxData = FxData { fx :: Fx, startTime :: Number }
 type FxPusher = FxData -> Effect Unit
-type TimeGetter = Effect Milliseconds
-
 
 foreign import currentTime :: AudioContext -> Effect Number
 
@@ -42,19 +44,30 @@ fxButton'
   :: FxPusher
   -> AudioContext
   -> Event Number
-  -> { icon :: String, color :: String, fx :: Fx }
+  -> { icon :: String, color :: String, fx :: Fx, active :: Maybe Boolean }
   -> Nut
-fxButton' push ctx eni i = D.button
-  ( oneOf
-      [ click $ eni <#> \startsAt -> do
-          ctm <- currentTime ctx
-          push (FxData { fx: i.fx, startTime: ctm - startsAt })
-      , klass_
-          $ i.color <>
-              " font-semibold py-2 px-4 border border-gray-400 rounded shadow ml-2 mt-2"
-      ]
-  )
-  [ text_ i.icon ]
+fxButton' push ctx eni i = do
+  let isActive = (i.active == Just true) || godMode
+  D.button
+    ( oneOf
+        ( guard isActive
+            [ click $ eni <#> \startsAt -> do
+                ctm <- currentTime ctx
+                push (FxData { fx: i.fx, startTime: ctm - startsAt })
+            ] <>
+            [ D.Disabled !:= (if isActive then "false" else "true")
+            , klass_
+                $ (if isActive then i.color else "bg-white") <>
+                    ( " font-semibold py-2 px-4 border border-gray-400 rounded shadow ml-2 mt-2"
+                        <>
+                          ( if isActive then ""
+                            else " opacity-50 cursor-not-allowed"
+                          )
+                    )
+            ]
+        )
+    )
+    [ text_ (if isActive then i.icon else "?") ]
 
 foreign import startGame
   :: HTMLCanvasElement
@@ -105,7 +118,7 @@ game
      , fxEvent :: EventIO FxData
      }
   -> Effect Unit
-game { name, audioContext, audioUri, fxEvent } = do
+game { name, audioContext, audioUri, fxEvent, profile } = do
   currentTimeEvent <- create
   let setFx = fxEvent.push
   let fx = fxEvent.event
@@ -123,7 +136,9 @@ game { name, audioContext, audioUri, fxEvent } = do
           toDocument d
         case c >>= HTMLCanvasElement.fromElement of
           Just canvas -> do
-            controls <- startGame canvas (subscribe fx) (currentTimeEvent.push) "nyaa!" roomId
+            controls <- startGame canvas (subscribe fx) (currentTimeEvent.push)
+              "nyaa!"
+              roomId
               (isHost == "true")
               audioContext
               audioBuffer
@@ -186,16 +201,61 @@ game { name, audioContext, audioUri, fxEvent } = do
                     [ text_ "..."
                     ]
                 ]
-            , D.div (klass_ "absolute")
-                [ fxButton { icon: "😬", fx: flatFx, color: "bg-red-200" } --
-                , fxButton { icon: "🎥", fx: buzzFx, color: "bg-orange-100" } --
-                , fxButton { icon: "🚀", fx: glideFx, color: "bg-amber-100" } --
-                , fxButton { icon: "☝️", fx: backFx, color: "bg-lime-100" } --
-                , fxButton { icon: "🌀", fx: rotateFx, color: "bg-purple-100" } --
-                , fxButton { icon: "🙈", fx: hideFx, color: "bg-emerald-100" } --
-                , fxButton { icon: "✨", fx: dazzleFx, color: "bg-indigo-300" } --
-                , fxButton { icon: "🤘", fx: audioFx, color: "bg-rose-200" } --
-                , fxButton { icon: "📣", fx: amplifyFx, color: "bg-neutral-200" } --
+            , flip switcher profile \(Profile p) -> D.div (klass_ "absolute")
+                [ fxButton
+                    { active: get (Proxy :: _ "flat") p
+                    , icon: "😬"
+                    , fx: flatFx
+                    , color: "bg-red-200"
+                    } --
+                , fxButton
+                    { active: get (Proxy :: _ "buzz") p
+                    , icon: "🎥"
+                    , fx: buzzFx
+                    , color: "bg-orange-100"
+                    } --
+                , fxButton
+                    { active: get (Proxy :: _ "glide") p
+                    , icon: "🚀"
+                    , fx: glideFx
+                    , color: "bg-amber-100"
+                    } --
+                , fxButton
+                    { active: get (Proxy :: _ "back") p
+                    , icon: "☝️"
+                    , fx: backFx
+                    , color: "bg-lime-100"
+                    } --
+                , fxButton
+                    { active: get (Proxy :: _ "rotate") p
+                    , icon: "🌀"
+                    , fx: rotateFx
+                    , color: "bg-purple-100"
+                    } --
+                , fxButton
+                    { active: get (Proxy :: _ "hide") p
+                    , icon: "🙈"
+                    , fx: hideFx
+                    , color: "bg-emerald-100"
+                    } --
+                , fxButton
+                    { active: get (Proxy :: _ "dazzle") p
+                    , icon: "✨"
+                    , fx: dazzleFx
+                    , color: "bg-indigo-300"
+                    } --
+                , fxButton
+                    { active: get (Proxy :: _ "crush") p
+                    , icon: "🤘"
+                    , fx: audioFx
+                    , color: "bg-rose-200"
+                    } --
+                , fxButton
+                    { active: get (Proxy :: _ "amplify") p
+                    , icon: "📣"
+                    , fx: amplifyFx
+                    , color: "bg-neutral-200"
+                    } --
                 , D.span
                     ( oneOf
                         [ id_ "time-remaining"
