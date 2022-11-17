@@ -3,21 +3,18 @@ module Nyaa.Custom.Pages.DevAdmin where
 import Prelude
 
 import Control.Promise (Promise, toAffE)
-import Data.Array (groupBy)
-import Data.Array.NonEmpty (NonEmptyArray, toArray)
+import Data.Array.NonEmpty (toArray)
 import Data.Foldable (oneOf)
-import Data.FunctorWithIndex (mapWithIndex)
-import Data.Tuple (Tuple(..), snd)
-import Data.Tuple.Nested ((/\))
 import Deku.Attribute ((!:=))
 import Deku.Attributes (klass_)
 import Deku.Control (text_)
 import Deku.Listeners (click_)
 import Effect (Effect)
-import Effect.Aff (launchAff_)
+import Effect.Aff (Aff, launchAff_)
 import Nyaa.Capacitor.Utils (Platform(..))
 import Nyaa.Constants.GameCenter as GCContants
 import Nyaa.Constants.PlayGames as PGConstants
+import Nyaa.Firebase.Firebase (Profile(..), Profile', genericUpdate, updateViaTransaction)
 import Nyaa.GameCenter (ReportableAchievement(..))
 import Nyaa.GameCenter as GC
 import Nyaa.Ionic.Attributes as I
@@ -33,16 +30,43 @@ import Nyaa.Ionic.Row (ionRow_)
 import Nyaa.Ionic.Title (ionTitle_)
 import Nyaa.Ionic.Toolbar (ionToolbar_)
 import Nyaa.PlayGames as PG
+import Nyaa.Some (Some, some)
 import Nyaa.Util.Chunk (chunk)
+import Type.Proxy (Proxy(..))
 
-stuff
+type ProfileSetter = Some Profile' -> Some Profile'
+
+data ProfileOp = ProfileSetter (Some Profile') | ProfileTransaction (Effect (Promise Unit))
+
+
+doBusinessLogic
+  :: forall r
+   . Platform
+  -> { android :: Effect (Promise Unit)
+     , ios :: Effect (Promise Unit)
+     , modProfile :: ProfileOp
+     | r
+     }
+  -> Aff Unit
+doBusinessLogic platform j = do
+  case j.modProfile of
+    ProfileSetter ps -> toAffE $ genericUpdate (Profile ps)
+    ProfileTransaction po -> toAffE po
+  case platform of
+    IOS -> toAffE j.ios
+    Android -> toAffE j.android
+    Web -> pure unit
+
+businessLogic
   :: Array
        { android :: Effect (Promise Unit)
        , ios :: Effect (Promise Unit)
        , text :: String
+       , modProfile :: ProfileOp
        }
-stuff =
+businessLogic =
   [ { text: "Unlock tutorial"
+    , modProfile: ProfileSetter $ some { hasCompletedTutorial: true }
     , ios: GC.reportAchievements
         { achievements:
             [ ReportableAchievement
@@ -55,6 +79,7 @@ stuff =
         { achievementID: PGConstants.tutorialAchievement }
     }
   , { text: "Unlock track 1"
+    , modProfile: ProfileSetter $ some { track1: true }
     , ios: GC.reportAchievements
         { achievements:
             [ ReportableAchievement
@@ -67,6 +92,7 @@ stuff =
         { achievementID: PGConstants.track1Achievement }
     }
   , { text: "Unlock flat"
+    , modProfile: ProfileSetter $ some { flat: true }
     , ios: GC.reportAchievements
         { achievements:
             [ ReportableAchievement
@@ -79,6 +105,7 @@ stuff =
         { achievementID: PGConstants.flatAchievement }
     }
   , { text: "Unlock buzz"
+    , modProfile: ProfileSetter $ some { buzz: true }
     , ios: GC.reportAchievements
         { achievements:
             [ ReportableAchievement
@@ -91,6 +118,7 @@ stuff =
         { achievementID: PGConstants.buzzAchievement }
     }
   , { text: "Unlock glide"
+    , modProfile: ProfileSetter $ some { glide: true }
     , ios: GC.reportAchievements
         { achievements:
             [ ReportableAchievement
@@ -103,6 +131,7 @@ stuff =
         { achievementID: PGConstants.glideAchievement }
     }
   , { text: "Unlock back"
+    , modProfile: ProfileSetter $ some { back: true }
     , ios: GC.reportAchievements
         { achievements:
             [ ReportableAchievement
@@ -115,6 +144,7 @@ stuff =
         { achievementID: PGConstants.backAchievement }
     }
   , { text: "Unlock track 2"
+    , modProfile: ProfileSetter $ some { track2: true }
     , ios: GC.reportAchievements
         { achievements:
             [ ReportableAchievement
@@ -127,6 +157,7 @@ stuff =
         { achievementID: PGConstants.track2Achievement }
     }
   , { text: "Unlock rotate"
+    , modProfile: ProfileSetter $ some { rotate: true }
     , ios: GC.reportAchievements
         { achievements:
             [ ReportableAchievement
@@ -139,6 +170,7 @@ stuff =
         { achievementID: PGConstants.rotateAchievement }
     }
   , { text: "Unlock hide"
+    , modProfile: ProfileSetter $ some { hide: true }
     , ios: GC.reportAchievements
         { achievements:
             [ ReportableAchievement
@@ -151,6 +183,7 @@ stuff =
         { achievementID: PGConstants.hideAchievement }
     }
   , { text: "Unlock dazzle"
+    , modProfile: ProfileSetter $ some { dazzle: true }
     , ios: GC.reportAchievements
         { achievements:
             [ ReportableAchievement
@@ -163,6 +196,7 @@ stuff =
         { achievementID: PGConstants.dazzleAchievement }
     }
   , { text: "Unlock track 3"
+    , modProfile: ProfileSetter $ some { track3: true }
     , ios: GC.reportAchievements
         { achievements:
             [ ReportableAchievement
@@ -175,6 +209,7 @@ stuff =
         { achievementID: PGConstants.track3Achievement }
     }
   , { text: "Unlock crush"
+    , modProfile: ProfileSetter $ some { crush: true }
     , ios: GC.reportAchievements
         { achievements:
             [ ReportableAchievement
@@ -187,6 +222,7 @@ stuff =
         { achievementID: PGConstants.crushAchievement }
     }
   , { text: "Unlock amplify"
+    , modProfile: ProfileSetter $ some { amplify: true }
     , ios: GC.reportAchievements
         { achievements:
             [ ReportableAchievement
@@ -200,6 +236,7 @@ stuff =
     }
   --
   , { text: "Add 10 @ lb 1"
+    , modProfile: ProfileTransaction $ updateViaTransaction (Proxy :: _ "highScoreTrack1") (max 10) 10
     , ios: GC.submitScore
         { leaderboardID: GCContants.track1LeaderboardID
         , points: 10
@@ -208,6 +245,7 @@ stuff =
         { leaderboardID: PGConstants.track1LeaderboardID, amount: 10 }
     }
   , { text: "Add 100 @ lb 1"
+    , modProfile: ProfileTransaction $ updateViaTransaction (Proxy :: _ "highScoreTrack1") (max 100) 100
     , ios: GC.submitScore
         { leaderboardID: GCContants.track1LeaderboardID
         , points: 100
@@ -216,6 +254,7 @@ stuff =
         { leaderboardID: PGConstants.track1LeaderboardID, amount: 100 }
     }
   , { text: "Add 1000 @ lb 1"
+    , modProfile: ProfileTransaction $ updateViaTransaction (Proxy :: _ "highScoreTrack1") (max 1000) 1000
     , ios: GC.submitScore
         { leaderboardID: GCContants.track1LeaderboardID
         , points: 1000
@@ -226,6 +265,7 @@ stuff =
   --
   --
   , { text: "Add 10 @ lb 2"
+    , modProfile: ProfileTransaction $ updateViaTransaction (Proxy :: _ "highScoreTrack2") (max 10) 10
     , ios: GC.submitScore
         { leaderboardID: GCContants.track2LeaderboardID
         , points: 10
@@ -234,6 +274,7 @@ stuff =
         { leaderboardID: PGConstants.track2LeaderboardID, amount: 10 }
     }
   , { text: "Add 100 @ lb 2"
+    , modProfile: ProfileTransaction $ updateViaTransaction (Proxy :: _ "highScoreTrack2") (max 100) 100
     , ios: GC.submitScore
         { leaderboardID: GCContants.track2LeaderboardID
         , points: 100
@@ -242,6 +283,7 @@ stuff =
         { leaderboardID: PGConstants.track2LeaderboardID, amount: 100 }
     }
   , { text: "Add 1000 @ lb 2"
+    , modProfile: ProfileTransaction $ updateViaTransaction (Proxy :: _ "highScoreTrack2") (max 1000) 1000
     , ios: GC.submitScore
         { leaderboardID: GCContants.track2LeaderboardID
         , points: 1000
@@ -252,6 +294,7 @@ stuff =
   --
   --
   , { text: "Add 10 @ lb 3"
+    , modProfile: ProfileTransaction $ updateViaTransaction (Proxy :: _ "highScoreTrack3") (max 10) 10
     , ios: GC.submitScore
         { leaderboardID: GCContants.track3LeaderboardID
         , points: 10
@@ -260,6 +303,7 @@ stuff =
         { leaderboardID: PGConstants.track3LeaderboardID, amount: 10 }
     }
   , { text: "Add 100 @ lb 3"
+    , modProfile: ProfileTransaction $ updateViaTransaction (Proxy :: _ "highScoreTrack3") (max 100) 100
     , ios: GC.submitScore
         { leaderboardID: GCContants.track3LeaderboardID
         , points: 100
@@ -268,6 +312,7 @@ stuff =
         { leaderboardID: PGConstants.track3LeaderboardID, amount: 100 }
     }
   , { text: "Add 1000 @ lb 3"
+    , modProfile: ProfileTransaction $ updateViaTransaction (Proxy :: _ "highScoreTrack3") (max 1000) 1000
     , ios: GC.submitScore
         { leaderboardID: GCContants.track3LeaderboardID
         , points: 1000
@@ -294,12 +339,7 @@ devAdmin opts = customComponent "dev-admin" {} (pure unit) (pure unit) \_ ->
           ( chunks <#> \i -> ionRow_ $ toArray i <#> \j -> ionCol_
               [ ionButton
                   ( oneOf
-                      [ click_ $ launchAff_
-                          ( if opts.platform == IOS then toAffE j.ios
-                            else if opts.platform == Android then toAffE
-                              j.android
-                            else pure unit
-                          )
+                      [ click_ $ launchAff_ (doBusinessLogic opts.platform j)
                       ]
                   )
                   [ text_ j.text ]
@@ -309,4 +349,4 @@ devAdmin opts = customComponent "dev-admin" {} (pure unit) (pure unit) \_ ->
 
   ]
   where
-  chunks = chunk 3 stuff
+  chunks = chunk 3 businessLogic

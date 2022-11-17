@@ -8,6 +8,7 @@ import Data.Foldable (for_)
 import Data.Maybe (Maybe(..))
 import Data.Newtype (class Newtype)
 import Data.Nullable (Nullable)
+import Data.Symbol (class IsSymbol, reflectSymbol)
 import Effect (Effect)
 import Effect.Aff (launchAff_)
 import Effect.Class (liftEffect)
@@ -15,6 +16,9 @@ import Effect.Ref as Ref
 import Effect.Uncurried (EffectFn1)
 import Nyaa.Capacitor.Preferences (getObject)
 import Nyaa.Some (Some)
+import Prim.Row (class Cons)
+import Type.Proxy (Proxy)
+import Unsafe.Coerce (unsafeCoerce)
 
 -- Auth
 type User =
@@ -106,5 +110,26 @@ reactToNewUser { user, push, unsubProfileListener } = for_ user
     liftEffect $ Ref.write unsub unsubProfileListener
 
 foreign import updateName :: { username :: String } -> Effect (Promise Unit)
-foreign import updateAvatarUrl :: { avatarUrl :: String } -> Effect (Promise Unit)
+foreign import genericUpdateImpl :: Profile -> Effect (Promise Unit)
+
+foreign import updateViaTransactionImpl
+  :: forall val. (val -> val) -> String -> Void -> Effect (Promise Unit)
+
+updateViaTransaction
+  :: forall key val r
+   . IsSymbol key
+  => Cons key val r Profile'
+  => (Proxy key)
+  -> (val -> val)
+  -> val
+  -> Effect (Promise Unit)
+updateViaTransaction p f v = updateViaTransactionImpl f (reflectSymbol p)
+  ((unsafeCoerce :: (val -> Void)) v)
+
+genericUpdate :: Profile -> Effect (Promise Unit)
+genericUpdate = genericUpdateImpl
+
+foreign import updateAvatarUrl
+  :: { avatarUrl :: String } -> Effect (Promise Unit)
+
 foreign import uploadAvatar :: Uint8Array -> Effect (Promise String)

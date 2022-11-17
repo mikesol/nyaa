@@ -49,10 +49,12 @@ import Nyaa.Ionic.Loading (brackedWithLoading)
 import Routing.Hash (getHash, setHash)
 
 foreign import prod :: Effect Boolean
+foreign import noStory :: Effect Boolean
 
 main :: Effect Unit
 main = do
   -- isProd <- prod
+  isRealDeal <- noStory
   unsubProfileListener <- Ref.new (pure unit)
   authListener <- createO
   profileListener <- createO

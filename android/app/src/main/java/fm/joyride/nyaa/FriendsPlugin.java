@@ -68,7 +68,7 @@ public class FriendsPlugin extends Plugin {
                                 PlayerBuffer playerBuffer = data.get();
                                 int nPlayers = playerBuffer.getCount();
                                 JSObject[] players = new JSObject[nPlayers];
-                                for (var i = 0; i < nPlayers; i++) {
+                                for (int i = 0; i < nPlayers; i++) {
                                     JSObject jsPlayer = new JSObject();
                                     Player player = playerBuffer.get(i);
                                     String id = player.getPlayerId();

@@ -6,3 +6,23 @@ export const setImpl = (key) => (val) => (rec) => {
   o[key] = val;
   return o;
 };
+
+export const modifyImpl = (key) => (f) => (rec) => {
+  const o = { ...rec };
+  const rk = rec[key];
+  if (rk !== undefined) {
+    o[key] = f(rec[key]);
+  }
+  return o;
+};
+
+export const modifyOrSetImpl = (key) => (f) => (val) => (rec) => {
+  const o = { ...rec };
+  const rk = rec[key];
+  if (rk !== undefined) {
+    o[key] = f(rec[key]);
+  } else {
+    o[key] = val;
+  }
+  return o;
+};

@@ -24,5 +24,15 @@ foreign import setImpl :: forall r a. String -> a -> Some r -> Some r
 set :: forall r r' l a. IsSymbol l => Cons l a r' r => Proxy l -> a -> Some r -> Some r
 set p = setImpl (reflectSymbol p)
 
+foreign import modifyImpl :: forall r a. String -> (a -> a) -> Some r -> Some r
+
+modify :: forall r r' l a. IsSymbol l => Cons l a r' r => Proxy l -> (a -> a) -> Some r -> Some r
+modify p = modifyImpl (reflectSymbol p)
+
+foreign import modifyOrSetImpl :: forall r a. String -> (a -> a) -> a -> Some r -> Some r
+
+modifyOrSet :: forall r r' l a. IsSymbol l => Cons l a r' r => Proxy l -> (a -> a) -> a -> Some r -> Some r
+modifyOrSet p = modifyOrSetImpl (reflectSymbol p)
+
 some :: forall x y z. Union x y z => { | x } -> Some z
 some = unsafeCoerce

@@ -58,7 +58,7 @@ export const signInWithPlayGames = async () => {
 export const gameCenterEagerAuth = async () => {
   await GameCenterAuth.eagerAuth();
   return;
-}
+};
 export const signOut = async () => {
   await auth.signOut();
   const platform = Capacitor.getPlatform();
@@ -120,6 +120,32 @@ export const updateAvatarUrl =
     );
   };
 
+export const genericUpdateImpl = (kvs) => async () => {
+  const profileDocRef = db.collection(PROFILE).doc(auth.currentUser.uid);
+  await profileDocRef.set(kvs, { merge: true });
+};
+
+export const updateViaTransactionImpl = (f) => (k) => (v) => async () => {
+  const profileDocRef = db.collection(PROFILE).doc(auth.currentUser.uid);
+  const myProfile = await db.runTransaction(async (transaction) => {
+    const profileDoc = await transaction.get(profileDocRef);
+    if (!profileDoc.exists) {
+      return { [k]: v };
+    }
+    const pd = profileDoc.data();
+    const rk = pd[k];
+    const o = { ...pd };
+    if (rk !== undefined) {
+      o[k] = f(pd[k]);
+    } else {
+      o[k] = v;
+    }
+    transaction.set(profileDocRef, o);
+    return o;
+  });
+  return myProfile;
+};
+
 export const createOrUpdateProfileAndInitializeListener =
   ({ username, avatarUrl, hasCompletedTutorial, push }) =>
   async () => {
@@ -154,11 +180,13 @@ export const createOrUpdateProfileAndInitializeListener =
 
 export const uploadAvatar = (bytes) => async () => {
   const storageRef = storage.ref();
-  const profileRef = storageRef.child(`nyaaProfileImages/${auth.currentUser.uid}`);
+  const profileRef = storageRef.child(
+    `nyaaProfileImages/${auth.currentUser.uid}`
+  );
   const metadata = {
-    contentType: 'image/jpeg',
+    contentType: "image/jpeg",
   };
   const uploadTask = await profileRef.put(bytes, metadata);
   const url = await uploadTask.ref.getDownloadURL();
   return url;
-} 
+};
