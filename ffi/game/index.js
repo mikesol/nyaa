@@ -277,7 +277,7 @@ export function startGameImpl(
             await sleep(1000);
         }
     };
-    const unsubFromEffects = subToEffects(({ fx, startTime }) => {
+    const unsubFromEffects = subToEffects(({ fx, startTime }) => () => {
         pubnub.publish({
             channel: `${roomId}-nyaa-score`,
             message: {
