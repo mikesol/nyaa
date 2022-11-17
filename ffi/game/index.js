@@ -284,6 +284,7 @@ export function startGameImpl(
             await sleep(5000);
             if (currentScore === latestScore) {
                 onTimeout();
+                return;
             } else {
                 currentScore = latestScore;
             }
