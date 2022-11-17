@@ -184,6 +184,8 @@ export function startGameImpl(
         userId,
     });
 
+    let latestScore = null;
+
     const listener = {
         status: (statusEvent) => {
             if (statusEvent.operation === "PNSubscribeOperation") {
@@ -208,6 +210,7 @@ export function startGameImpl(
                     const { score } = messageEvent.message;
                     uiState.enemyScore = score.toString().padStart(7, "0");
                     uiState.needsUpdate = true;
+                    latestScore = parseFloat(messageEvent.timetoken);
                     break;
                 case `${roomId}-nyaa-effect`:
                     messageEvent.message.isHost === isHost ? myEffect(messageEvent.message)() : theirEffect(messageEvent.message)();
@@ -239,19 +242,9 @@ export function startGameImpl(
                                 startTime: messageEvent.message.startTime,
                             },
                         });
-                        setTimeout(() => {
-                            startAudio();
-                            sendScore().then(() => {
-                                console.log("[PubNub] Finished sending scores");
-                            });
-                        }, messageEvent.message.startTime - getTime().time);
+                        startAll(messageEvent.message.startTime - getTime().time);
                     } else if (messageEvent.message.action === "ack2") {
-                        setTimeout(() => {
-                            startAudio();
-                            sendScore().then(() => {
-                                console.log("[PubNub] Finished sending scores");
-                            });
-                        }, messageEvent.message.startTime - getTime().time);
+                        startAll(messageEvent.message.startTime - getTime().time);
                     }
                     break;
             }
@@ -281,6 +274,33 @@ export function startGameImpl(
             await sleep(1000);
         }
     };
+
+    const monitorScore = async () => {
+        let currentScore = latestScore;
+        while (true) {
+            if (isFinished) {
+                return;
+            };
+            await sleep(5000);
+            if (currentScore === latestScore) {
+                onTimeout();
+            } else {
+                currentScore = latestScore;
+            }
+        }
+    }
+
+    const startAll = (targetTime) => {
+        setTimeout(() => {
+            startAudio();
+            sendScore().then(() => {
+                console.log("[PubNub] Finished sending scores");
+            });
+            monitorScore().then(() => {
+                console.log("[PubNub] Finished monitoring scores");
+            });
+        }, targetTime);
+    }
 
     const unsubFromEffects = subToEffects(({ fx, startTime, duration }) => () => {
         pubnub.publish({
@@ -314,6 +334,7 @@ export function startGameImpl(
             {
                 text: "Exit",
                 handler: () => {
+                    kill();
                     window.location.href = "/#/";
                 }
             }
@@ -321,6 +342,18 @@ export function startGameImpl(
 
         document.body.appendChild(alert);
         await alert.present();
+    }
+
+    function kill() {
+        isFinished = true;
+        notes.destroy();
+        guides.destroy();
+        hits.destroy();
+        reference.destroy();
+        audioTrack?.stop();
+        audioContext.suspend();
+        pubnub.unsubscribeAll();
+        unsubFromEffects();
     }
 
     return {
@@ -337,18 +370,7 @@ export function startGameImpl(
                     },
                 });
             }
-            onTimeout();
         },
-        kill() {
-            isFinished = true;
-            notes.destroy();
-            guides.destroy();
-            hits.destroy();
-            reference.destroy();
-            audioTrack?.stop();
-            audioContext.suspend();
-            pubnub.unsubscribeAll();
-            unsubFromEffects();
-        },
+        kill,
     };
 }
