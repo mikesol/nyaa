@@ -12,6 +12,7 @@ import Deku.DOM as D
 import Effect (Effect)
 import Effect.Aff (Milliseconds, launchAff_)
 import Effect.Class (liftEffect)
+import Effect.Class.Console (logShow)
 import Effect.Console (log)
 import Effect.Ref as Ref
 import Nyaa.Components.UpperLeftBackButton (upperLeftBackButton)
@@ -32,6 +33,7 @@ foreign import startGame
   :: HTMLCanvasElement
   -> String
   -> String
+  -> Boolean
   -> AudioContext
   -> BrowserAudioBuffer
   -> Effect { time :: Milliseconds, diff :: Number, pdiff :: Number }
@@ -46,7 +48,7 @@ game
 game { name, audioContext, audioUri } = do
   killRef <- Ref.new (pure unit)
   let
-    gameStart { roomId } = launchAff_ do
+    gameStart { roomId, isHost } = launchAff_ do
       audioBuffer <- decodeAudioDataFromUri audioContext audioUri
       liftEffect do
         n <- coordinatedNow
@@ -57,7 +59,7 @@ game { name, audioContext, audioUri } = do
         c <- getElementById (name <> "-canvas") $ toNonElementParentNode $ toDocument d
         case c >>= HTMLCanvasElement.fromElement of
           Just canvas -> do
-            controls <- startGame canvas "nyaa!" roomId audioContext audioBuffer n.now
+            controls <- startGame canvas "nyaa!" roomId (isHost == "true") audioContext audioBuffer n.now
             controls.start
             Ref.write (controls.kill *> n.cancelNow) killRef
           Nothing ->
@@ -65,7 +67,7 @@ game { name, audioContext, audioUri } = do
     gameEnd _ = do
       v <- Ref.read killRef
       v
-  customComponent name { roomId: "debug-room" } gameStart gameEnd \_ ->
+  customComponent name { roomId: "debug-room", isHost: "false" } gameStart gameEnd \_ ->
     [ ionContent (oneOf [ I.Fullscren !:= true ])
         [ D.canvas (oneOf [ klass_ "absolute w-full h-full", id_ (name <> "-canvas") ])
             [

@@ -123,7 +123,7 @@ makeApp withAdmin homeIs = ionApp_
 
   levelIonRoutes :: Array (Domable lock payload)
   levelIonRoutes = levelPages <#> \page ->
-    ionRoute (oneOf [ I.Url !:= "/" <> page <> "/:roomId", I.Component !:= page ]) []
+    ionRoute (oneOf [ I.Url !:= "/" <> page <> "/:roomId/:isHost", I.Component !:= page ]) []
 
   basicRoutes :: Array String
   basicRoutes = (if withAdmin then identity else filter (_ /= "dev-admin")) basicPages

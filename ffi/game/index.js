@@ -15,7 +15,8 @@ async function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-export function startGameImpl(canvas, userId, roomId, audioContext, audioBuffer, getTime) {
+export function startGameImpl(canvas, userId, roomId, isHost, audioContext, audioBuffer, getTime) {
+    console.log(isHost);
     // SECTION START - THREE //
 
     const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
@@ -209,32 +210,39 @@ export function startGameImpl(canvas, userId, roomId, audioContext, audioBuffer,
                     }
                     break;
                 case `${roomId}-nyaa-info`:
-                    switch (messageEvent.message.action) {
-                        case "start":
-                            const targetTime = messageEvent.message.targetTime;
-                            const currentTime = getTime().time;
-                            setTimeout(() => {
-                                startAudio();
-                                sendScore().then(() => {
-                                    console.log("[PubNub] Finished sending scores...");
-                                });
-                            }, (targetTime - currentTime) * 1000);
+                    if (messageEvent.message.action === "start") {
+                        pubnub.publish({
+                            channel: `${roomId}-nyaa-info`,
+                            message: {
+                                action: "ack1",
+                                startTime: messageEvent.message.startTime,
+                            },
+                        });
+                    } else if (messageEvent.message.action === "ack1") {
+                        pubnub.publish({
+                            channel: `${roomId}-nyaa-info`,
+                            message: {
+                                action: "ack2",
+                                startTime: messageEvent.message.startTime,
+                            },
+                        });
+                        setTimeout(() => {
+                            startAudio();
+                            sendScore().then(() => {
+                                console.log("[PubNub] Finished sending scores");
+                            });
+                        }, messageEvent.message.startTime - getTime().time);
+                    } else if (messageEvent.message.action === "ack2") {
+                        setTimeout(() => {
+                            startAudio();
+                            sendScore().then(() => {
+                                console.log("[PubNub] Finished sending scores");
+                            });
+                        }, messageEvent.message.startTime - getTime().time);
                     }
                     break;
             }
         },
-        presence: (presenceEvent) => {
-            if (presenceEvent.action === "join" && presenceEvent.occupancy >= 2 && presenceEvent.channel === `${roomId}-nyaa-info`) {
-                const currentTime = getTime().time;
-                pubnub.publish({
-                    channel: `${roomId}-nyaa-info`,
-                    message: {
-                        action: "start",
-                        targetTime: currentTime + 2,
-                    },
-                });
-            }
-        }
     };
 
     pubnub.addListener(listener);
@@ -244,7 +252,6 @@ export function startGameImpl(canvas, userId, roomId, audioContext, audioBuffer,
             `${roomId}-nyaa-effect`,
             `${roomId}-nyaa-info`,
         ],
-        withPresence: true,
     });
 
     const sendScore = async () => {
@@ -276,6 +283,16 @@ export function startGameImpl(canvas, userId, roomId, audioContext, audioBuffer,
         start() {
             renderer.render(scene, camera);
             requestAnimationFrame(render);
+            if (!isHost) {
+                const currentTime = getTime().time;
+                pubnub.publish({
+                    channel: `${roomId}-nyaa-info`,
+                    message: {
+                        action: "start",
+                        startTime: currentTime + 2500,
+                    },
+                });
+            }
         },
         kill() {
             isFinished = true;
