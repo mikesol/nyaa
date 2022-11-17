@@ -119,6 +119,14 @@ game { name, audioContext, audioUri } = do
             , fxButton { icon: "✨", color: "bg-indigo-300" } --
             , fxButton { icon: "🤘", color: "bg-rose-200" } --
             , fxButton { icon: "📣", color: "bg-neutral-200" } --
+            , D.span
+                    ( oneOf
+                        [ id_ "time-remaining"
+                        , klass_ "text-pink-500 text-xl ml-2 mt-1 font-mono"
+                        ]
+                    )
+                    [ text_ "15"
+                    ]
             ]
         ]
     ]
