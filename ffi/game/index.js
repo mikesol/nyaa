@@ -18,6 +18,7 @@ async function sleep(ms) {
 export function startGameImpl(
     canvas,
     subToEffects,
+    pushBeginTime,
     userId,
     roomId,
     isHost,
@@ -128,6 +129,7 @@ export function startGameImpl(
             audioContext.resume();
             audioTrack.start();
             beginTime = audioContext.currentTime;
+            pushBeginTime(beginTime)();
         } else {
             throw new Error("Already started...");
         }
@@ -283,8 +285,8 @@ export function startGameImpl(
             message: {
                 effect: fx,
                 startTime,
-                duration: 3142,
-                offset: 42
+                duration: 0.31416,
+                offset: 0.42
             },
           });
       })();

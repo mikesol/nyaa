@@ -17,7 +17,7 @@ import Effect.Class (liftEffect)
 import Effect.Console (log)
 import Effect.Ref as Ref
 import FRP.Event (Event, EventIO, create, subscribe)
-import Nyaa.CoordinatedNow (NowIs, coordinatedNow)
+import Nyaa.CoordinatedNow (coordinatedNow)
 import Nyaa.Ionic.Attributes as I
 import Nyaa.Ionic.Content (ionContent)
 import Nyaa.Ionic.Custom (customComponent)
@@ -30,20 +30,24 @@ import Web.HTML.HTMLCanvasElement as HTMLCanvasElement
 import Web.HTML.HTMLDocument (toDocument)
 import Web.HTML.Window (document)
 
-newtype FxData = FxData { fx :: Fx, startTime :: Milliseconds }
+newtype FxData = FxData { fx :: Fx, startTime :: Number }
 type FxPusher = FxData -> Effect Unit
 type TimeGetter = Effect Milliseconds
 
+
+foreign import currentTime :: AudioContext -> Effect Number
+
 fxButton'
   :: FxPusher
-  -> Event (Effect NowIs)
+  -> AudioContext
+  -> Event Number
   -> { icon :: String, color :: String, fx :: Fx }
   -> Nut
-fxButton' push eni i = D.button
+fxButton' push ctx eni i = D.button
   ( oneOf
-      [ click $ eni <#> \nowIs -> do
-          { time } <- nowIs
-          push (FxData { fx: i.fx, startTime: time })
+      [ click $ eni <#> \startsAt -> do
+          ctm <- currentTime ctx
+          push (FxData { fx: i.fx, startTime: ctm - startsAt })
       , klass_
           $ i.color <>
               " font-semibold py-2 px-4 border border-gray-400 rounded shadow ml-2 mt-2"
@@ -54,6 +58,7 @@ fxButton' push eni i = D.button
 foreign import startGame
   :: HTMLCanvasElement
   -> ((FxData -> Effect Unit) -> Effect (Effect Unit))
+  -> (Number -> Effect Unit)
   -> String
   -> String
   -> Boolean
@@ -99,7 +104,7 @@ game
      }
   -> Effect Unit
 game { name, audioContext, audioUri, fxEvent } = do
-  nowEvent <- create
+  currentTimeEvent <- create
   let setFx = fxEvent.push
   let fx = fxEvent.event
   killRef <- Ref.new (pure unit)
@@ -109,7 +114,6 @@ game { name, audioContext, audioUri, fxEvent } = do
       liftEffect do
         n <- coordinatedNow
         t <- n.now
-        nowEvent.push n.now
         log $ "[Game] Initial timestamp is set at " <> show (unwrap t.time)
         w <- window
         d <- document w
@@ -117,7 +121,7 @@ game { name, audioContext, audioUri, fxEvent } = do
           toDocument d
         case c >>= HTMLCanvasElement.fromElement of
           Just canvas -> do
-            controls <- startGame canvas (subscribe fx) "nyaa!" roomId
+            controls <- startGame canvas (subscribe fx) (currentTimeEvent.push) "nyaa!" roomId
               (isHost == "true")
               audioContext
               audioBuffer
@@ -133,7 +137,7 @@ game { name, audioContext, audioUri, fxEvent } = do
     gameEnd
     \_ ->
       [ do
-          let fxButton = fxButton' setFx nowEvent.event
+          let fxButton = fxButton' setFx audioContext currentTimeEvent.event
           ionContent (oneOf [ I.Fullscren !:= true ])
             [ D.canvas
                 ( oneOf
