@@ -18,6 +18,7 @@ import Effect.Class (liftEffect)
 import Effect.Console (log)
 import Effect.Ref as Ref
 import FRP.Event (Event, EventIO, create, subscribe)
+import Nyaa.Constants.Effects (EffectTiming(..), effectTimings)
 import Nyaa.CoordinatedNow (coordinatedNow)
 import Nyaa.Firebase.Firebase (Profile(..))
 import Nyaa.Ionic.Attributes as I
@@ -35,7 +36,9 @@ import Web.HTML.HTMLDocument (toDocument)
 import Web.HTML.Window (document)
 
 godMode = false
-newtype FxData = FxData { fx :: Fx, startTime :: Number }
+newtype FxData = FxData
+  { fx :: Fx, startTime :: Number, duration :: Number }
+
 type FxPusher = FxData -> Effect Unit
 
 foreign import currentTime :: AudioContext -> Effect Number
@@ -44,7 +47,12 @@ fxButton'
   :: FxPusher
   -> AudioContext
   -> Event Number
-  -> { icon :: String, color :: String, fx :: Fx, active :: Maybe Boolean }
+  -> { icon :: String
+     , color :: String
+     , fx :: Fx
+     , active :: Maybe Boolean
+     , timing :: EffectTiming
+     }
   -> Nut
 fxButton' push ctx eni i = do
   let isActive = (i.active == Just true) || godMode
@@ -53,7 +61,10 @@ fxButton' push ctx eni i = do
         ( guard isActive
             [ click $ eni <#> \startsAt -> do
                 ctm <- currentTime ctx
-                push (FxData { fx: i.fx, startTime: ctm - startsAt })
+                push
+                  ( FxData
+                      { fx: i.fx, startTime: ctm - startsAt, duration: (unwrap i.timing).duration }
+                  )
             ] <>
             [ D.Disabled !:= (if isActive then "false" else "true")
             , klass_
@@ -207,54 +218,63 @@ game { name, audioContext, audioUri, fxEvent, profile } = do
                     , icon: "😬"
                     , fx: flatFx
                     , color: "bg-red-200"
+                    , timing: effectTimings.flat
                     } --
                 , fxButton
                     { active: get (Proxy :: _ "buzz") p
                     , icon: "🎥"
                     , fx: buzzFx
                     , color: "bg-orange-100"
+                    , timing: effectTimings.buzz
                     } --
                 , fxButton
                     { active: get (Proxy :: _ "glide") p
                     , icon: "🚀"
                     , fx: glideFx
                     , color: "bg-amber-100"
+                    , timing: effectTimings.glide
                     } --
                 , fxButton
                     { active: get (Proxy :: _ "back") p
                     , icon: "☝️"
                     , fx: backFx
                     , color: "bg-lime-100"
+                    , timing: effectTimings.back
                     } --
                 , fxButton
                     { active: get (Proxy :: _ "rotate") p
                     , icon: "🌀"
                     , fx: rotateFx
                     , color: "bg-purple-100"
+                    , timing: effectTimings.rotate
                     } --
                 , fxButton
                     { active: get (Proxy :: _ "hide") p
                     , icon: "🙈"
                     , fx: hideFx
                     , color: "bg-emerald-100"
+                    , timing: effectTimings.hide
                     } --
                 , fxButton
                     { active: get (Proxy :: _ "dazzle") p
                     , icon: "✨"
                     , fx: dazzleFx
                     , color: "bg-indigo-300"
+                    , timing: effectTimings.dazzle
                     } --
                 , fxButton
                     { active: get (Proxy :: _ "crush") p
                     , icon: "🤘"
                     , fx: audioFx
                     , color: "bg-rose-200"
+                    , timing: effectTimings.crush
                     } --
                 , fxButton
                     { active: get (Proxy :: _ "amplify") p
                     , icon: "📣"
                     , fx: amplifyFx
                     , color: "bg-neutral-200"
+                    , timing: effectTimings.amplify
                     } --
                 , D.span
                     ( oneOf

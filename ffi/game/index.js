@@ -280,13 +280,13 @@ export function startGameImpl(
         }
     };
 
-    const unsubFromEffects = subToEffects(({ fx, startTime }) => () => {
+    const unsubFromEffects = subToEffects(({ fx, startTime, duration }) => () => {
         pubnub.publish({
             channel: `${roomId}-nyaa-effect`,
             message: {
                 effect: fx,
                 startTime: startTime + 1.0,
-                duration: 4.0,
+                duration,
                 offset: 0.25,
             },
           });
