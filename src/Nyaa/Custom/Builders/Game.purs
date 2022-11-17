@@ -10,6 +10,7 @@ import Data.Newtype (unwrap)
 import Deku.Attribute ((!:=))
 import Deku.Attributes (id_, klass, klass_)
 import Deku.Control (switcher, text, text_)
+import Control.Alt ((<|>))
 import Deku.Core (Nut)
 import Deku.DOM as D
 import Deku.Listeners (click)
@@ -323,9 +324,10 @@ game { name, audioContext, audioUri, fxEvent, profile } = do
                     ( oneOf
                         [ id_ "my-time-remaining"
                         , klass
-                            ( dedup myCountdownIsOn.event <#> \isOn ->
-                                "text-blue-500 text-xl ml-2 mt-1 font-mono" <>
-                                  (if not isOn then " invisible" else "")
+                            ( dedup (myCountdownIsOn.event <|> pure false) <#>
+                                \isOn ->
+                                  "text-blue-500 text-xl ml-2 mt-1 font-mono" <>
+                                    (if not isOn then " invisible" else "")
                             )
                         ]
                     )
@@ -335,9 +337,11 @@ game { name, audioContext, audioUri, fxEvent, profile } = do
                     ( oneOf
                         [ id_ "their-time-remaining"
                         , klass
-                            ( dedup theirCountdownIsOn.event <#> \isOn ->
-                                "text-green-500 text-xl ml-2 mt-1 font-mono" <>
-                                  (if not isOn then " invisible" else "")
+                            ( dedup (theirCountdownIsOn.event <|> pure false)
+                                <#> \isOn ->
+                                  "text-green-500 text-xl ml-2 mt-1 font-mono"
+                                    <>
+                                      (if not isOn then " invisible" else "")
                             )
                         ]
                     )
