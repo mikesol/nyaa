@@ -15,7 +15,7 @@ async function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-export function startGameImpl(canvas, userId, roomId, audioContext, audioBuffer, getTime) {
+export function startGameImpl(canvas, sub, userId, roomId, audioContext, audioBuffer, getTime) {
     // SECTION START - THREE //
 
     const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
