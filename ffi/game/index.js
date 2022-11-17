@@ -226,13 +226,20 @@ export function startGameImpl(canvas, userId, roomId, audioContext, audioBuffer,
         presence: (presenceEvent) => {
             if (presenceEvent.action === "join" && presenceEvent.occupancy >= 2 && presenceEvent.channel === `${roomId}-nyaa-info`) {
                 const currentTime = getTime().time;
+                const targetTime = currentTime + 2;
                 pubnub.publish({
                     channel: `${roomId}-nyaa-info`,
                     message: {
                         action: "start",
-                        targetTime: currentTime + 2,
+                        targetTime,
                     },
                 });
+                setTimeout(() => {
+                    startAudio();
+                    sendScore().then(() => {
+                        console.log("[PubNub] Finished sending scores...");
+                    });
+                }, (targetTime - currentTime) * 1000);
             }
         }
     };
