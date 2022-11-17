@@ -27,8 +27,7 @@ export function startGameImpl(
     audioContext,
     audioBuffer,
     getTime
-  ) {
-    console.log(isHost);
+) {
     // SECTION START - THREE //
 
     const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
@@ -306,6 +305,24 @@ export function startGameImpl(
         renderer.render(scene, camera);
     }
 
+    async function onTimeout() {
+        const alert = document.createElement('ion-alert');
+
+        alert.header = "oh nyo, a timeout!?";
+        alert.message = "Either you, or your opponent's connection timed out! This match will be exited...";
+        alert.buttons = [
+            {
+                text: "Exit",
+                handler: () => {
+                    window.location.href = "/#/";
+                }
+            }
+        ];
+
+        document.body.appendChild(alert);
+        await alert.present();
+    }
+
     return {
         start() {
             renderer.render(scene, camera);
@@ -320,6 +337,7 @@ export function startGameImpl(
                     },
                 });
             }
+            onTimeout();
         },
         kill() {
             isFinished = true;
@@ -327,10 +345,10 @@ export function startGameImpl(
             guides.destroy();
             hits.destroy();
             reference.destroy();
-            audioTrack.stop();
+            audioTrack?.stop();
             audioContext.suspend();
             pubnub.unsubscribeAll();
             unsubFromEffects();
-        }
+        },
     };
 }
