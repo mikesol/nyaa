@@ -11,6 +11,7 @@ import Deku.Attributes (klass_, id_)
 import Deku.Control (switcher, text_)
 import Deku.Core (Nut)
 import Deku.DOM as D
+import Deku.Do as Deku
 import Deku.Listeners (click)
 import Effect (Effect)
 import Effect.Aff (Milliseconds, launchAff_)
@@ -25,6 +26,7 @@ import Nyaa.Ionic.Attributes as I
 import Nyaa.Ionic.Content (ionContent)
 import Nyaa.Ionic.Custom (customComponent)
 import Nyaa.Some (get)
+import Nyaa.Util.RandomId (makeId)
 import Ocarina.Interpret (decodeAudioDataFromUri)
 import Ocarina.WebAPI (AudioContext, BrowserAudioBuffer)
 import Type.Proxy (Proxy(..))
@@ -35,7 +37,9 @@ import Web.HTML.HTMLCanvasElement as HTMLCanvasElement
 import Web.HTML.HTMLDocument (toDocument)
 import Web.HTML.Window (document)
 
+godMode ∷ Boolean
 godMode = false
+
 newtype FxData = FxData
   { fx :: Fx, startTime :: Number, duration :: Number }
 
@@ -63,7 +67,10 @@ fxButton' push ctx eni i = do
                 ctm <- currentTime ctx
                 push
                   ( FxData
-                      { fx: i.fx, startTime: ctm - startsAt, duration: (unwrap i.timing).duration }
+                      { fx: i.fx
+                      , startTime: ctm - startsAt
+                      , duration: (unwrap i.timing).duration
+                      }
                   )
             ] <>
             [ D.Disabled !:= (if isActive then "false" else "true")
@@ -84,6 +91,8 @@ foreign import startGame
   :: HTMLCanvasElement
   -> ((FxData -> Effect Unit) -> Effect (Effect Unit))
   -> (Number -> Effect Unit)
+  -> (FxData -> Effect Unit)
+  -> (FxData -> Effect Unit)
   -> String
   -> String
   -> Boolean
@@ -130,6 +139,8 @@ game
      }
   -> Effect Unit
 game { name, audioContext, audioUri, fxEvent, profile } = do
+  myEffect <- create
+  theirEffect <- create
   currentTimeEvent <- create
   let setFx = fxEvent.push
   let fx = fxEvent.event
@@ -147,7 +158,12 @@ game { name, audioContext, audioUri, fxEvent, profile } = do
           toDocument d
         case c >>= HTMLCanvasElement.fromElement of
           Just canvas -> do
-            controls <- startGame canvas (subscribe fx) (currentTimeEvent.push)
+            controls <- startGame
+              canvas
+              (subscribe fx)
+              (currentTimeEvent.push)
+              myEffect.push
+              theirEffect.push
               "nyaa!"
               roomId
               (isHost == "true")
@@ -164,7 +180,7 @@ game { name, audioContext, audioUri, fxEvent, profile } = do
   customComponent name { roomId: "debug-room", isHost: "false" } gameStart
     gameEnd
     \_ ->
-      [ do
+      [ Deku.do
           let fxButton = fxButton' setFx audioContext currentTimeEvent.event
           ionContent (oneOf [ I.Fullscren !:= true ])
             [ D.canvas

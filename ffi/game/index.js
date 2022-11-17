@@ -19,6 +19,8 @@ export function startGameImpl(
     canvas,
     subToEffects,
     pushBeginTime,
+    myEffect,
+    theirEffect,
     userId,
     roomId,
     isHost,
@@ -209,6 +211,7 @@ export function startGameImpl(
                     uiState.needsUpdate = true;
                     break;
                 case `${roomId}-nyaa-effect`:
+                    messageEvent.message.isHost === isHost ? myEffect(messageEvent.message)() : theirEffect(messageEvent.message)();
                     const { effect, startTime, duration, offset } = messageEvent.message;
                     if (effect === "camera") {
                         cameraEffect.activate(startTime, duration, offset);
@@ -287,6 +290,7 @@ export function startGameImpl(
                 effect: fx,
                 startTime: startTime + 1.0,
                 duration,
+                isHost,
                 offset: 0.25,
             },
           });
