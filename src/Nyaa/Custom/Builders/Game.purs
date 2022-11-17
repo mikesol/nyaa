@@ -259,7 +259,15 @@ game { name, audioContext, audioUri, fxEvent, profile } = do
                 , D.span
                     ( oneOf
                         [ id_ "time-remaining"
-                        , klass_ "text-pink-500 text-xl ml-2 mt-1 font-mono"
+                        , klass_ "text-blue-500 text-xl ml-2 mt-1 font-mono"
+                        ]
+                    )
+                    [ text_ "15"
+                    ]
+                , D.span
+                    ( oneOf
+                        [ id_ "time-remaining"
+                        , klass_ "text-green-500 text-xl ml-2 mt-1 font-mono"
                         ]
                     )
                     [ text_ "15"
