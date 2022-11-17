@@ -42,7 +42,7 @@ import Nyaa.Ionic.CardHeader (ionCardHeader_)
 import Nyaa.Ionic.CardTitle (ionCardTitle_)
 import Nyaa.Ionic.Col (ionCol)
 import Nyaa.Ionic.Content (ionContent)
-import Nyaa.Ionic.Custom (customComponent)
+import Nyaa.Ionic.Custom (customComponent_)
 import Nyaa.Ionic.Enums (buttonexpandBlock, buttonexpandFull, danger, labelStacked)
 import Nyaa.Ionic.Grid (ionGrid_)
 import Nyaa.Ionic.Header (ionHeader, ionHeader_)
@@ -104,7 +104,7 @@ profilePage
      , profileState :: Event { profile :: Profile }
      }
   -> Effect Unit
-profilePage opts = customComponent "profile-page" {} (pure unit) (pure unit) \_ ->
+profilePage opts = customComponent_ "profile-page" {} \_ ->
   [ ionHeader (oneOf [ I.Translucent !:= true ])
       [ ionToolbar_
           [ ionButtons (oneOf [ I.Slot !:= "start" ])

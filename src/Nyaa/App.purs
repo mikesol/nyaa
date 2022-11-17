@@ -2,12 +2,8 @@ module Nyaa.App where
 
 import Prelude
 
-import Data.Array as A
 import Data.Filterable (filter)
 import Data.Foldable (oneOf)
-import Data.List (List(..), (:))
-import Data.List as L
-import Data.Tuple.Nested ((/\))
 import Deku.Attribute ((!:=))
 import Deku.Control (text_)
 import Deku.Core (Domable, Nut)
@@ -16,7 +12,7 @@ import Effect (Effect)
 import Nyaa.Ionic.App (ionApp_)
 import Nyaa.Ionic.Attributes as I
 import Nyaa.Ionic.Content (ionContent)
-import Nyaa.Ionic.Custom (customComponent)
+import Nyaa.Ionic.Custom (customComponent_)
 import Nyaa.Ionic.Header (ionHeader)
 import Nyaa.Ionic.Item (ionItem)
 import Nyaa.Ionic.Label (ionLabel_)
@@ -54,12 +50,11 @@ import Nyaa.Ionic.Toolbar (ionToolbar_)
 -- Invite accept & wait page
 -- Invite reject page
 
-pages :: Array String
-pages =
+basicPages :: Array String
+basicPages =
   [ "story-book"
   , "intro-screen"
   , "dev-admin"
-  , "path-test"
   , "tutorial-quest"
   , "hypersynthetic-quest"
   , "flat-quest"
@@ -76,32 +71,39 @@ pages =
   , "newb-lounge"
   , "pro-lounge"
   , "deity-lounge"
-  , "tutorial-level"
-  , "newb-level"
-  , "pro-level"
-  , "deity-level"
   , "lounge-picker"
   , "profile-page"
   ]
 
+levelPages :: Array String
+levelPages =
+  [ "tutorial-level"
+  , "newb-level"
+  , "pro-level"
+  , "deity-level"
+  ]
+
 storybookCC :: Effect Unit
 storybookCC = do
-  customComponent "story-book" {} (pure unit) (pure unit) \_ -> do
+  customComponent_ "story-book" {} \_ -> do
     let
-      go2 Nil = Nil
-      go2 ((shead /\ head) : tail) = do
-        ( ionItem (oneOf [ I.Button !:= true, D.Href !:= shead ])
-            [ ionLabel_ [ D.h3_ [ text_ head ] ] ]
-        ) : go2 tail
-
-      elts = go2 (L.fromFoldable (map (\i -> if i == "path-test" then ("/path-test/foo-bar-baz" /\ i) else (i /\ i)) pages))
+      basicEntries :: forall lock payload. Array (Domable lock payload)
+      basicEntries = basicPages <#> \page ->
+        ionItem (oneOf [ I.Button !:= true, D.Href !:= "/" <> page ])
+          [ ionLabel_ [ D.h3_ [ text_ page ] ]
+          ]
+      levelEntries :: forall lock payload. Array (Domable lock payload)
+      levelEntries = levelPages <#> \page ->
+        ionItem (oneOf [ I.Button !:= true, D.Href !:= "/" <> page <> "/debug-room" ])
+          [ ionLabel_ [ D.h3_ [ text_ page ] ]
+          ]
     [ ionHeader (oneOf [ I.Translucent !:= true ])
         [ ionToolbar_
             [ ionTitle_ [ text_ "Storybook" ]
             ]
         ]
     , ionContent (oneOf [ I.Fullscren !:= true ])
-        [ ionList_ (A.fromFoldable elts) ]
+        [ ionList_ $ basicEntries <> levelEntries ]
     ]
 
 makeApp :: forall lock payload. Boolean -> String -> Domable lock payload
@@ -109,24 +111,22 @@ makeApp withAdmin homeIs = ionApp_
   [ ionRouter_
       ( [ ionRoute (oneOf [ I.Url !:= "/", I.Component !:= homeIs ])
             []
-        ] <> A.fromFoldable routes
+        ] <> basicIonRoutes <> levelIonRoutes
 
       )
   , ionNav_ []
   ]
   where
+  basicIonRoutes :: Array (Domable lock payload)
+  basicIonRoutes = basicRoutes <#> \page ->
+    ionRoute (oneOf [ I.Url !:= "/" <> page, I.Component !:= page ]) []
 
-  go Nil = Nil
-  go ((shead /\ head) : tail) = do
-    (ionRoute (oneOf [ I.Url !:= shead, I.Component !:= head ]) []) :
-      go tail
+  levelIonRoutes :: Array (Domable lock payload)
+  levelIonRoutes = levelPages <#> \page ->
+    ionRoute (oneOf [ I.Url !:= "/" <> page <> "/:roomId", I.Component !:= page ]) []
 
-  routes = go
-    ( L.fromFoldable
-        ( map (\i -> if i == "path-test" then ("/path-test/:sessionId" /\ i) else (i /\ i)) $
-            (if withAdmin then identity else filter (_ /= "dev-admin")) pages
-        )
-    )
+  basicRoutes :: Array String
+  basicRoutes = (if withAdmin then identity else filter (_ /= "dev-admin")) basicPages
 
 storybook :: Nut
 storybook = makeApp true "story-book"

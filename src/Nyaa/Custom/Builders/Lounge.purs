@@ -22,7 +22,7 @@ import Nyaa.Ionic.CardHeader (ionCardHeader_)
 import Nyaa.Ionic.CardSubtitle (ionCardSubtitle_)
 import Nyaa.Ionic.CardTitle (ionCardTitle_)
 import Nyaa.Ionic.Content (ionContent)
-import Nyaa.Ionic.Custom (customComponent)
+import Nyaa.Ionic.Custom (customComponent_)
 import Nyaa.Ionic.Header (ionHeader)
 import Nyaa.Ionic.Title (ionTitle_)
 import Nyaa.Ionic.Toolbar (ionToolbar_)
@@ -80,7 +80,7 @@ lounge
      , missions :: Array Mission
      }
   -> Effect Unit
-lounge i = customComponent i.name {} (pure unit) (pure unit) \_ ->
+lounge i = customComponent_ i.name {} \_ ->
   [ ionHeader (oneOf [ I.Translucent !:= true ])
       [ ionToolbar_
           [ ionButtons (oneOf [ I.Slot !:= "start" ])

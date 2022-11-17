@@ -1,22 +1,23 @@
 export const customComponentImpl =
-  (componentName) => (localProps) => (connectedHook) => (disconnectedHook) => (run) => () => {
+    (componentName) => (localProps) => (connectedHook) => (disconnectedHook) => (run) => () => {
     class CustomComponent extends HTMLElement {
       constructor() {
         super();
+        this.ionic$locals = undefined;
         this.deku$unsubscribe = undefined;
       }
       disconnectedCallback() {
         this.deku$unsubscribe && this.deku$unsubscribe();
-          this.deku$unsubscribe = undefined;
-          disconnectedHook();
+        this.deku$unsubscribe = undefined;
+        disconnectedHook(this.ionic$locals)();
       }
       connectedCallback() {
-        const locals = {};
+        this.ionic$locals = {};
         for (var i = 0; i < localProps.length; i++) {
-          locals[localProps[i]] = this[localProps[i]];
+          this.ionic$locals[localProps[i]] = this[localProps[i]];
         }
-        this.deku$unsubscribe = run(this)(locals)();
-        connectedHook();
+        this.deku$unsubscribe = run(this)(this.ionic$locals)();
+        connectedHook(this.ionic$locals)();
       }
     }
 

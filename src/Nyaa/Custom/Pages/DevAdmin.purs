@@ -23,7 +23,7 @@ import Nyaa.Ionic.Button (ionButton)
 import Nyaa.Ionic.Buttons (ionButtons)
 import Nyaa.Ionic.Col (ionCol_)
 import Nyaa.Ionic.Content (ionContent)
-import Nyaa.Ionic.Custom (customComponent)
+import Nyaa.Ionic.Custom (customComponent_)
 import Nyaa.Ionic.Grid (ionGrid_)
 import Nyaa.Ionic.Header (ionHeader)
 import Nyaa.Ionic.Row (ionRow_)
@@ -325,7 +325,7 @@ businessLogic =
 devAdmin
   :: { platform :: Platform }
   -> Effect Unit
-devAdmin opts = customComponent "dev-admin" {} (pure unit) (pure unit) \_ ->
+devAdmin opts = customComponent_ "dev-admin" {} \_ ->
   [ ionHeader (oneOf [ I.Translucent !:= true ])
       [ ionToolbar_
           [ ionButtons (oneOf [ I.Slot !:= "start" ])

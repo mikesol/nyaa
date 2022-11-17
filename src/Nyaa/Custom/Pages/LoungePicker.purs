@@ -22,12 +22,11 @@ import Nyaa.Ionic.CardHeader (ionCardHeader_)
 import Nyaa.Ionic.CardSubtitle (ionCardSubtitle_)
 import Nyaa.Ionic.CardTitle (ionCardTitle_)
 import Nyaa.Ionic.Content (ionContent)
-import Nyaa.Ionic.Custom (customComponent)
+import Nyaa.Ionic.Custom (customComponent_)
 import Nyaa.Ionic.Header (ionHeader)
 import Nyaa.Ionic.Title (ionTitle_)
 import Nyaa.Ionic.Toolbar (ionToolbar_)
-import Nyaa.Some (Some)
-import Nyaa.Some (get)
+import Nyaa.Some (Some, get)
 import Type.Proxy (Proxy(..))
 
 newtype Lounge = Lounge
@@ -123,7 +122,7 @@ loungePicker
   :: { profileState :: Event { profile :: Profile }
      }
   -> Effect Unit
-loungePicker i = customComponent "lounge-picker" {} (pure unit) (pure unit)
+loungePicker i = customComponent_ "lounge-picker" {}
   \_ ->
     [ ionHeader (oneOf [ I.Translucent !:= true ])
         [ ionToolbar_
