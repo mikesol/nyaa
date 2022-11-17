@@ -8,8 +8,8 @@ import Data.Maybe (Maybe(..))
 import Data.Monoid (guard)
 import Data.Newtype (unwrap)
 import Deku.Attribute ((!:=))
-import Deku.Attributes (klass_, id_)
-import Deku.Control (switcher, text_)
+import Deku.Attributes (id_, klass, klass_)
+import Deku.Control (switcher, text, text_)
 import Deku.Core (Nut)
 import Deku.DOM as D
 import Deku.Listeners (click)
@@ -21,6 +21,7 @@ import Effect.Ref as Ref
 import FRP.Event (Event, EventIO, create, subscribe)
 import Nyaa.Constants.Effects (EffectTiming, effectTimings)
 import Nyaa.CoordinatedNow (coordinatedNow)
+import Nyaa.FRP.Dedup (dedup)
 import Nyaa.Firebase.Firebase (Profile(..))
 import Nyaa.Ionic.Attributes as I
 import Nyaa.Ionic.Content (ionContent)
@@ -320,19 +321,27 @@ game { name, audioContext, audioUri, fxEvent, profile } = do
                     } --
                 , D.span
                     ( oneOf
-                        [ id_ "time-remaining"
-                        , klass_ "text-blue-500 text-xl ml-2 mt-1 font-mono"
+                        [ id_ "my-time-remaining"
+                        , klass
+                            ( dedup myCountdownIsOn.event <#> \isOn ->
+                                "text-blue-500 text-xl ml-2 mt-1 font-mono" <>
+                                  (if not isOn then " invisible" else "")
+                            )
                         ]
                     )
-                    [ text_ "15"
+                    [ text (show <$> myCountdownNumber.event)
                     ]
                 , D.span
                     ( oneOf
-                        [ id_ "time-remaining"
-                        , klass_ "text-green-500 text-xl ml-2 mt-1 font-mono"
+                        [ id_ "their-time-remaining"
+                        , klass
+                            ( dedup theirCountdownIsOn.event <#> \isOn ->
+                                "text-green-500 text-xl ml-2 mt-1 font-mono" <>
+                                  (if not isOn then " invisible" else "")
+                            )
                         ]
                     )
-                    [ text_ "15"
+                    [ text (show <$> theirCountdownNumber.event)
                     ]
                 ]
             ]
