@@ -21,6 +21,7 @@ import Effect.Class (liftEffect)
 import Effect.Console (log)
 import Effect.Ref as Ref
 import FRP.Event (Event, EventIO, create, subscribe)
+import Nyaa.Charts.NoteInfo (NoteInfo)
 import Nyaa.Constants.Effects (EffectTiming, effectTimings)
 import Nyaa.CoordinatedNow (coordinatedNow)
 import Nyaa.FRP.Dedup (dedup)
@@ -102,6 +103,7 @@ foreign import startGame
   -> AudioContext
   -> BrowserAudioBuffer
   -> Effect { time :: Milliseconds, diff :: Number, pdiff :: Number }
+  -> Array NoteInfo
   -> Effect { start :: Effect Unit, kill :: Effect Unit }
 
 newtype Fx = Fx String
@@ -139,9 +141,10 @@ game
      , audioUri :: String
      , profile :: Event Profile
      , fxEvent :: EventIO FxData
+     , chart :: Array NoteInfo
      }
   -> Effect Unit
-game { name, audioContext, audioUri, fxEvent, profile } = do
+game { name, audioContext, audioUri, fxEvent, profile, chart } = do
   myCountdownRef <- Ref.new (pure unit)
   theirCountdownRef <- Ref.new (pure unit)
   myCountdownNumber <- create
@@ -199,6 +202,7 @@ game { name, audioContext, audioUri, fxEvent, profile } = do
               audioContext
               audioBuffer
               n.now
+              chart
             controls.start
             Ref.write (controls.kill *> n.cancelNow) killRef
           Nothing ->

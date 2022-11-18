@@ -4,6 +4,7 @@ import Prelude
 
 import Effect (Effect)
 import FRP.Event (Event, EventIO)
+import Nyaa.Charts.ShowMeHow (showMeHow)
 import Nyaa.Custom.Builders.Game (FxData, game)
 import Nyaa.Firebase.Firebase (Profile)
 import Ocarina.WebAPI (AudioContext)
@@ -20,4 +21,5 @@ proLevel { audioContext, audioUri, fxEvent, profile } = game
   , audioUri
   , fxEvent
   , profile
+  , chart: showMeHow
   }

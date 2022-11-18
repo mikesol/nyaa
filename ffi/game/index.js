@@ -26,7 +26,8 @@ export function startGameImpl(
     isHost,
     audioContext,
     audioBuffer,
-    getTime
+    getTime,
+    noteInfo
   ) {
     console.log(isHost);
     // SECTION START - THREE //
@@ -55,10 +56,6 @@ export function startGameImpl(
     window.addEventListener("resize", tryResizeRendererToDisplay);
 
     // TODO: Make this an input instead...
-    const noteInfo = [];
-    for (let column = 0, timing = 1.0; timing < 20.0; column = (column + 1) % 4, timing += 0.50) {
-        noteInfo.push({ column, timing });
-    }
 
     const scene = new THREE.Scene();
 

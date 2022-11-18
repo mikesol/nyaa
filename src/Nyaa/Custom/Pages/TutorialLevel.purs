@@ -4,8 +4,9 @@ import Prelude
 
 import Effect (Effect)
 import FRP.Event (Event, EventIO)
+import Nyaa.Charts.Tutorial (tutorial)
 import Nyaa.Custom.Builders.Game (FxData, game)
-import Nyaa.Firebase.Firebase (Profile(..))
+import Nyaa.Firebase.Firebase (Profile)
 import Ocarina.WebAPI (AudioContext)
 
 tutorialLevel
@@ -21,4 +22,5 @@ tutorialLevel { audioContext, audioUri, fxEvent, profile } = game
   , audioUri
   , fxEvent
   , profile
+  , chart: tutorial
   }

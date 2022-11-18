@@ -4,6 +4,7 @@ import Prelude
 
 import Effect (Effect)
 import FRP.Event (Event, EventIO)
+import Nyaa.Charts.Hypersynthetic (hypersynthetic)
 import Nyaa.Custom.Builders.Game (FxData, game)
 import Nyaa.Firebase.Firebase (Profile)
 import Ocarina.WebAPI (AudioContext)
@@ -21,4 +22,5 @@ newbLevel { audioContext, audioUri, fxEvent, profile } = game
   , audioUri
   , fxEvent
   , profile
+  , chart: hypersynthetic
   }

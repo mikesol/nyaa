@@ -4,7 +4,8 @@ import Prelude
 
 import Effect (Effect)
 import FRP.Event (Event, EventIO)
-import Nyaa.Custom.Builders.Game (FxData, game)
+import Nyaa.Charts.LVL99 (lvl99)
+import Nyaa.Custom.Builders.Game (FxData(..), game)
 import Nyaa.Firebase.Firebase (Profile(..))
 import Ocarina.WebAPI (AudioContext)
 
@@ -21,4 +22,5 @@ deityLevel { audioContext, audioUri, fxEvent, profile } = game
   , audioUri
   , fxEvent
   , profile
+  , chart: lvl99
   }
