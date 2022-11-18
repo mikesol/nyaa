@@ -84,6 +84,8 @@ export const listenToAuthStateChange = (cb) => () => {
 // firestore
 
 const PROFILE = "profile";
+const MATCHMAKING = "matchmaking";
+const YENTA = "yenta";
 
 export const getMeImpl = (just) => (nothing) => async () => {
   const docRef = db.collection(PROFILE).doc(auth.currentUser.uid);
@@ -130,7 +132,9 @@ export const updateViaTransactionImpl = (f) => (k) => (v) => async () => {
   const myProfile = await db.runTransaction(async (transaction) => {
     const profileDoc = await transaction.get(profileDocRef);
     if (!profileDoc.exists) {
-      return { [k]: v };
+      const o = { [k]: v };
+      transaction.set(profileDocRef, o);
+      return o;
     }
     const pd = profileDoc.data();
     const rk = pd[k];
@@ -189,4 +193,72 @@ export const uploadAvatar = (bytes) => async () => {
   const uploadTask = await profileRef.put(bytes, metadata);
   const url = await uploadTask.ref.getDownloadURL();
   return url;
+};
+
+export const cancelTicket = async () => {
+  const matchmakingDocRef = db.collection(MATCHMAKING).doc(YENTA);
+  await db.runTransaction(async (transaction) => {
+    const uid = auth.currentUser.uid;
+    const matchmakingDoc = await transaction.get(matchmakingDocRef);
+    if (!matchmakingDoc.exists) {
+      return;
+    }
+    const yentaRemote = matchmakingDoc.data();
+    const yentaLocal = { ...yentaRemote };
+    // if the previous game was full or the current player1 is squatting
+    if (yentaLocal.player1 === uid) {
+      yentaLocal.player1 = firebase.firestore.FieldValue.delete();
+      transaction.set(matchmakingDocRef, yentaLocal);
+      return;
+    }
+    return;
+  });
+};
+export const createTicketImpl = (nothing) => (just) => (push) => async () => {
+  const matchmakingDocRef = db.collection(MATCHMAKING).doc(YENTA);
+  const myTicket = await db.runTransaction(async (transaction) => {
+    const uid = auth.currentUser.uid;
+    const matchmakingDoc = await transaction.get(matchmakingDocRef);
+    const timestamp = new Date().getTime();
+    if (!matchmakingDoc.exists) {
+      const o = { player1: uid, player1Timestamp: timestamp };
+      transaction.set(o);
+      return o;
+    }
+    const yentaRemote = matchmakingDoc.data();
+    const yentaLocal = { ...yentaRemote };
+    // if the previous game was full or the current player1 is squatting
+    if (
+      (yentaLocal.player1 && yentaLocal.player2) ||
+      yentaLocal.player1Timestamp > timestamp - 5000.0
+    ) {
+      yentaLocal.player1 = uid;
+      yentaLocal.player1Timestamp = timestamp;
+      yentaLocal.player2 = firebase.firestore.FieldValue.delete();
+      yentaLocal.player2Timestamp = firebase.firestore.FieldValue.delete();
+      transaction.set(matchmakingDocRef, yentaLocal);
+      return { player1: uid, player2: nothing };
+    }
+    if (!yentaLocal.player2) {
+      yentaLocal.player2 = uid;
+      yentaLocal.player2Timestamp = timestamp;
+      transaction.set(matchmakingDocRef, yentaLocal);
+      const o = { ...yentaLocal };
+      o.player2 = just(yentaLocal.player2);
+      return o;
+    }
+    // we should never get here as if we're in the matchmaking queue then we should never hit something
+    // that doesn't correspond with one of the above conditions
+    throw new Error(
+      `Programming error: inconsistent state ${timestamp} ${JSON.stringify(
+        yentaRemote
+      )}`
+    );
+  });
+  push(myTicket);
+  const unsub = matchmakingDocRef.onSnapshot((doc) => {
+    const ticket = doc.data();
+    push(ticket);
+  });
+  return unsub;
 };
