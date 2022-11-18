@@ -3,9 +3,7 @@ module Nyaa.Ionic.Icon
   , IonIcon_(..)
   , ionIcon
   , ionIcon_
-  )
-  where
-
+  ) where
 
 import Control.Plus (empty)
 import Deku.Attribute (class Attr, Attribute, prop', unsafeAttribute)

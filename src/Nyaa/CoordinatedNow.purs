@@ -29,10 +29,11 @@ iTime = 2000
 halfITime :: Int
 halfITime = iTime / 2
 
-type NowIs = { time :: Milliseconds
-             , diff :: Number
-             , pdiff :: Number
-             }
+type NowIs =
+  { time :: Milliseconds
+  , diff :: Number
+  , pdiff :: Number
+  }
 
 coordinatedNow
   :: Effect
@@ -45,7 +46,13 @@ coordinatedNow = do
   preading <- Ref.new Nothing
   iid <- setInterval iTime $ launchAff_ do
     rs <- liftEffect $ now
-    res <- request (defaultRequest { url = "https://worldtimeapi.org/api/ip", method = Left GET, responseFormat = string })
+    res <- request
+      ( defaultRequest
+          { url = "https://worldtimeapi.org/api/ip"
+          , method = Left GET
+          , responseFormat = string
+          }
+      )
     case res of
       Left e -> Log.error (show $ printError e)
       Right { body } -> case JSON.readJSON body of
@@ -67,13 +74,16 @@ coordinatedNow = do
         pr <- Ref.read preading
         n <- now
         case pr of
-          Nothing -> pure $ {time:unInstant n, diff:0.0, pdiff:0.0}
+          Nothing -> pure $ { time: unInstant n, diff: 0.0, pdiff: 0.0 }
           Just p -> do
             let uin = unInstant n
             -- we apply a lowpass filter, smoothly transitioning to the new value
-            let fac = clamp 0.0 1.0 $ ((unwrap uin - unwrap p) / (toNumber halfITime))
+            let
+              fac = clamp 0.0 1.0 $
+                ((unwrap uin - unwrap p) / (toNumber halfITime))
             ptr <- Ref.read ptref
             tr <- Ref.read tref
             let newTr = ptr * (1.0 - fac) + tr * fac
-            pure { time: over Milliseconds (_ - newTr) uin, diff: tr, pdiff: ptr }
+            pure
+              { time: over Milliseconds (_ - newTr) uin, diff: tr, pdiff: ptr }
     }

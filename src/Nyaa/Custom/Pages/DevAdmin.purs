@@ -36,8 +36,9 @@ import Type.Proxy (Proxy(..))
 
 type ProfileSetter = Some Profile' -> Some Profile'
 
-data ProfileOp = ProfileSetter (Some Profile') | ProfileTransaction (Effect (Promise Unit))
-
+data ProfileOp
+  = ProfileSetter (Some Profile')
+  | ProfileTransaction (Effect (Promise Unit))
 
 doBusinessLogic
   :: forall r
@@ -236,7 +237,10 @@ businessLogic =
     }
   --
   , { text: "Add 10 @ lb 1"
-    , modProfile: ProfileTransaction $ updateViaTransaction (Proxy :: _ "highScoreTrack1") (max 10) 10
+    , modProfile: ProfileTransaction $ updateViaTransaction
+        (Proxy :: _ "highScoreTrack1")
+        (max 10)
+        10
     , ios: GC.submitScore
         { leaderboardID: GCContants.track1LeaderboardID
         , points: 10
@@ -245,7 +249,10 @@ businessLogic =
         { leaderboardID: PGConstants.track1LeaderboardID, amount: 10 }
     }
   , { text: "Add 100 @ lb 1"
-    , modProfile: ProfileTransaction $ updateViaTransaction (Proxy :: _ "highScoreTrack1") (max 100) 100
+    , modProfile: ProfileTransaction $ updateViaTransaction
+        (Proxy :: _ "highScoreTrack1")
+        (max 100)
+        100
     , ios: GC.submitScore
         { leaderboardID: GCContants.track1LeaderboardID
         , points: 100
@@ -254,7 +261,10 @@ businessLogic =
         { leaderboardID: PGConstants.track1LeaderboardID, amount: 100 }
     }
   , { text: "Add 1000 @ lb 1"
-    , modProfile: ProfileTransaction $ updateViaTransaction (Proxy :: _ "highScoreTrack1") (max 1000) 1000
+    , modProfile: ProfileTransaction $ updateViaTransaction
+        (Proxy :: _ "highScoreTrack1")
+        (max 1000)
+        1000
     , ios: GC.submitScore
         { leaderboardID: GCContants.track1LeaderboardID
         , points: 1000
@@ -265,7 +275,10 @@ businessLogic =
   --
   --
   , { text: "Add 10 @ lb 2"
-    , modProfile: ProfileTransaction $ updateViaTransaction (Proxy :: _ "highScoreTrack2") (max 10) 10
+    , modProfile: ProfileTransaction $ updateViaTransaction
+        (Proxy :: _ "highScoreTrack2")
+        (max 10)
+        10
     , ios: GC.submitScore
         { leaderboardID: GCContants.track2LeaderboardID
         , points: 10
@@ -274,7 +287,10 @@ businessLogic =
         { leaderboardID: PGConstants.track2LeaderboardID, amount: 10 }
     }
   , { text: "Add 100 @ lb 2"
-    , modProfile: ProfileTransaction $ updateViaTransaction (Proxy :: _ "highScoreTrack2") (max 100) 100
+    , modProfile: ProfileTransaction $ updateViaTransaction
+        (Proxy :: _ "highScoreTrack2")
+        (max 100)
+        100
     , ios: GC.submitScore
         { leaderboardID: GCContants.track2LeaderboardID
         , points: 100
@@ -283,7 +299,10 @@ businessLogic =
         { leaderboardID: PGConstants.track2LeaderboardID, amount: 100 }
     }
   , { text: "Add 1000 @ lb 2"
-    , modProfile: ProfileTransaction $ updateViaTransaction (Proxy :: _ "highScoreTrack2") (max 1000) 1000
+    , modProfile: ProfileTransaction $ updateViaTransaction
+        (Proxy :: _ "highScoreTrack2")
+        (max 1000)
+        1000
     , ios: GC.submitScore
         { leaderboardID: GCContants.track2LeaderboardID
         , points: 1000
@@ -294,7 +313,10 @@ businessLogic =
   --
   --
   , { text: "Add 10 @ lb 3"
-    , modProfile: ProfileTransaction $ updateViaTransaction (Proxy :: _ "highScoreTrack3") (max 10) 10
+    , modProfile: ProfileTransaction $ updateViaTransaction
+        (Proxy :: _ "highScoreTrack3")
+        (max 10)
+        10
     , ios: GC.submitScore
         { leaderboardID: GCContants.track3LeaderboardID
         , points: 10
@@ -303,7 +325,10 @@ businessLogic =
         { leaderboardID: PGConstants.track3LeaderboardID, amount: 10 }
     }
   , { text: "Add 100 @ lb 3"
-    , modProfile: ProfileTransaction $ updateViaTransaction (Proxy :: _ "highScoreTrack3") (max 100) 100
+    , modProfile: ProfileTransaction $ updateViaTransaction
+        (Proxy :: _ "highScoreTrack3")
+        (max 100)
+        100
     , ios: GC.submitScore
         { leaderboardID: GCContants.track3LeaderboardID
         , points: 100
@@ -312,7 +337,10 @@ businessLogic =
         { leaderboardID: PGConstants.track3LeaderboardID, amount: 100 }
     }
   , { text: "Add 1000 @ lb 3"
-    , modProfile: ProfileTransaction $ updateViaTransaction (Proxy :: _ "highScoreTrack3") (max 1000) 1000
+    , modProfile: ProfileTransaction $ updateViaTransaction
+        (Proxy :: _ "highScoreTrack3")
+        (max 1000)
+        1000
     , ios: GC.submitScore
         { leaderboardID: GCContants.track3LeaderboardID
         , points: 1000

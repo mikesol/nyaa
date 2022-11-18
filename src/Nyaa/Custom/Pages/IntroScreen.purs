@@ -76,9 +76,13 @@ introScreen opts = customComponent_ "intro-screen" {} \_ ->
                               true ->
                               fixed (playGame LoungePicker <> baseSignedIn)
                           | get (Proxy :: _ "hasCompletedTutorial") p == Just
-                              true -> let _ = spy "newb" p in
-                              fixed (playGame NewbLounge <> baseSignedIn)
-                          | otherwise -> let _ = spy "newb" p in fixed baseSignedIn
+                              true ->
+                              let
+                                _ = spy "newb" p
+                              in
+                                fixed (playGame NewbLounge <> baseSignedIn)
+                          | otherwise ->
+                              let _ = spy "newb" p in fixed baseSignedIn
                   ]
               , D.div (oneOf [ klass_ "grow" ]) []
               ]

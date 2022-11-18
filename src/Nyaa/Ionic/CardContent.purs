@@ -1,6 +1,5 @@
 module Nyaa.Ionic.CardContent where
 
-
 import Control.Plus (empty)
 import Deku.Attribute (class Attr, Attribute, prop', unsafeAttribute)
 import Deku.Core (Domable)

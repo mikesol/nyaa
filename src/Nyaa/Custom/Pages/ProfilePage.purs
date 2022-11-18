@@ -327,8 +327,11 @@ profilePage opts = customComponent_ "profile-page" {} \_ ->
                                   ]
                               D.div
                                 (D.Class !:= "grid grid-cols-4 gap-4")
-                                (store <#> \(earned /\ title) -> achievement
-                                { earned: pure (earned == Just true), title })
+                                ( store <#> \(earned /\ title) -> achievement
+                                    { earned: pure (earned == Just true)
+                                    , title
+                                    }
+                                )
                         , envy $ getPlatformE <#> case _ of
                             Web -> blank
                             Android -> D.div empty

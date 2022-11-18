@@ -1,6 +1,5 @@
 module Nyaa.Ionic.App where
 
-
 import Control.Plus (empty)
 import Deku.Attribute (Attribute)
 import Deku.Core (Domable)

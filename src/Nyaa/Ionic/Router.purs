@@ -5,9 +5,7 @@ module Nyaa.Ionic.Router
   , ionRouter
   , ionRouter_
   , push
-  )
-  where
-
+  ) where
 
 import Prelude
 
@@ -44,10 +42,12 @@ instance Attr IonRouter_ I.Root String where
   attr I.Root value = unsafeAttribute { key: "root", value: prop' value }
 
 instance Attr IonRouter_ I.UseHash Boolean where
-  attr I.UseHash value = unsafeAttribute { key: "use-hash", value: prop' (if value then "true" else "false") }
+  attr I.UseHash value = unsafeAttribute
+    { key: "use-hash", value: prop' (if value then "true" else "false") }
 
 instance Attr IonRouter_ I.OnIonRouteDidChange Cb where
-  attr I.OnIonRouteDidChange value = unsafeAttribute { key: "ionRouteDidChange", value: cb' value }
+  attr I.OnIonRouteDidChange value = unsafeAttribute
+    { key: "ionRouteDidChange", value: cb' value }
 
 instance Attr IonRouter_ I.OnIonRouteDidChange (Effect Unit) where
   attr I.OnIonRouteDidChange value = unsafeAttribute
@@ -56,9 +56,10 @@ instance Attr IonRouter_ I.OnIonRouteDidChange (Effect Unit) where
 instance Attr IonRouter_ I.OnIonRouteDidChange (Effect Boolean) where
   attr I.OnIonRouteDidChange value = unsafeAttribute
     { key: "ionRouteDidChange", value: cb' (Cb (const value)) }
-  
+
 instance Attr IonRouter_ I.OnIonRouteWillChange Cb where
-  attr I.OnIonRouteWillChange value = unsafeAttribute { key: "ionRouteWillChange", value: cb' value }
+  attr I.OnIonRouteWillChange value = unsafeAttribute
+    { key: "ionRouteWillChange", value: cb' value }
 
 instance Attr IonRouter_ I.OnIonRouteWillChange (Effect Unit) where
   attr I.OnIonRouteWillChange value = unsafeAttribute
@@ -72,6 +73,10 @@ instance Attr IonRouter_ SelfT (IonRouter -> Effect Unit) where
   attr SelfT value = unsafeAttribute
     { key: "@self@", value: cb' (Cb (unsafeCoerce value)) }
 
-
 foreign import back :: IonRouter -> Effect Unit
-foreign import push :: IonRouter -> String -> Nullable E.RouterDirection -> Nullable U.AnimationBuilder -> Effect Unit
+foreign import push
+  :: IonRouter
+  -> String
+  -> Nullable E.RouterDirection
+  -> Nullable U.AnimationBuilder
+  -> Effect Unit

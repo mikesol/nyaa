@@ -9,7 +9,7 @@ import Data.Either (Either(..))
 import Data.Maybe (Maybe(..))
 import Data.Tuple.Nested ((/\))
 import Data.Tuple (Tuple(..))
-import Control.Alt((<|>))
+import Control.Alt ((<|>))
 import Data.Tuple (snd)
 import FRP.Event (Event, Subscriber(..), fold, makeLemmingEventO)
 

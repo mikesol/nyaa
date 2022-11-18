@@ -22,7 +22,6 @@ ionButton
   -> Domable lock payload
 ionButton = unsafeCustomElement "ion-button" (Proxy :: Proxy IonButton_)
 
-
 ionButton_
   :: forall lock payload
    . Array (Domable lock payload)
@@ -39,19 +38,23 @@ instance Attr IonButton_ I.Slot String where
   attr I.Slot value = unsafeAttribute { key: "slot", value: prop' value }
 
 instance Attr IonButton_ D.Color E.Color where
-  attr D.Color value = unsafeAttribute { key: "color", value: prop' (E.unColor value) }
+  attr D.Color value = unsafeAttribute
+    { key: "color", value: prop' (E.unColor value) }
 
 instance Attr IonButton_ D.Disabled Boolean where
-  attr D.Disabled value = unsafeAttribute { key: "disabled", value: prop' (if value then "true" else "false") }
+  attr D.Disabled value = unsafeAttribute
+    { key: "disabled", value: prop' (if value then "true" else "false") }
 
 instance Attr IonButton_ D.Download String where
-  attr D.Download value = unsafeAttribute { key: "download", value: prop' value }
+  attr D.Download value = unsafeAttribute
+    { key: "download", value: prop' value }
 
 instance Attr IonButton_ D.Href String where
   attr D.Href value = unsafeAttribute { key: "href", value: prop' value }
 
 instance Attr IonButton_ I.Expand E.ButtonExpand where
-  attr I.Expand value = unsafeAttribute { key: "expand", value: prop' (E.unButtonExpand value) }
+  attr I.Expand value = unsafeAttribute
+    { key: "expand", value: prop' (E.unButtonExpand value) }
 
 instance Attr IonButton_ I.OnIonBlur Cb where
   attr I.OnIonBlur value = unsafeAttribute { key: "ionBlur", value: cb' value }
@@ -65,7 +68,8 @@ instance Attr IonButton_ I.OnIonBlur (Effect Boolean) where
     { key: "ionBlur", value: cb' (Cb (const value)) }
 
 instance Attr IonButton_ I.OnIonFocus Cb where
-  attr I.OnIonFocus value = unsafeAttribute { key: "ionFocus", value: cb' value }
+  attr I.OnIonFocus value = unsafeAttribute
+    { key: "ionFocus", value: cb' value }
 
 instance Attr IonButton_ I.OnIonFocus (Effect Unit) where
   attr I.OnIonFocus value = unsafeAttribute

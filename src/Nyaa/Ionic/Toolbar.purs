@@ -3,9 +3,7 @@ module Nyaa.Ionic.Toolbar
   , IonToolbar_(..)
   , ionToolbar
   , ionToolbar_
-  )
-  where
-
+  ) where
 
 import Control.Plus (empty)
 import Deku.Attribute (class Attr, Attribute, prop', unsafeAttribute)
@@ -40,7 +38,9 @@ instance Attr IonToolbar_ D.Style String where
   attr D.Style value = unsafeAttribute { key: "style", value: prop' value }
 
 instance Attr IonToolbar_ D.Color E.Color where
-  attr D.Color value = unsafeAttribute { key: "color", value: prop' (E.unColor value) }
+  attr D.Color value = unsafeAttribute
+    { key: "color", value: prop' (E.unColor value) }
 
 instance Attr IonToolbar_ I.Mode E.Mode where
-  attr I.Mode value = unsafeAttribute { key: "mode", value: prop' (E.unMode value) }
+  attr I.Mode value = unsafeAttribute
+    { key: "mode", value: prop' (E.unMode value) }

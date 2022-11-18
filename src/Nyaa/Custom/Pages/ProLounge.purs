@@ -19,7 +19,8 @@ proLounge { profileState } = lounge
   { name: "pro-lounge"
   , title: "Show Me How"
   , profileState
-  , missions: [ Mission
+  , missions:
+      [ Mission
           { title: "Killer Combo"
           , index: 6
           , description: D.span_

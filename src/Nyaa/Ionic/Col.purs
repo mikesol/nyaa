@@ -40,19 +40,24 @@ instance Attr IonCol_ I.Offset String where
   attr I.Offset value = unsafeAttribute { key: "offset", value: prop' value }
 
 instance Attr IonCol_ I.OffsetLg String where
-  attr I.OffsetLg value = unsafeAttribute { key: "offset-lg", value: prop' value }
+  attr I.OffsetLg value = unsafeAttribute
+    { key: "offset-lg", value: prop' value }
 
 instance Attr IonCol_ I.OffsetMd String where
-  attr I.OffsetMd value = unsafeAttribute { key: "offset-md", value: prop' value }
+  attr I.OffsetMd value = unsafeAttribute
+    { key: "offset-md", value: prop' value }
 
 instance Attr IonCol_ I.OffsetSm String where
-  attr I.OffsetSm value = unsafeAttribute { key: "offset-sm", value: prop' value }
+  attr I.OffsetSm value = unsafeAttribute
+    { key: "offset-sm", value: prop' value }
 
 instance Attr IonCol_ I.OffsetXs String where
-  attr I.OffsetXs value = unsafeAttribute { key: "offset-xs", value: prop' value }
+  attr I.OffsetXs value = unsafeAttribute
+    { key: "offset-xs", value: prop' value }
 
 instance Attr IonCol_ I.OffsetXl String where
-  attr I.OffsetXl value = unsafeAttribute { key: "offset-xl", value: prop' value }
+  attr I.OffsetXl value = unsafeAttribute
+    { key: "offset-xl", value: prop' value }
 
 instance Attr IonCol_ I.Pull String where
   attr I.Pull value = unsafeAttribute { key: "pull", value: prop' value }

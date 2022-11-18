@@ -3,9 +3,7 @@ module Nyaa.Ionic.Grid
   , IonGrid_(..)
   , ionGrid
   , ionGrid_
-  )
-  where
-
+  ) where
 
 import Control.Plus (empty)
 import Deku.Attribute (class Attr, Attribute, prop', unsafeAttribute)
@@ -39,5 +37,6 @@ instance Attr IonGrid_ D.Style String where
   attr D.Style value = unsafeAttribute { key: "style", value: prop' value }
 
 instance Attr IonGrid_ I.Fixed Boolean where
-  attr I.Fixed value = unsafeAttribute { key: "fixed", value: prop' (if value then "true" else "false") }
+  attr I.Fixed value = unsafeAttribute
+    { key: "fixed", value: prop' (if value then "true" else "false") }
 

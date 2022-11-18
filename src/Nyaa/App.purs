@@ -6,9 +6,11 @@ import Data.Filterable (filter)
 import Data.Foldable (oneOf)
 import Deku.Attribute ((!:=))
 import Deku.Control (text_)
-import Deku.Core (Domable, Nut)
+import Deku.Core (Domable)
 import Deku.DOM as D
 import Effect (Effect)
+import Effect.Ref as Ref
+import Nyaa.Audio (shutItDown)
 import Nyaa.Ionic.App (ionApp_)
 import Nyaa.Ionic.Attributes as I
 import Nyaa.Ionic.Content (ionContent)
@@ -17,11 +19,12 @@ import Nyaa.Ionic.Header (ionHeader)
 import Nyaa.Ionic.Item (ionItem)
 import Nyaa.Ionic.Label (ionLabel_)
 import Nyaa.Ionic.List (ionList_)
-import Nyaa.Ionic.Nav (ionNav_)
+import Nyaa.Ionic.Nav (ionNav)
 import Nyaa.Ionic.Route (ionRoute)
 import Nyaa.Ionic.Router (ionRouter_)
 import Nyaa.Ionic.Title (ionTitle_)
 import Nyaa.Ionic.Toolbar (ionToolbar_)
+import Ocarina.WebAPI (AudioContext)
 
 -- Front page [Tutorial -> (Tutorial, Play)]
 -- Tutorial quest
@@ -92,9 +95,11 @@ storybookCC = do
         ionItem (oneOf [ I.Button !:= true, D.Href !:= "/" <> page ])
           [ ionLabel_ [ D.h3_ [ text_ page ] ]
           ]
+
       levelEntries :: forall lock payload. Array (Domable lock payload)
       levelEntries = levelPages <#> \page ->
-        ionItem (oneOf [ I.Button !:= true, D.Href !:= "/" <> page <> "/debug-room" ])
+        ionItem
+          (oneOf [ I.Button !:= true, D.Href !:= "/" <> page <> "/debug-room" ])
           [ ionLabel_ [ D.h3_ [ text_ page ] ]
           ]
     [ ionHeader (oneOf [ I.Translucent !:= true ])
@@ -106,15 +111,25 @@ storybookCC = do
         [ ionList_ $ basicEntries <> levelEntries ]
     ]
 
-makeApp :: forall lock payload. Boolean -> String -> Domable lock payload
-makeApp withAdmin homeIs = ionApp_
+makeApp
+  :: forall lock payload
+   . Boolean
+  -> String
+  -> (Ref.Ref AudioContext)
+  -> Domable lock payload
+makeApp withAdmin homeIs audioContextRef = ionApp_
   [ ionRouter_
       ( [ ionRoute (oneOf [ I.Url !:= "/", I.Component !:= homeIs ])
             []
         ] <> basicIonRoutes <> levelIonRoutes
 
       )
-  , ionNav_ []
+  -- to do: if we want to persist sound across navigation, make this more fine-grained
+  , ionNav
+      ( I.OnIonNavWillChange !:= do
+          shutItDown audioContextRef
+      )
+      []
   ]
   where
   basicIonRoutes :: Array (Domable lock payload)
@@ -123,13 +138,18 @@ makeApp withAdmin homeIs = ionApp_
 
   levelIonRoutes :: Array (Domable lock payload)
   levelIonRoutes = levelPages <#> \page ->
-    ionRoute (oneOf [ I.Url !:= "/" <> page <> "/:roomId/:isHost", I.Component !:= page ]) []
+    ionRoute
+      ( oneOf
+          [ I.Url !:= "/" <> page <> "/:roomId/:isHost", I.Component !:= page ]
+      )
+      []
 
   basicRoutes :: Array String
-  basicRoutes = (if withAdmin then identity else filter (_ /= "dev-admin")) basicPages
+  basicRoutes = (if withAdmin then identity else filter (_ /= "dev-admin"))
+    basicPages
 
-storybook :: Nut
+storybook :: forall lock payload. (Ref.Ref AudioContext) -> Domable lock payload
 storybook = makeApp true "story-book"
 
-app :: forall lock payload. Domable lock payload
+app :: forall lock payload. (Ref.Ref AudioContext) -> Domable lock payload
 app = makeApp false "intro-screen"

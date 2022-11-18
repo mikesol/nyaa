@@ -29,7 +29,8 @@ ionBackButton
    . Event (Attribute IonBackButton_)
   -> Array (Domable lock payload)
   -> Domable lock payload
-ionBackButton = unsafeCustomElement "ion-back-button" (Proxy :: Proxy IonBackButton_)
+ionBackButton = unsafeCustomElement "ion-back-button"
+  (Proxy :: Proxy IonBackButton_)
 
 ionBackButton_
   :: forall lock payload
@@ -47,25 +48,30 @@ instance Attr IonBackButton_ I.Slot String where
   attr I.Slot value = unsafeAttribute { key: "slot", value: prop' value }
 
 instance Attr IonBackButton_ D.Color E.Color where
-  attr D.Color value = unsafeAttribute { key: "color", value: prop' (E.unColor value) }
+  attr D.Color value = unsafeAttribute
+    { key: "color", value: prop' (E.unColor value) }
 
 instance Attr IonBackButton_ I.DefaultHref String where
-  attr I.DefaultHref value = unsafeAttribute { key: "default-href", value: prop' value }
+  attr I.DefaultHref value = unsafeAttribute
+    { key: "default-href", value: prop' value }
 
 instance Attr IonBackButton_ D.Disabled Boolean where
-  attr D.Disabled value = unsafeAttribute { key: "disabled", value: prop' (if value then "true" else "false") }
+  attr D.Disabled value = unsafeAttribute
+    { key: "disabled", value: prop' (if value then "true" else "false") }
 
 instance Attr IonBackButton_ I.Icon String where
   attr I.Icon value = unsafeAttribute { key: "icon", value: prop' value }
 
 instance Attr IonBackButton_ I.Mode E.Mode where
-  attr I.Mode value = unsafeAttribute { key: "mode", value: prop' (E.unMode value) }
+  attr I.Mode value = unsafeAttribute
+    { key: "mode", value: prop' (E.unMode value) }
 
 instance Attr IonBackButton_ I.Text String where
   attr I.Text value = unsafeAttribute { key: "text", value: prop' value }
 
 instance Attr IonBackButton_ D.Xtype E.ItemType where
-  attr D.Xtype value = unsafeAttribute { key: "type", value: prop' (E.unItemType value) }
+  attr D.Xtype value = unsafeAttribute
+    { key: "type", value: prop' (E.unItemType value) }
 
 instance Attr IonBackButton_ SelfT (IonBackButton -> Effect Unit) where
   attr SelfT value = unsafeAttribute
@@ -73,5 +79,7 @@ instance Attr IonBackButton_ SelfT (IonBackButton -> Effect Unit) where
 
 type CounterFormatter = Fn2 Number Number String
 
-foreign import routerAnimation :: IonBackButton -> RouterAnimation -> Effect Unit
+foreign import routerAnimation
+  :: IonBackButton -> RouterAnimation -> Effect Unit
+
 foreign import getRouterAnimation :: IonBackButton -> Effect RouterAnimation

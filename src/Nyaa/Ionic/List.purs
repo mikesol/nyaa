@@ -43,13 +43,16 @@ instance Attr IonList_ D.Style String where
   attr D.Style value = unsafeAttribute { key: "style", value: prop' value }
 
 instance Attr IonList_ I.Inset Boolean where
-  attr I.Inset value = unsafeAttribute { key: "color", value: prop' (if value then "true" else "false") }
+  attr I.Inset value = unsafeAttribute
+    { key: "color", value: prop' (if value then "true" else "false") }
 
 instance Attr IonList_ I.Lines E.Lines where
-  attr I.Lines value = unsafeAttribute { key: "color", value: prop' (E.unLines value) }
+  attr I.Lines value = unsafeAttribute
+    { key: "color", value: prop' (E.unLines value) }
 
 instance Attr IonList_ I.Mode E.Mode where
-  attr I.Mode value = unsafeAttribute { key: "mode", value: prop' (E.unMode value) }
+  attr I.Mode value = unsafeAttribute
+    { key: "mode", value: prop' (E.unMode value) }
 
 instance Attr IonList_ SelfT (IonList -> Effect Unit) where
   attr SelfT value = unsafeAttribute

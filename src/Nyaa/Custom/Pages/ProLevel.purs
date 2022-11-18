@@ -10,7 +10,8 @@ import Nyaa.Custom.Builders.Game (FxData, game)
 import Nyaa.Firebase.Firebase (Profile)
 import Ocarina.WebAPI (AudioContext)
 
-proLevel :: { audioContextRef :: Ref.Ref AudioContext
+proLevel
+  :: { audioContextRef :: Ref.Ref AudioContext
      , audioUri :: String
      , fxEvent :: EventIO FxData
      , profile :: Event Profile

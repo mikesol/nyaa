@@ -80,19 +80,19 @@ main = do
       introScreen
         { profileState: profileState.event
         }
-      tutorialQuest
-      hypersyntheticQuest
-      flatQuest
-      buzzQuest
-      glideQuest
-      backQuest
-      showMeHowQuest
-      rotateQuest
-      hideQuest
-      dazzleQuest
-      lvl99Quest
-      crushQuest
-      amplifyQuest
+      tutorialQuest { audioContextRef }
+      hypersyntheticQuest { audioContextRef }
+      flatQuest { audioContextRef }
+      buzzQuest { audioContextRef }
+      glideQuest { audioContextRef }
+      backQuest { audioContextRef }
+      showMeHowQuest { audioContextRef }
+      rotateQuest { audioContextRef }
+      hideQuest { audioContextRef }
+      dazzleQuest { audioContextRef }
+      lvl99Quest { audioContextRef }
+      crushQuest { audioContextRef }
+      amplifyQuest { audioContextRef }
       newbLounge
         { profileState: compactedProfile
         }
@@ -145,10 +145,10 @@ main = do
       when (h == "") do
         setHash "/"
       if false then do
-        runInBody app
+        runInBody (app audioContextRef)
       else do
         storybookCC
-        runInBody storybook
+        runInBody (storybook audioContextRef)
       launchAff_ do
         cu <- liftEffect getCurrentUser
         liftEffect do

@@ -1,6 +1,5 @@
 module Nyaa.Ionic.Buttons where
 
-
 import Control.Plus (empty)
 import Deku.Attribute (class Attr, Attribute, prop', unsafeAttribute)
 import Deku.Core (Domable)
@@ -35,5 +34,6 @@ instance Attr IonButtons_ D.Style String where
   attr D.Style value = unsafeAttribute { key: "style", value: prop' value }
 
 instance Attr IonButtons_ I.Collapse Boolean where
-  attr I.Collapse value = unsafeAttribute { key: "collapse", value: prop' (if value then "true" else "false") }
+  attr I.Collapse value = unsafeAttribute
+    { key: "collapse", value: prop' (if value then "true" else "false") }
 

@@ -2,7 +2,6 @@ module Nyaa.Util.Chunk where
 
 import Prelude
 
-
 import Data.Array (groupBy)
 import Data.Array.NonEmpty (NonEmptyArray)
 import Data.FunctorWithIndex (mapWithIndex)

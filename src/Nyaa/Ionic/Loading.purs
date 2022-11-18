@@ -13,9 +13,10 @@ foreign import dismissLoading :: Loading -> Effect (Promise Unit)
 
 brackedWithLoading' :: Milliseconds -> String -> Aff ~> Aff
 brackedWithLoading' n s a = bracket (toAffE $ presentLoading s)
-  (\i -> do
-    delay n
-    toAffE $ dismissLoading i)
+  ( \i -> do
+      delay n
+      toAffE $ dismissLoading i
+  )
   \_ -> a
 
 brackedWithLoading :: String -> Aff ~> Aff

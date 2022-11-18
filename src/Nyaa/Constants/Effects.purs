@@ -3,6 +3,7 @@ module Nyaa.Constants.Effects where
 import Data.Newtype (class Newtype)
 
 newtype EffectTiming = EffectTiming { duration :: Number }
+
 derive instance Newtype EffectTiming _
 
 type EffectHolder v =

@@ -3,9 +3,7 @@ module Nyaa.Ionic.Title
   , IonTitle_(..)
   , ionTitle
   , ionTitle_
-  )
-  where
-
+  ) where
 
 import Control.Plus (empty)
 import Deku.Attribute (class Attr, Attribute, prop', unsafeAttribute)
@@ -39,7 +37,9 @@ instance Attr IonTitle_ D.Style String where
   attr D.Style value = unsafeAttribute { key: "style", value: prop' value }
 
 instance Attr IonTitle_ D.Color E.Color where
-  attr D.Color value = unsafeAttribute { key: "color", value: prop' (E.unColor value) }
+  attr D.Color value = unsafeAttribute
+    { key: "color", value: prop' (E.unColor value) }
 
 instance Attr IonTitle_ D.Size E.TitleSize where
-  attr D.Size value = unsafeAttribute { key: "size", value: prop' (E.unTitleSize value) }
+  attr D.Size value = unsafeAttribute
+    { key: "size", value: prop' (E.unTitleSize value) }

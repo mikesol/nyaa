@@ -156,11 +156,10 @@ module Nyaa.Ionic.Enums
   , buttonexpandBlock
   , buttonexpandFull
 
- , HandleBehavior
-    , unHandleBehavior
-    , handlebehaviorCycle
+  , HandleBehavior
+  , unHandleBehavior
+  , handlebehaviorCycle
   , handlebehaviorNone
-
 
   ) where
 
@@ -623,9 +622,12 @@ buttonexpandFull = ButtonExpand "full"
 
 -- starting HandleBehavior
 newtype HandleBehavior = HandleBehavior String
+
 unHandleBehavior :: HandleBehavior -> String
 unHandleBehavior (HandleBehavior t) = t
+
 handlebehaviorCycle :: HandleBehavior
 handlebehaviorCycle = HandleBehavior "cycle"
+
 handlebehaviorNone :: HandleBehavior
 handlebehaviorNone = HandleBehavior "none"

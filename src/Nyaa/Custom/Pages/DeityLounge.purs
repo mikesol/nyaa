@@ -19,7 +19,8 @@ deityLounge { profileState } = lounge
   { name: "deity-lounge"
   , title: "LVL.99"
   , profileState
-  , missions: [ Mission
+  , missions:
+      [ Mission
           { title: "Killer Combo"
           , index: 10
           , description: D.span_

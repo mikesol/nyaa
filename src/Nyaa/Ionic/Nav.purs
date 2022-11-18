@@ -3,8 +3,7 @@ module Nyaa.Ionic.Nav
   , IonNav_(..)
   , ionNav
   , ionNav_
-  )
-  where
+  ) where
 
 -- todo: incomplete, add methods
 
@@ -37,14 +36,16 @@ ionNav_
 ionNav_ = ionNav empty
 
 instance Attr IonNav_ I.Animated Boolean where
-  attr I.Animated value = unsafeAttribute { key: "animated", value: prop' (if value then "true" else "false") }
+  attr I.Animated value = unsafeAttribute
+    { key: "animated", value: prop' (if value then "true" else "false") }
 
 -- todo add animation
 -- todo add root
 -- todo add rootParams
 
 instance Attr IonNav_ I.SwipeGesture Boolean where
-  attr I.SwipeGesture value = unsafeAttribute { key: "swipe-gesture", value: prop' (if value then "true" else "false") }
+  attr I.SwipeGesture value = unsafeAttribute
+    { key: "swipe-gesture", value: prop' (if value then "true" else "false") }
 
 instance Attr IonNav_ I.OnIonNavDidChange (Effect Unit) where
   attr I.OnIonNavDidChange value = unsafeAttribute
@@ -53,9 +54,10 @@ instance Attr IonNav_ I.OnIonNavDidChange (Effect Unit) where
 instance Attr IonNav_ I.OnIonNavDidChange (Effect Boolean) where
   attr I.OnIonNavDidChange value = unsafeAttribute
     { key: "ionNavDidChange", value: cb' (Cb (const value)) }
-  
+
 instance Attr IonNav_ I.OnIonNavWillChange Cb where
-  attr I.OnIonNavWillChange value = unsafeAttribute { key: "ionNavWillChange", value: cb' value }
+  attr I.OnIonNavWillChange value = unsafeAttribute
+    { key: "ionNavWillChange", value: cb' value }
 
 instance Attr IonNav_ I.OnIonNavWillChange (Effect Unit) where
   attr I.OnIonNavWillChange value = unsafeAttribute
@@ -68,5 +70,4 @@ instance Attr IonNav_ I.OnIonNavWillChange (Effect Boolean) where
 instance Attr IonNav_ SelfT (IonNav -> Effect Unit) where
   attr SelfT value = unsafeAttribute
     { key: "@self@", value: cb' (Cb (unsafeCoerce value)) }
-
 
