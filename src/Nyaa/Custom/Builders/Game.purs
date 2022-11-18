@@ -42,7 +42,7 @@ import Web.HTML.HTMLDocument (toDocument)
 import Web.HTML.Window (document)
 
 godMode ∷ Boolean
-godMode = true -- false
+godMode = false
 
 newtype FxData = FxData
   { fx :: Fx, startTime :: Number, duration :: Number }
@@ -53,7 +53,7 @@ foreign import currentTime :: AudioContext -> Effect Number
 
 fxButton'
   :: FxPusher
-  -> AudioContext
+  -> Ref.Ref AudioContext
   -> Event Number
   -> { icon :: String
      , color :: String
@@ -62,12 +62,13 @@ fxButton'
      , timing :: EffectTiming
      }
   -> Nut
-fxButton' push ctx eni i = do
+fxButton' push ctxRef eni i = do
   let isActive = (i.active == Just true) || godMode
   D.button
     ( oneOf
         ( guard isActive
             [ click $ eni <#> \startsAt -> do
+                ctx <- Ref.read ctxRef
                 ctm <- currentTime ctx
                 push
                   ( FxData
@@ -138,7 +139,7 @@ amplifyFx = Fx "amplify"
 
 game
   :: { name :: String
-     , audioContext :: AudioContext
+     , audioContextRef :: Ref.Ref AudioContext
      , audioUri :: String
      , profile :: Event Profile
      , fxEvent :: EventIO FxData
@@ -146,7 +147,7 @@ game
      , isTutorial :: Boolean
      }
   -> Effect Unit
-game { name, audioContext, audioUri, fxEvent, profile, chart, isTutorial } = do
+game { name, audioContextRef, audioUri, fxEvent, profile, chart, isTutorial } = do
   myCountdownRef <- Ref.new (pure unit)
   theirCountdownRef <- Ref.new (pure unit)
   myCountdownNumber <- create
@@ -181,6 +182,7 @@ game { name, audioContext, audioUri, fxEvent, profile, chart, isTutorial } = do
   killRef <- Ref.new (pure unit)
   let
     gameStart { roomId, isHost } = launchAff_ do
+      audioContext <- liftEffect $ Ref.read audioContextRef
       audioBuffer <- decodeAudioDataFromUri audioContext audioUri
       liftEffect do
         n <- coordinatedNow
@@ -217,7 +219,7 @@ game { name, audioContext, audioUri, fxEvent, profile, chart, isTutorial } = do
     gameEnd
     \_ ->
       [ Deku.do
-          let fxButton = fxButton' setFx audioContext currentTimeEvent.event
+          let fxButton = fxButton' setFx audioContextRef currentTimeEvent.event
           ionContent (oneOf [ I.Fullscren !:= true ])
             [ D.canvas
                 ( oneOf

@@ -65,12 +65,13 @@ main = do
     (dedup profileListener.event)
   let
     compactedProfile = compact $ map
-      ( \x -> case x.profile of
+      ( _.profile >>> case _ of
           Just p -> Just { profile: p }
           Nothing -> Nothing
       )
       profileState.event
   audioContext <- newAudioContext
+  audioContextRef <- Ref.new audioContext
   launchAff_ do
     when (platform == Android) do
       toAffE androidFullScreen
@@ -102,25 +103,25 @@ main = do
         { profileState: compactedProfile
         }
       tutorialLevel
-        { audioContext
+        { audioContextRef
         , audioUri: akiraURL
         , fxEvent
         , profile: _.profile <$> compactedProfile
         }
       newbLevel
-        { audioContext
+        { audioContextRef
         , audioUri: akiraURL
         , fxEvent
         , profile: _.profile <$> compactedProfile
         }
       proLevel
-        { audioContext
+        { audioContextRef
         , audioUri: akiraURL
         , fxEvent
         , profile: _.profile <$> compactedProfile
         }
       deityLevel
-        { audioContext
+        { audioContextRef
         , audioUri: akiraURL
         , fxEvent
         , profile: _.profile <$> compactedProfile
