@@ -22,4 +22,5 @@ proLevel { audioContext, audioUri, fxEvent, profile } = game
   , fxEvent
   , profile
   , chart: showMeHow
+  , isTutorial: false
   }

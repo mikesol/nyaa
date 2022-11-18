@@ -23,4 +23,5 @@ newbLevel { audioContext, audioUri, fxEvent, profile } = game
   , fxEvent
   , profile
   , chart: hypersynthetic
+  , isTutorial: false
   }

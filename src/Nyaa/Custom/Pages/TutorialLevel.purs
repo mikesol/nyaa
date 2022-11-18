@@ -23,4 +23,5 @@ tutorialLevel { audioContext, audioUri, fxEvent, profile } = game
   , fxEvent
   , profile
   , chart: tutorial
+  , isTutorial: true
   }

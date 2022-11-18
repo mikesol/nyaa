@@ -104,6 +104,7 @@ foreign import startGame
   -> BrowserAudioBuffer
   -> Effect { time :: Milliseconds, diff :: Number, pdiff :: Number }
   -> Array NoteInfo
+  -> Boolean
   -> Effect { start :: Effect Unit, kill :: Effect Unit }
 
 newtype Fx = Fx String
@@ -142,9 +143,10 @@ game
      , profile :: Event Profile
      , fxEvent :: EventIO FxData
      , chart :: Array NoteInfo
+     , isTutorial :: Boolean
      }
   -> Effect Unit
-game { name, audioContext, audioUri, fxEvent, profile, chart } = do
+game { name, audioContext, audioUri, fxEvent, profile, chart, isTutorial } = do
   myCountdownRef <- Ref.new (pure unit)
   theirCountdownRef <- Ref.new (pure unit)
   myCountdownNumber <- create
@@ -203,6 +205,7 @@ game { name, audioContext, audioUri, fxEvent, profile, chart } = do
               audioBuffer
               n.now
               chart
+              isTutorial
             controls.start
             Ref.write (controls.kill *> n.cancelNow) killRef
           Nothing ->
