@@ -41,7 +41,7 @@ import Web.HTML.HTMLDocument (toDocument)
 import Web.HTML.Window (document)
 
 godMode ∷ Boolean
-godMode = false
+godMode = true -- false
 
 newtype FxData = FxData
   { fx :: Fx, startTime :: Number, duration :: Number }
