@@ -12,6 +12,7 @@ import Effect.Class (liftEffect)
 import Effect.Ref as Ref
 import FRP.Event (create, subscribe)
 import Nyaa.Firebase.Firebase (Ticket(..), cancelTicket, createTicket)
+import Nyaa.Util.Backoff (backoff)
 
 doMatchmaking
   :: Effect Unit
@@ -20,9 +21,10 @@ doMatchmaking
 doMatchmaking failure success = do
   ticketEvent <- create
   launchAff_ do
-    unsub <- toAffE $ createTicket ticketEvent.push
     let
       happyPath = do
+        -- number below random... change?
+        unsub <- backoff (Milliseconds 278.0) 5 (toAffE $ createTicket ticketEvent.push)
         happy <- makeAff \f -> do
           unsubTicketRef <- Ref.new (pure unit)
           unsubTicket <- liftEffect $ subscribe ticketEvent.event \(Ticket t) ->
@@ -40,6 +42,5 @@ doMatchmaking failure success = do
         delay (Milliseconds 5_000.0)
         toAffE cancelTicket
         liftEffect do
-          unsub
           failure
     happyPath <|> aiPath
