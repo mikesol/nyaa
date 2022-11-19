@@ -30,7 +30,28 @@ questPage
      , audioContextRef :: Ref.Ref AudioContext
      }
   -> Effect Unit
-questPage i = customComponent_ i.name {} \_ ->
+questPage = protoQuestPage false
+
+tutorialQuestPage
+  :: { name :: String
+     , title :: String
+     , showFriend :: Boolean
+     , battleRoute :: String
+     , audioContextRef :: Ref.Ref AudioContext
+     }
+  -> Effect Unit
+tutorialQuestPage = protoQuestPage true
+
+protoQuestPage
+  :: Boolean
+  -> { name :: String
+     , title :: String
+     , showFriend :: Boolean
+     , battleRoute :: String
+     , audioContextRef :: Ref.Ref AudioContext
+     }
+  -> Effect Unit
+protoQuestPage isTutorial i = customComponent_ i.name {} \_ ->
   [ ionHeader (oneOf [ I.Translucent !:= true ])
       [ ionToolbar_
           [ ionButtons (oneOf [ I.Slot !:= "start" ])
@@ -50,7 +71,8 @@ questPage i = customComponent_ i.name {} \_ ->
               ( [ ionButton
                     ( oneOf
                         [ D.Href !:= i.battleRoute
-                        , click_ (refreshAudioContext i.audioContextRef)
+                        , click_ do
+                            refreshAudioContext i.audioContextRef
                         ]
                     )
                     [ text_ "Start the battle"
