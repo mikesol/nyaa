@@ -7,6 +7,7 @@ import Prelude
 
 import Effect (Effect)
 import Nyaa.Custom.Builders.QuestPage (questPage)
+import Nyaa.Types.BattleRoute (BattleRoute(..))
 
 backQuest :: { audioContextRef :: Ref.Ref AudioContext } -> Effect Unit
 backQuest { audioContextRef } = questPage
@@ -14,5 +15,5 @@ backQuest { audioContextRef } = questPage
   , title: "Unlock Back!"
   , showFriend: true
   , audioContextRef
-  , battleRoute: "/newb-level"
+  , battleRoute: NewbLevel
   }

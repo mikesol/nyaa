@@ -7,6 +7,7 @@ import Prelude
 
 import Effect (Effect)
 import Nyaa.Custom.Builders.QuestPage (questPage)
+import Nyaa.Types.BattleRoute (BattleRoute(..))
 
 flatQuest :: { audioContextRef :: Ref.Ref AudioContext } -> Effect Unit
 flatQuest { audioContextRef } = questPage
@@ -14,5 +15,5 @@ flatQuest { audioContextRef } = questPage
   , title: "Unlock Flat!"
   , showFriend: true
   , audioContextRef
-  , battleRoute: "/newb-level"
+  , battleRoute: NewbLevel
   }

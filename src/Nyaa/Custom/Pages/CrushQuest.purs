@@ -7,6 +7,7 @@ import Prelude
 
 import Effect (Effect)
 import Nyaa.Custom.Builders.QuestPage (questPage)
+import Nyaa.Types.BattleRoute (BattleRoute(..))
 
 crushQuest :: { audioContextRef :: Ref.Ref AudioContext } -> Effect Unit
 crushQuest { audioContextRef } = questPage
@@ -14,5 +15,5 @@ crushQuest { audioContextRef } = questPage
   , title: "Unlock Crush!"
   , showFriend: true
   , audioContextRef
-  , battleRoute: "/deity-level"
+  , battleRoute: DeityLevel
   }

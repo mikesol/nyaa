@@ -7,6 +7,7 @@ import Prelude
 
 import Effect (Effect)
 import Nyaa.Custom.Builders.QuestPage (questPage)
+import Nyaa.Types.BattleRoute (BattleRoute(..))
 
 hideQuest :: { audioContextRef :: Ref.Ref AudioContext } -> Effect Unit
 hideQuest { audioContextRef } = questPage
@@ -14,5 +15,5 @@ hideQuest { audioContextRef } = questPage
   , title: "Unlock Hide!"
   , showFriend: true
   , audioContextRef
-  , battleRoute: "/pro-level"
+  , battleRoute: ProLevel
   }

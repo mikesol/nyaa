@@ -7,6 +7,7 @@ import Prelude
 
 import Effect (Effect)
 import Nyaa.Custom.Builders.QuestPage (questPage)
+import Nyaa.Types.BattleRoute (BattleRoute(..))
 
 hypersyntheticQuest
   :: { audioContextRef :: Ref.Ref AudioContext } -> Effect Unit
@@ -15,5 +16,5 @@ hypersyntheticQuest { audioContextRef } = questPage
   , title: "Unlock HYPERSYNTHETIC!"
   , showFriend: true
   , audioContextRef
-  , battleRoute: "/newb-level"
+  , battleRoute: NewbLevel
   }

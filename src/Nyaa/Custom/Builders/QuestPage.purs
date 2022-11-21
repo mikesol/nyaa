@@ -20,13 +20,14 @@ import Nyaa.Ionic.Custom (customComponent_)
 import Nyaa.Ionic.Header (ionHeader)
 import Nyaa.Ionic.Title (ionTitle_)
 import Nyaa.Ionic.Toolbar (ionToolbar_)
+import Nyaa.Types.BattleRoute (BattleRoute, battleRouteToPath)
 import Ocarina.WebAPI (AudioContext)
 
 questPage
   :: { name :: String
      , title :: String
      , showFriend :: Boolean
-     , battleRoute :: String
+     , battleRoute :: BattleRoute
      , audioContextRef :: Ref.Ref AudioContext
      }
   -> Effect Unit
@@ -36,7 +37,7 @@ tutorialQuestPage
   :: { name :: String
      , title :: String
      , showFriend :: Boolean
-     , battleRoute :: String
+     , battleRoute :: BattleRoute
      , audioContextRef :: Ref.Ref AudioContext
      }
   -> Effect Unit
@@ -47,7 +48,7 @@ protoQuestPage
   -> { name :: String
      , title :: String
      , showFriend :: Boolean
-     , battleRoute :: String
+     , battleRoute :: BattleRoute
      , audioContextRef :: Ref.Ref AudioContext
      }
   -> Effect Unit
@@ -70,7 +71,7 @@ protoQuestPage _ i = customComponent_ i.name {} \_ ->
           [ D.div (klass_ "row-start-2 col-start-2 row-span-1 col-span-3")
               ( [ ionButton
                     ( oneOf
-                        [ D.Href !:= i.battleRoute
+                        [ D.Href !:= battleRouteToPath i.battleRoute
                         , click_ do
                             refreshAudioContext i.audioContextRef
                         ]

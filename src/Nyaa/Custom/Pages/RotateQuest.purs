@@ -7,6 +7,7 @@ import Prelude
 
 import Effect (Effect)
 import Nyaa.Custom.Builders.QuestPage (questPage)
+import Nyaa.Types.BattleRoute (BattleRoute(..))
 
 rotateQuest :: { audioContextRef :: Ref.Ref AudioContext } -> Effect Unit
 rotateQuest { audioContextRef } = questPage
@@ -14,5 +15,5 @@ rotateQuest { audioContextRef } = questPage
   , title: "Unlock Rotate!"
   , showFriend: true
   , audioContextRef
-  , battleRoute: "/pro-level"
+  , battleRoute: ProLevel
   }

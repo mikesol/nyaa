@@ -7,6 +7,7 @@ import Prelude
 
 import Effect (Effect)
 import Nyaa.Custom.Builders.QuestPage (questPage)
+import Nyaa.Types.BattleRoute (BattleRoute(..))
 
 dazzleQuest :: { audioContextRef :: Ref.Ref AudioContext } -> Effect Unit
 dazzleQuest { audioContextRef } = questPage
@@ -14,5 +15,5 @@ dazzleQuest { audioContextRef } = questPage
   , title: "Unlock Dazzle!"
   , showFriend: true
   , audioContextRef
-  , battleRoute: "/pro-level"
+  , battleRoute: ProLevel
   }

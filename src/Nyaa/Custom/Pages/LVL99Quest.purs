@@ -7,6 +7,7 @@ import Prelude
 
 import Effect (Effect)
 import Nyaa.Custom.Builders.QuestPage (questPage)
+import Nyaa.Types.BattleRoute (BattleRoute(..))
 
 lvl99Quest :: { audioContextRef :: Ref.Ref AudioContext } -> Effect Unit
 lvl99Quest { audioContextRef } = questPage
@@ -14,5 +15,5 @@ lvl99Quest { audioContextRef } = questPage
   , title: "Unlock Show Me How!"
   , showFriend: true
   , audioContextRef
-  , battleRoute: "/deity-level"
+  , battleRoute: DeityLevel
   }

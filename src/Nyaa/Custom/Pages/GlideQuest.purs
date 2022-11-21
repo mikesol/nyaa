@@ -7,6 +7,7 @@ import Prelude
 
 import Effect (Effect)
 import Nyaa.Custom.Builders.QuestPage (questPage)
+import Nyaa.Types.BattleRoute (BattleRoute(..))
 
 glideQuest :: { audioContextRef :: Ref.Ref AudioContext } -> Effect Unit
 glideQuest { audioContextRef } = questPage
@@ -14,5 +15,5 @@ glideQuest { audioContextRef } = questPage
   , title: "Unlock Glide!"
   , showFriend: true
   , audioContextRef
-  , battleRoute: "/newb-level"
+  , battleRoute: NewbLevel
   }
