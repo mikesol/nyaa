@@ -15,15 +15,11 @@ refreshAudioContext :: Ref.Ref AudioContext -> Effect Unit
 refreshAudioContext r = do
   ctx <- Ref.read r
   state <- contextState_ ctx
-  when (state /= "closed" && state /= "running")
-    do
-      close_ ctx
-  if state == "running" then pure unit
-  else do
-    newCtx <- newAudioContext
-    void $ constant0Hack_ ctx
-    Ref.write newCtx r
-
+  when (state /= "closed" && state /= "running") do
+    close_ ctx
+  newCtx <- newAudioContext
+  void $ constant0Hack_ ctx
+  Ref.write newCtx r
 
 shutItDown :: Ref.Ref AudioContext -> Effect Unit
 shutItDown r = do

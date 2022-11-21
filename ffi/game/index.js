@@ -30,6 +30,10 @@ export function startGameImpl(
   noteInfo,
   isTutorial
 ) {
+  if (audioContext.state !== "running") {
+    console.log("Catastrophic failure!!!");
+  }
+
   // SECTION START - THREE //
 
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
@@ -107,12 +111,15 @@ export function startGameImpl(
 
   // SUBSECTION START - CORE
 
-  let audioEffect = null; // Filled in later..
+  let audioTrack = new AudioBufferSourceNode(audioContext, {
+    buffer: audioBuffer,
+  });
+  let audioEffect = new AudioEffect(audioContext, audioTrack);
   const cameraEffect = new CameraEffect(camera);
   let isFinished = false;
 
   function animateCoreUi() {
-    if (audioContext.state === "running") {
+    if (beginTime !== null) {
       const elapsedTime = audioContext.currentTime - beginTime;
       if (elapsedTime >= audioBuffer.duration) {
         isFinished = true;
@@ -129,22 +136,11 @@ export function startGameImpl(
 
   // SUBSECTION START - AUDIO
 
-  let audioTrack = null;
   let beginTime = null;
-
   function startAudio() {
-    if (audioContext.state === "suspended") {
-      audioTrack = new AudioBufferSourceNode(audioContext, {
-        buffer: audioBuffer,
-      });
-      audioEffect = new AudioEffect(audioContext, audioTrack);
-      audioContext.resume();
-      audioTrack.start();
-      beginTime = audioContext.currentTime;
-      pushBeginTime(beginTime)();
-    } else {
-      throw new Error("Already started...");
-    }
+    audioTrack.start();
+    beginTime = audioContext.currentTime;
+    pushBeginTime(beginTime)();
   }
 
   // SUBSECTION END - AUDIO
@@ -331,9 +327,11 @@ export function startGameImpl(
     start() {
       renderer.render(scene, camera);
       requestAnimationFrame(render);
-      setTimeout(() => {
-        startAudio();
-      }, 2000);
+      if (isTutorial) {
+        setTimeout(() => {
+          startAudio();
+        }, 1000);
+      }
       if (!isHost && !isTutorial) {
         const currentTime = getTime().time;
         pubnub.publish({
