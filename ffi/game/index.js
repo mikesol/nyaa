@@ -151,7 +151,7 @@ export function startGameImpl(
 
   // SUBSECTION START - INPUT
 
-  const judge = new Judge(noteInfo, 20);
+  const judge = new Judge(noteInfo, audioBuffer.duration);
   const pointerBuffer = new THREE.Vector2();
   function handleTouch(event) {
     if (audioContext.state === "suspended") {
