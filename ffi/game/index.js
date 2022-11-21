@@ -30,6 +30,10 @@ export function startGameImpl(
   noteInfo,
   isTutorial
 ) {
+  if (audioContext.state !== "running") {
+    console.log("Catastrophic failure!!!");
+  }
+
   // SECTION START - THREE //
 
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
@@ -87,13 +91,15 @@ export function startGameImpl(
     judgment: "",
     needsUpdate: false,
   };
+  const perfectScore = 1_000_000 / noteInfo.length;
+  const nearScore = perfectScore / 2;
 
   function animateUiState() {
     if (uiState.needsUpdate) {
-      playerScoreElement.textContent = uiState.playerScore
+      playerScoreElement.textContent = Math.floor(uiState.playerScore)
         .toString()
         .padStart(7, "0");
-      enemyScoreElement.textContent = uiState.enemyScore
+      enemyScoreElement.textContent = Math.floor(uiState.enemyScore)
         .toString()
         .padStart(7, "0");
       judgmentElement.textContent = uiState.judgment;
@@ -105,12 +111,15 @@ export function startGameImpl(
 
   // SUBSECTION START - CORE
 
-  let audioEffect = null; // Filled in later..
+  let audioTrack = new AudioBufferSourceNode(audioContext, {
+    buffer: audioBuffer,
+  });
+  let audioEffect = new AudioEffect(audioContext, audioTrack);
   const cameraEffect = new CameraEffect(camera);
   let isFinished = false;
 
   function animateCoreUi() {
-    if (audioContext.state === "running") {
+    if (beginTime !== null) {
       const elapsedTime = audioContext.currentTime - beginTime;
       if (elapsedTime >= audioBuffer.duration) {
         isFinished = true;
@@ -127,29 +136,18 @@ export function startGameImpl(
 
   // SUBSECTION START - AUDIO
 
-  let audioTrack = null;
   let beginTime = null;
-
   function startAudio() {
-    if (audioContext.state === "suspended") {
-      audioTrack = new AudioBufferSourceNode(audioContext, {
-        buffer: audioBuffer,
-      });
-      audioEffect = new AudioEffect(audioContext, audioTrack);
-      audioContext.resume();
-      audioTrack.start();
-      beginTime = audioContext.currentTime;
-      pushBeginTime(beginTime)();
-    } else {
-      throw new Error("Already started...");
-    }
+    audioTrack.start();
+    beginTime = audioContext.currentTime;
+    pushBeginTime(beginTime)();
   }
 
   // SUBSECTION END - AUDIO
 
   // SUBSECTION START - INPUT
 
-  const judge = new Judge(noteInfo, 20);
+  const judge = new Judge(noteInfo, audioBuffer.duration);
   const pointerBuffer = new THREE.Vector2();
   function handleTouch(event) {
     if (audioContext.state === "suspended") {
@@ -165,11 +163,11 @@ export function startGameImpl(
         const column = intersects[0].instanceId;
         judge.judge(elapsedTime, column, (judgment) => {
           if (judgment === "perfect") {
-            uiState.playerScore += 10;
+            uiState.playerScore += perfectScore;
             uiState.judgment = "Perfect";
             uiState.needsUpdate = true;
           } else if (judgment === "near") {
-            uiState.playerScore += 50;
+            uiState.playerScore += nearScore;
             uiState.judgment = "Near";
             uiState.needsUpdate = true;
           }
@@ -329,7 +327,12 @@ export function startGameImpl(
     start() {
       renderer.render(scene, camera);
       requestAnimationFrame(render);
-      if (!isHost) {
+      if (isTutorial) {
+        setTimeout(() => {
+          startAudio();
+        }, 1000);
+      }
+      if (!isHost && !isTutorial) {
         const currentTime = getTime().time;
         pubnub.publish({
           channel: `${roomId}-nyaa-info`,

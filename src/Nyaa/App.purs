@@ -10,7 +10,6 @@ import Deku.Core (Domable)
 import Deku.DOM as D
 import Effect (Effect)
 import Effect.Ref as Ref
-import Nyaa.Audio (shutItDown)
 import Nyaa.Ionic.App (ionApp_)
 import Nyaa.Ionic.Attributes as I
 import Nyaa.Ionic.Content (ionContent)
@@ -19,7 +18,7 @@ import Nyaa.Ionic.Header (ionHeader)
 import Nyaa.Ionic.Item (ionItem)
 import Nyaa.Ionic.Label (ionLabel_)
 import Nyaa.Ionic.List (ionList_)
-import Nyaa.Ionic.Nav (ionNav)
+import Nyaa.Ionic.Nav (ionNav_)
 import Nyaa.Ionic.Route (ionRoute)
 import Nyaa.Ionic.Router (ionRouter_)
 import Nyaa.Ionic.Title (ionTitle_)
@@ -76,12 +75,12 @@ basicPages =
   , "deity-lounge"
   , "lounge-picker"
   , "profile-page"
+  , "tutorial-level"
   ]
 
 levelPages :: Array String
 levelPages =
-  [ "tutorial-level"
-  , "newb-level"
+  [ "newb-level"
   , "pro-level"
   , "deity-level"
   ]
@@ -117,19 +116,14 @@ makeApp
   -> String
   -> (Ref.Ref AudioContext)
   -> Domable lock payload
-makeApp withAdmin homeIs audioContextRef = ionApp_
+makeApp withAdmin homeIs _ = ionApp_
   [ ionRouter_
       ( [ ionRoute (oneOf [ I.Url !:= "/", I.Component !:= homeIs ])
             []
         ] <> basicIonRoutes <> levelIonRoutes
 
       )
-  -- to do: if we want to persist sound across navigation, make this more fine-grained
-  , ionNav
-      ( I.OnIonNavWillChange !:= do
-          shutItDown audioContextRef
-      )
-      []
+  , ionNav_ []
   ]
   where
   basicIonRoutes :: Array (Domable lock payload)
