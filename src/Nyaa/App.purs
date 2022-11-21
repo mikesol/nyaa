@@ -76,12 +76,12 @@ basicPages =
   , "deity-lounge"
   , "lounge-picker"
   , "profile-page"
+  , "tutorial-level"
   ]
 
 levelPages :: Array String
 levelPages =
-  [ "tutorial-level"
-  , "newb-level"
+  [ "newb-level"
   , "pro-level"
   , "deity-level"
   ]

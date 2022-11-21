@@ -87,13 +87,15 @@ export function startGameImpl(
     judgment: "",
     needsUpdate: false,
   };
+  const perfectScore = 1_000_000 / noteInfo.length;
+  const nearScore = perfectScore / 2;
 
   function animateUiState() {
     if (uiState.needsUpdate) {
-      playerScoreElement.textContent = uiState.playerScore
+      playerScoreElement.textContent = Math.floor(uiState.playerScore)
         .toString()
         .padStart(7, "0");
-      enemyScoreElement.textContent = uiState.enemyScore
+      enemyScoreElement.textContent = Math.floor(uiState.enemyScore)
         .toString()
         .padStart(7, "0");
       judgmentElement.textContent = uiState.judgment;
@@ -149,7 +151,7 @@ export function startGameImpl(
 
   // SUBSECTION START - INPUT
 
-  const judge = new Judge(noteInfo, 20);
+  const judge = new Judge(noteInfo, audioBuffer.duration);
   const pointerBuffer = new THREE.Vector2();
   function handleTouch(event) {
     if (audioContext.state === "suspended") {
@@ -165,11 +167,11 @@ export function startGameImpl(
         const column = intersects[0].instanceId;
         judge.judge(elapsedTime, column, (judgment) => {
           if (judgment === "perfect") {
-            uiState.playerScore += 10;
+            uiState.playerScore += perfectScore;
             uiState.judgment = "Perfect";
             uiState.needsUpdate = true;
           } else if (judgment === "near") {
-            uiState.playerScore += 50;
+            uiState.playerScore += nearScore;
             uiState.judgment = "Near";
             uiState.needsUpdate = true;
           }
@@ -329,7 +331,10 @@ export function startGameImpl(
     start() {
       renderer.render(scene, camera);
       requestAnimationFrame(render);
-      if (!isHost) {
+      setTimeout(() => {
+        startAudio();
+      }, 2000);
+      if (!isHost && !isTutorial) {
         const currentTime = getTime().time;
         pubnub.publish({
           channel: `${roomId}-nyaa-info`,
