@@ -51,7 +51,7 @@ protoQuestPage
      , audioContextRef :: Ref.Ref AudioContext
      }
   -> Effect Unit
-protoQuestPage isTutorial i = customComponent_ i.name {} \_ ->
+protoQuestPage _ i = customComponent_ i.name {} \_ ->
   [ ionHeader (oneOf [ I.Translucent !:= true ])
       [ ionToolbar_
           [ ionButtons (oneOf [ I.Slot !:= "start" ])
