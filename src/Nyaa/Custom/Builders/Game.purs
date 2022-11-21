@@ -9,7 +9,8 @@ import Data.Int (floor)
 import Data.Maybe (Maybe(..))
 import Data.Monoid (guard)
 import Data.Newtype (unwrap)
-import Deku.Attribute ((!:=))
+import Data.Tuple (Tuple(..))
+import Deku.Attribute ((!:=), (:=))
 import Deku.Attributes (id_, klass, klass_)
 import Deku.Control (switcher, text, text_)
 import Deku.Core (Nut)
@@ -42,6 +43,8 @@ import Web.HTML.HTMLCanvasElement as HTMLCanvasElement
 import Web.HTML.HTMLDocument (toDocument)
 import Web.HTML.Window (document)
 
+data ActivatedStates = PreCountdown | InCountdown | PostCountdown
+
 godMode ∷ Boolean
 godMode = false
 
@@ -54,6 +57,8 @@ foreign import currentTime :: AudioContext -> Effect Number
 
 fxButton'
   :: FxPusher
+  -> (Unit -> Effect Unit)
+  -> Event ActivatedStates
   -> Ref.Ref AudioContext
   -> Event Number
   -> { icon :: String
@@ -63,12 +68,21 @@ fxButton'
      , timing :: EffectTiming
      }
   -> Nut
-fxButton' push ctxRef eni i = do
+fxButton' push activated aStateEv ctxRef eni i = do
   let isActive = (i.active == Just true) || godMode
+  let
+    activeEvent = pure isActive <|>
+      ( aStateEv <#> case _ of
+          PostCountdown -> true
+          _ -> false
+      )
+
   D.button
     ( oneOf
-        ( guard isActive
-            [ click $ eni <#> \startsAt -> do
+        ( [ click $ (Tuple <$> activeEvent <*> eni) <#>
+              \(Tuple active startsAt) -> guard active do
+                log "sending effect"
+                activated unit
                 ctx <- Ref.read ctxRef
                 ctm <- currentTime ctx
                 push
@@ -78,17 +92,21 @@ fxButton' push ctxRef eni i = do
                       , duration: (unwrap i.timing).duration
                       }
                   )
-            ] <>
-            [ D.Disabled !:= (if isActive then "false" else "true")
-            , klass_
-                $ (if isActive then i.color else "bg-white") <>
-                    ( " font-semibold py-2 px-4 border border-gray-400 rounded shadow ml-2 mt-2"
-                        <>
-                          ( if isActive then ""
-                            else " opacity-50 cursor-not-allowed"
-                          )
-                    )
-            ]
+          , activeEvent <#> \ase -> D.Disabled :=
+              (if ase then "false" else "true")
+          , klass $
+              ( pure PostCountdown <|> aStateEv <#> case _ of
+                  PostCountdown -> true
+                  _ -> false
+              ) <#> \stEv ->
+                (if isActive then i.color else "bg-white") <>
+                  ( " font-semibold py-2 px-4 border border-gray-400 rounded shadow ml-2 mt-2"
+                      <>
+                        ( if isActive && stEv then ""
+                          else " opacity-50 cursor-not-allowed"
+                        )
+                  )
+          ]
         )
     )
     [ text_ (if isActive then i.icon else "?") ]
@@ -158,6 +176,7 @@ game { name, audioContextRef, audioUri, fxEvent, profile, chart, isTutorial } =
     theirCountdownIsOn <- create
     myEffect <- create
     theirEffect <- create
+    activatedEffect <- create
     let
       myEffectPuhser = \n@(FxData fxData) -> do
         myCountdown <- countdown 1000.0 (floor fxData.duration)
@@ -222,7 +241,16 @@ game { name, audioContextRef, audioUri, fxEvent, profile, chart, isTutorial } =
       \_ ->
         [ Deku.do
             let
-              fxButton = fxButton' setFx audioContextRef currentTimeEvent.event
+              activatedStateEvent =
+                ( map
+                    (if _ then InCountdown else PostCountdown)
+                    $ dedup
+                        (myCountdownIsOn.event <|> pure false)
+                ) <|> (activatedEffect.event $> PreCountdown)
+              fxButton = fxButton' setFx activatedEffect.push
+                activatedStateEvent
+                audioContextRef
+                currentTimeEvent.event
             ionContent (oneOf [ I.Fullscren !:= true ])
               [ D.canvas
                   ( oneOf
@@ -345,18 +373,25 @@ game { name, audioContextRef, audioUri, fxEvent, profile, chart, isTutorial } =
                         ( oneOf
                             [ id_ "my-time-remaining"
                             , klass
-                                ( dedup (myCountdownIsOn.event <|> pure false)
+                                ( activatedStateEvent
                                     <#>
-                                      \isOn ->
-                                        "text-blue-500 text-xl ml-2 mt-1 font-mono"
+                                      \effectState ->
+                                        ( case effectState of
+                                            PreCountdown -> "bg-blue-500 "
+                                            _ -> ""
+                                        )
                                           <>
-                                            ( if not isOn then " invisible"
-                                              else ""
+                                            "text-blue-500 text-xl ml-2 mt-1 font-mono"
+                                          <>
+                                            ( case effectState of
+                                                PostCountdown -> " invisible"
+                                                _ -> ""
                                             )
+
                                 )
                             ]
                         )
-                        [ text (show <$> myCountdownNumber.event)
+                        [ text (pure "0" <|> show <$> myCountdownNumber.event)
                         ]
                     , D.span
                         ( oneOf

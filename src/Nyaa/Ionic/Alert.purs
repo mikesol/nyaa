@@ -12,8 +12,8 @@ foreign import alertImpl
   :: String
   -> Nullable String
   -> Nullable String
-  -> String
+  -> Array { text :: String, handler :: Effect Unit } 
   -> Effect (Promise Unit)
 
-alert :: String -> Maybe String -> Maybe String -> String -> Aff Unit
+alert :: String -> Maybe String -> Maybe String -> Array { text :: String, handler :: Effect Unit } -> Aff Unit
 alert a b c d = toAffE $ alertImpl a (toNullable b) (toNullable c) d

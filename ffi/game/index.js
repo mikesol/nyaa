@@ -296,6 +296,7 @@ export function startGameImpl(
     };
 
     unsubFromEffects = subToEffects(({ fx, startTime, duration }) => () => {
+      console.log('sending effect in normal mode');
       pubnub.publish({
         channel: `${roomId}-nyaa-effect`,
         message: {
@@ -309,6 +310,7 @@ export function startGameImpl(
     })();
   } else {
     unsubFromEffects = subToEffects((e) => () => {
+      console.log('sending effect in tutorial mode');
       e.isHost === isHost ? myEffect(e)() : theirEffect(e)();
     })();
   }

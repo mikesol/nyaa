@@ -21,7 +21,10 @@ signInFlow = brackedWithLoading' (Milliseconds 400.0) "Signing in..."
           Web -> void $ toAffE $ signInWithGoogle
           IOS -> void $ toAffE $ signInWithGameCenter
           Android -> void $ toAffE $ signInWithPlayGames
-    ) <|> (alert "Login Failed" Nothing (Just "Please try again later") "OK")
+    ) <|>
+      ( alert "Login Failed" Nothing (Just "Please try again later")
+          [ { text: "OK", handler: pure unit } ]
+      )
   )
 
 signOutFlow :: { clearProfile :: Effect Unit } -> Aff Unit

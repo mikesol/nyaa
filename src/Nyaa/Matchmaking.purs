@@ -6,9 +6,8 @@ import Control.Alt ((<|>))
 import Control.Promise (toAffE)
 import Data.Either (Either(..))
 import Data.Maybe (Maybe(..))
-import Debug (spy)
 import Effect (Effect)
-import Effect.Aff (Milliseconds(..), delay, effectCanceler, launchAff_, makeAff)
+import Effect.Aff (Milliseconds(..), delay, effectCanceler, launchAff_, makeAff, parallel, sequential)
 import Effect.Class (liftEffect)
 import Effect.Console (log)
 import Effect.Ref as Ref
@@ -38,7 +37,7 @@ doMatchmaking room failure success = do
         happy <- makeAff \f -> do
           unsubTicketRef <- Ref.new (pure unit)
           unsubTicket <- liftEffect $ subscribe ticketEvent.event \(Ticket t) ->
-            let _ = spy "got ticket" t in
+            -- let _ = spy "got ticket" t in
             case t.player2, t.player2Name of
               Just player2, Just player2Name -> do
                 f
@@ -58,8 +57,10 @@ doMatchmaking room failure success = do
           unsub
           success happy
       aiPath = do
-        delay (Milliseconds 5_000.0)
+        delay (Milliseconds 7_000.0)
+        liftEffect $ log "killing ticket"
         toAffE cancelTicket
         liftEffect do
+          log "running failure"
           failure
-    happyPath <|> aiPath
+    sequential (parallel happyPath <|> parallel aiPath)

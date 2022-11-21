@@ -1,5 +1,5 @@
 export const alertImpl =
-  (header) => (subHeader) => (message) => (buttonTxt) => async () => {
+  (header) => (subHeader) => (message) => (buttons) => async () => {
     const alert = document.createElement("ion-alert");
     alert.header = header;
     if (subHeader) {
@@ -8,7 +8,7 @@ export const alertImpl =
     if (message) {
       alert.message = message;
     }
-    alert.buttons = [buttonTxt];
+    alert.buttons = buttons;
 
     document.body.appendChild(alert);
     await alert.present();

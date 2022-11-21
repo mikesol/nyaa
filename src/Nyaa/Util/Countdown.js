@@ -5,7 +5,7 @@ export const countdown = (ms) => (i) => (execute) => (done) => () => {
   const j = { i };
   let unsub;
   unsub = setInterval(() => {
-    if (j.i < 0) {
+    if (j.i <= 0) {
       clearInterval(unsub);
       done();
       return;
