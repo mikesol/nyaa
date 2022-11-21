@@ -208,57 +208,98 @@ export const cancelTicket = async () => {
     // if the previous game was full or the current player1 is squatting
     if (yentaLocal.player1 === uid) {
       yentaLocal.player1 = firebase.firestore.FieldValue.delete();
-      transaction.set(matchmakingDocRef, yentaLocal);
+      transaction.set(matchmakingDocRef, yentaLocal, { merge: true });
       return;
     }
     return;
   });
 };
-export const createTicketImpl = (nothing) => (just) => (room) => (push) => async () => {
-  const matchmakingDocRef = db.collection(MATCHMAKING).doc(`${YENTA}${room}`);
-  const myTicket = await db.runTransaction(async (transaction) => {
-    const uid = auth.currentUser.uid;
-    const matchmakingDoc = await transaction.get(matchmakingDocRef);
-    const timestamp = new Date().getTime();
-    if (!matchmakingDoc.exists) {
-      const o = { player1: uid, player1Timestamp: timestamp };
-      transaction.set(o);
-      return o;
-    }
-    const yentaRemote = matchmakingDoc.data();
-    const yentaLocal = { ...yentaRemote };
-    // if the previous game was full or the current player1 is squatting
-    if (
-      (yentaLocal.player1 && yentaLocal.player2) ||
-      yentaLocal.player1Timestamp > timestamp - 5000.0
-    ) {
-      yentaLocal.player1 = uid;
-      yentaLocal.player1Timestamp = timestamp;
-      yentaLocal.player2 = firebase.firestore.FieldValue.delete();
-      yentaLocal.player2Timestamp = firebase.firestore.FieldValue.delete();
-      transaction.set(matchmakingDocRef, yentaLocal);
-      return { player1: uid, player2: nothing };
-    }
-    if (!yentaLocal.player2) {
-      yentaLocal.player2 = uid;
-      yentaLocal.player2Timestamp = timestamp;
-      transaction.set(matchmakingDocRef, yentaLocal);
-      const o = { ...yentaLocal };
-      o.player2 = just(yentaLocal.player2);
-      return o;
-    }
-    // we should never get here as if we're in the matchmaking queue then we should never hit something
-    // that doesn't correspond with one of the above conditions
-    throw new Error(
-      `Programming error: inconsistent state ${timestamp} ${JSON.stringify(
-        yentaRemote
-      )}`
-    );
-  });
-  push(myTicket);
-  const unsub = matchmakingDocRef.onSnapshot((doc) => {
-    const ticket = doc.data();
-    push(ticket);
-  });
-  return unsub;
-};
+// is too long too long?
+const TOO_LONG = 7000.0;
+export const createTicketImpl =
+  (nothing) => (just) => (room) => (push) => async () => {
+    console.log("creating ticket");
+    const matchmakingDocRef = db.collection(MATCHMAKING).doc(`${YENTA}${room}`);
+    const profileDocRef = db.collection(PROFILE).doc(auth.currentUser.uid);
+    const myTicket = await db.runTransaction(async (transaction) => {
+      const uid = auth.currentUser.uid;
+      const [profileDoc, matchmakingDoc] = await Promise.all([
+        transaction.get(profileDocRef),
+        transaction.get(matchmakingDocRef),
+      ]);
+      const profileData = profileDoc.data();
+      const timestamp = new Date().getTime();
+      if (!matchmakingDoc.exists) {
+        console.log("creating mm doc and claiming player 1");
+        const o = {
+          player1: uid,
+          player1Timestamp: timestamp,
+          player1Name: profileData.username,
+        };
+        transaction.set(matchmakingDocRef, o, { merge: true });
+        const oo = { ...o };
+        oo.player2 = nothing;
+        oo.player2Name = nothing;
+        return oo;
+      }
+      const yentaRemote = matchmakingDoc.data();
+      const yentaLocal = { ...yentaRemote };
+      // if the previous game was full or the current player1 is squatting
+      if (
+        (yentaLocal.player1 && yentaLocal.player2) ||
+        yentaLocal.player1Timestamp < timestamp - TOO_LONG
+      ) {
+        console.log(
+          "claiming player 1",
+          yentaLocal,
+          yentaLocal.player1Timestamp,
+          timestamp
+        );
+        yentaLocal.player1 = uid;
+        yentaLocal.player1Timestamp = timestamp;
+        yentaLocal.player1Name = profileData.username;
+        yentaLocal.player2 = firebase.firestore.FieldValue.delete();
+        yentaLocal.player2Timestamp = firebase.firestore.FieldValue.delete();
+        yentaLocal.player2Name = firebase.firestore.FieldValue.delete();
+        transaction.set(matchmakingDocRef, yentaLocal, { merge: true });
+        return {
+          player1: uid,
+          player1Name: profileData.username,
+          player2: nothing,
+          player2Name: nothing,
+        };
+      }
+      if (!yentaLocal.player2) {
+        console.log("claiming player 2");
+        yentaLocal.player2 = uid;
+        yentaLocal.player2Timestamp = timestamp;
+        yentaLocal.player2Name = profileData.username;
+        transaction.set(matchmakingDocRef, yentaLocal);
+        const o = { ...yentaLocal };
+        o.player2 = just(yentaLocal.player2);
+        o.player2Name = just(yentaLocal.player2Name);
+        return o;
+      }
+      // we should never get here as if we're in the matchmaking queue then we should never hit something
+      // that doesn't correspond with one of the above conditions
+      throw new Error(
+        `Programming error: inconsistent state ${timestamp} ${JSON.stringify(
+          yentaRemote
+        )}`
+      );
+    });
+    console.log("pushing my ticket");
+    push(myTicket)();
+    const unsub = matchmakingDocRef.onSnapshot((doc) => {
+      const ticket = doc.data();
+      if (ticket.player2) {
+        ticket.player2 = just(ticket.player2);
+      }
+      if (ticket.player2Name) {
+        ticket.player2Name = just(ticket.player2Name);
+      }
+      console.log("pushing incoming ticket", ticket);
+      push(ticket)();
+    });
+    return unsub;
+  };

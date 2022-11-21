@@ -30,7 +30,12 @@ type User =
   , uid :: String
   }
 
-newtype Ticket = Ticket { player1 :: String, player2 :: Maybe String }
+newtype Ticket = Ticket
+  { player1 :: String
+  , player1Name :: String
+  , player2 :: Maybe String
+  , player2Name :: Maybe String
+  }
 
 foreign import gameCenterEagerAuth :: Effect (Promise Unit)
 foreign import getCurrentUser :: Effect (Nullable User)
@@ -136,7 +141,12 @@ foreign import updateAvatarUrl
 
 foreign import uploadAvatar :: Uint8Array -> Effect (Promise String)
 
-foreign import createTicketImpl :: Maybe String -> (String -> Maybe String) -> Int -> (Ticket -> Effect Unit) -> Effect (Promise (Effect Unit) )
+foreign import createTicketImpl
+  :: Maybe String
+  -> (String -> Maybe String)
+  -> Int
+  -> (Ticket -> Effect Unit)
+  -> Effect (Promise (Effect Unit))
 
 createTicket :: Int -> (Ticket -> Effect Unit) -> Effect (Promise (Effect Unit))
 createTicket = createTicketImpl Nothing Just
