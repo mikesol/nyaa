@@ -19,7 +19,7 @@ import Nyaa.Ionic.Header (ionHeader)
 import Nyaa.Ionic.Item (ionItem)
 import Nyaa.Ionic.Label (ionLabel_)
 import Nyaa.Ionic.List (ionList_)
-import Nyaa.Ionic.Nav (ionNav)
+import Nyaa.Ionic.Nav (ionNav_)
 import Nyaa.Ionic.Route (ionRoute)
 import Nyaa.Ionic.Router (ionRouter_)
 import Nyaa.Ionic.Title (ionTitle_)
@@ -76,12 +76,12 @@ basicPages =
   , "deity-lounge"
   , "lounge-picker"
   , "profile-page"
+  , "tutorial-level"
   ]
 
 levelPages :: Array String
 levelPages =
-  [ "tutorial-level"
-  , "newb-level"
+  [ "newb-level"
   , "pro-level"
   , "deity-level"
   ]
