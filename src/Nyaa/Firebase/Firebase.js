@@ -214,8 +214,8 @@ export const cancelTicket = async () => {
     return;
   });
 };
-export const createTicketImpl = (nothing) => (just) => (push) => async () => {
-  const matchmakingDocRef = db.collection(MATCHMAKING).doc(YENTA);
+export const createTicketImpl = (nothing) => (just) => (room) => (push) => async () => {
+  const matchmakingDocRef = db.collection(MATCHMAKING).doc(`${YENTA}${room}`);
   const myTicket = await db.runTransaction(async (transaction) => {
     const uid = auth.currentUser.uid;
     const matchmakingDoc = await transaction.get(matchmakingDocRef);

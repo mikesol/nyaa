@@ -15,16 +15,17 @@ import Nyaa.Firebase.Firebase (Ticket(..), cancelTicket, createTicket)
 import Nyaa.Util.Backoff (backoff)
 
 doMatchmaking
-  :: Effect Unit
+  :: Int
+  -> Effect Unit
   -> ({ player1 :: String, player2 :: String } -> Effect Unit)
   -> Effect Unit
-doMatchmaking failure success = do
+doMatchmaking room failure success = do
   ticketEvent <- create
   launchAff_ do
     let
       happyPath = do
         -- number below random... change?
-        unsub <- backoff (Milliseconds 278.0) 5 (toAffE $ createTicket ticketEvent.push)
+        unsub <- backoff (Milliseconds 278.0) 5 (toAffE $ createTicket room ticketEvent.push)
         happy <- makeAff \f -> do
           unsubTicketRef <- Ref.new (pure unit)
           unsubTicket <- liftEffect $ subscribe ticketEvent.event \(Ticket t) ->

@@ -136,9 +136,9 @@ foreign import updateAvatarUrl
 
 foreign import uploadAvatar :: Uint8Array -> Effect (Promise String)
 
-foreign import createTicketImpl :: Maybe String -> (String -> Maybe String) -> (Ticket -> Effect Unit) -> Effect (Promise (Effect Unit) )
+foreign import createTicketImpl :: Maybe String -> (String -> Maybe String) -> Int -> (Ticket -> Effect Unit) -> Effect (Promise (Effect Unit) )
 
-createTicket :: (Ticket -> Effect Unit) -> Effect (Promise (Effect Unit))
+createTicket :: Int -> (Ticket -> Effect Unit) -> Effect (Promise (Effect Unit))
 createTicket = createTicketImpl Nothing Just
 
 foreign import cancelTicket :: Effect (Promise Unit)
