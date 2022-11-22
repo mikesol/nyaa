@@ -128,3 +128,4 @@ assets/cat.png filter=lfs diff=lfs merge=lfs -text
 assets/akira.mp3 filter=lfs diff=lfs merge=lfs -text
 assets/nyaaBeach.jpg filter=lfs diff=lfs merge=lfs -text
 assets/MochiyPopPOne-Regular.ttf filter=lfs diff=lfs merge=lfs -text
+assets/showMeHow.mp3 filter=lfs diff=lfs merge=lfs -text
