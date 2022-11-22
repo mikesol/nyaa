@@ -8,6 +8,7 @@ import FRP.Event (Event, EventIO)
 import Nyaa.Charts.ShowMeHow (showMeHow)
 import Nyaa.Custom.Builders.Game (FxData, game)
 import Nyaa.Firebase.Firebase (Profile)
+import Nyaa.Types.BattleRoute (BattleRoute(..))
 import Ocarina.WebAPI (AudioContext)
 
 proLevel
@@ -24,5 +25,6 @@ proLevel { audioContextRef, audioUri, fxEvent, profile } = game
   , fxEvent
   , profile
   , chart: showMeHow
+  , battleRoute: ProLevel
   , isTutorial: false
   }

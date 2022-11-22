@@ -32,6 +32,7 @@ import Nyaa.Ionic.Attributes as I
 import Nyaa.Ionic.Content (ionContent)
 import Nyaa.Ionic.Custom (customComponent)
 import Nyaa.Some (get, some)
+import Nyaa.Types.BattleRoute (BattleRoute, battleRouteToRoomNumber)
 import Nyaa.Util.Countdown (countdown)
 import Ocarina.Interpret (decodeAudioDataFromUri)
 import Ocarina.WebAPI (AudioContext, BrowserAudioBuffer)
@@ -125,6 +126,7 @@ foreign import startGame
   -> Effect { time :: Milliseconds, diff :: Number, pdiff :: Number }
   -> Array NoteInfo
   -> Boolean
+  -> Int
   -> Effect { start :: Effect Unit, kill :: Effect Unit }
 
 newtype Fx = Fx String
@@ -164,9 +166,19 @@ game
      , fxEvent :: EventIO FxData
      , chart :: Array NoteInfo
      , isTutorial :: Boolean
+     , battleRoute :: BattleRoute
      }
   -> Effect Unit
-game { name, audioContextRef, audioUri, fxEvent, profile, chart, isTutorial } =
+game
+  { name
+  , audioContextRef
+  , audioUri
+  , fxEvent
+  , profile
+  , chart
+  , isTutorial
+  , battleRoute
+  } =
   do
     myCountdownRef <- Ref.new (pure unit)
     theirCountdownRef <- Ref.new (pure unit)
@@ -229,6 +241,7 @@ game { name, audioContextRef, audioUri, fxEvent, profile, chart, isTutorial } =
                 n.now
                 chart
                 isTutorial
+                (battleRouteToRoomNumber battleRoute)
               controls.start
               Ref.write (controls.kill *> n.cancelNow) killRef
             Nothing ->

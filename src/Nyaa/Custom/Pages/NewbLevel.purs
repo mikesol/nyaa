@@ -8,6 +8,7 @@ import FRP.Event (Event, EventIO)
 import Nyaa.Charts.Hypersynthetic (hypersynthetic)
 import Nyaa.Custom.Builders.Game (FxData, game)
 import Nyaa.Firebase.Firebase (Profile)
+import Nyaa.Types.BattleRoute (BattleRoute(..))
 import Ocarina.WebAPI (AudioContext)
 
 newbLevel
@@ -24,5 +25,6 @@ newbLevel { audioContextRef, audioUri, fxEvent, profile } = game
   , fxEvent
   , profile
   , chart: hypersynthetic
+  , battleRoute: NewbLevel
   , isTutorial: false
   }

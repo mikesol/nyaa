@@ -15,6 +15,22 @@ async function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+// TODO: unhardcode
+const BOT_EARLY = 0.2;
+const BOT_PERFECT = 0.5;
+const BOT_LATE = 0.7;
+const EARLY_HIT = 0;
+const PERFECT_HIT = 1;
+const LATE_HIT = 2;
+const NO_HIT = 3;
+const LARGE_EPSILON = 0.15;
+const SMALL_EPSILON = 0.05;
+
+const choose = (choices) => {
+  var index = Math.floor(Math.random() * choices.length);
+  return choices[index];
+};
+
 export function startGameImpl(
   canvas,
   subToEffects,
@@ -28,7 +44,8 @@ export function startGameImpl(
   audioBuffer,
   getTime,
   noteInfo,
-  isTutorial
+  isTutorial,
+  roomNumber
 ) {
   const isBot = roomId === "bot";
   if (audioContext.state !== "running") {
@@ -135,6 +152,146 @@ export function startGameImpl(
 
   // SUBSECTION END - CORE
 
+  // SUBSECTION START - EFFECT RESPONDER
+  const effectResponder = (msg) => {
+    const { effect, startTime, duration, offset } = msg;
+    if (effect === "camera") {
+      cameraEffect.activate(startTime, duration, offset);
+    } else if (effect === "audio") {
+      audioEffect.activate(startTime, duration, offset);
+    } else {
+      notes.activate(effect, startTime, duration, offset);
+      guides.activate(effect, startTime, duration, offset);
+      hits.activate(effect, startTime, duration, offset);
+    }
+  };
+  // SUBSECTION END - EFFECT RESPONDER
+
+  // SUBSECTION START - BOT
+
+  const doBotStuff = isBot
+    ? (() => {
+        let score = 0;
+        const botNoteInfo = noteInfo.map((ni) => {
+          const rn = Math.random();
+          return {
+            ...ni,
+            hitInfo:
+              rn < BOT_EARLY
+                ? EARLY_HIT
+                : rn < BOT_PERFECT
+                ? PERFECT_HIT
+                : rn < BOT_LATE
+                ? LATE_HIT
+                : NO_HIT,
+          };
+        });
+        let t = 3.0;
+        const effects = [];
+        if (!isTutorial) {
+          const effectEndTime =
+            botNoteInfo[botNoteInfo.length - 1].timing - 10.0;
+          while (t < effectEndTime) {
+            t += Math.random() * 10.0;
+            if (t > effectEndTime) {
+              break;
+            }
+            const newbEffects = ["equalize", "camera", "glide", "compress"];
+            const proEffects = [
+              "equalize",
+              "camera",
+              "glide",
+              "compress",
+              "rotate",
+              "dazzle",
+              "hide",
+            ];
+            const deityEffects = [
+              "equalize",
+              "camera",
+              "glide",
+              "compress",
+              "rotate",
+              "dazzle",
+              "hide",
+              "audio",
+              "amplify",
+            ];
+            effects.push({
+              timing: t,
+              effect:
+                roomNumber === 1
+                  ? choose(newbEffects)
+                  : roomNumber === 2
+                  ? choose(proEffects)
+                  : choose(deityEffects),
+            });
+            t += 6.0; // hard-coded effect window. change?
+          }
+        }
+
+        return () => {
+          const elapsedTime = audioContext.currentTime - beginTime;
+          while (true) {
+            if (!botNoteInfo[0]) {
+              break;
+            } else if (botNoteInfo[0].timing > elapsedTime + LARGE_EPSILON) {
+              break;
+            } else if (
+              botNoteInfo[0].hitInfo === EARLY_HIT &&
+              botNoteInfo[0].timing < elapsedTime + LARGE_EPSILON &&
+              botNoteInfo[0].timing > elapsedTime + SMALL_EPSILON
+            ) {
+              score += nearScore;
+              uiState.enemyScore = score.toString().padStart(7, "0");
+              uiState.needsUpdate = true;
+              botNoteInfo.shift();
+            } else if (
+              botNoteInfo[0].hitInfo === PERFECT_HIT &&
+              botNoteInfo[0].timing < elapsedTime + SMALL_EPSILON &&
+              botNoteInfo[0].timing > elapsedTime - SMALL_EPSILON
+            ) {
+              score += perfectScore;
+              uiState.enemyScore = score.toString().padStart(7, "0");
+              uiState.needsUpdate = true;
+              botNoteInfo.shift();
+            } else if (
+              botNoteInfo[0].hitInfo === LATE_HIT &&
+              botNoteInfo[0].timing < elapsedTime - SMALL_EPSILON &&
+              botNoteInfo[0].timing > elapsedTime - LARGE_EPSILON
+            ) {
+              score += nearScore;
+              uiState.enemyScore = score.toString().padStart(7, "0");
+              uiState.needsUpdate = true;
+              botNoteInfo.shift();
+            } else {
+              // programming error
+              // shift and continue
+              botNoteInfo.shift();
+            }
+          }
+          while (true) {
+            if (!effects[0]) {
+              break;
+            } else if (effects[0].timing > elapsedTime + SMALL_EPSILON) {
+              break;
+            } else {
+              const msg = {
+                effect: effects[0].effect,
+                startTime: effects[0].timing,
+                duration: 4.0, // todo: un-hard-code
+                offset: 0.25, // todo: un-hard-code
+              };
+              theirEffect(msg)();
+              effectResponder(msg);
+              effects.shift();
+            }
+          }
+        };
+      })()
+    : () => {};
+  // SUBSECTION END - BOT
+
   // SUBSECTION START - AUDIO
 
   let beginTime = null;
@@ -224,17 +381,7 @@ export function startGameImpl(
               messageEvent.message.isHost === isHost
                 ? myEffect(messageEvent.message)()
                 : theirEffect(messageEvent.message)();
-              const { effect, startTime, duration, offset } =
-                messageEvent.message;
-              if (effect === "camera") {
-                cameraEffect.activate(startTime, duration, offset);
-              } else if (effect === "audio") {
-                audioEffect.activate(startTime, duration, offset);
-              } else {
-                notes.activate(effect, startTime, duration, offset);
-                guides.activate(effect, startTime, duration, offset);
-                hits.activate(effect, startTime, duration, offset);
-              }
+              effectResponder(messageEvent.message);
             }
             break;
           case `${roomId}-nyaa-info`:
@@ -297,7 +444,7 @@ export function startGameImpl(
     };
 
     unsubFromEffects = subToEffects(({ fx, startTime, duration }) => () => {
-      console.log('sending effect in normal mode');
+      console.log("sending effect in normal mode");
       pubnub.publish({
         channel: `${roomId}-nyaa-effect`,
         message: {
@@ -311,7 +458,7 @@ export function startGameImpl(
     })();
   } else {
     unsubFromEffects = subToEffects((e) => () => {
-      console.log('sending effect in tutorial mode');
+      console.log("sending effect in tutorial mode");
       e.isHost === isHost ? myEffect(e)() : theirEffect(e)();
     })();
   }
@@ -321,6 +468,7 @@ export function startGameImpl(
   function render() {
     animateUiState();
     animateCoreUi();
+    doBotStuff();
     requestAnimationFrame(render);
     tryResizeRendererToDisplay();
     renderer.render(scene, camera);

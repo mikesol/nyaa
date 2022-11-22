@@ -8,6 +8,7 @@ import FRP.Event (Event, EventIO)
 import Nyaa.Charts.LVL99 (lvl99)
 import Nyaa.Custom.Builders.Game (FxData, game)
 import Nyaa.Firebase.Firebase (Profile)
+import Nyaa.Types.BattleRoute (BattleRoute(..))
 import Ocarina.WebAPI (AudioContext)
 
 deityLevel
@@ -24,5 +25,6 @@ deityLevel { audioContextRef, audioUri, fxEvent, profile } = game
   , fxEvent
   , profile
   , chart: lvl99
+  , battleRoute: DeityLevel
   , isTutorial: false
   }
