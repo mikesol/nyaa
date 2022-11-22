@@ -1,30 +1,32 @@
-module Nyaa.Custom.Pages.NewbLevel where
+module Nyaa.Custom.Pages.Levels.GlideLevel where
 
 import Prelude
 
 import Effect (Effect)
 import Effect.Ref as Ref
+import Nyaa.Assets (lvl99URL)
 import FRP.Event (Event, EventIO)
 import Nyaa.Charts.Hypersynthetic (hypersynthetic)
+import Nyaa.Constants.Scores (glideScore)
 import Nyaa.Custom.Builders.Game (FxData, game)
 import Nyaa.Firebase.Firebase (Profile)
-import Nyaa.Types.BattleRoute (BattleRoute(..))
+import Nyaa.Types.Quest (Quest(..))
 import Ocarina.WebAPI (AudioContext)
 
-newbLevel
+glideLevel
   :: { audioContextRef :: Ref.Ref AudioContext
-     , audioUri :: String
      , fxEvent :: EventIO FxData
      , profile :: Event Profile
      }
   -> Effect Unit
-newbLevel { audioContextRef, audioUri, fxEvent, profile } = game
-  { name: "newb-level"
+glideLevel { audioContextRef, fxEvent, profile } = game
+  { name: "glide-level"
+  , quest: Glide
+  , scoreToWin: glideScore
   , audioContextRef
-  , audioUri
+  , audioUri: lvl99URL -- change!!
   , fxEvent
   , profile
   , chart: hypersynthetic
-  , battleRoute: NewbLevel
   , isTutorial: false
   }

@@ -79,9 +79,17 @@ basicPages =
 
 levelPages :: Array String
 levelPages =
-  [ "newb-level"
-  , "pro-level"
-  , "deity-level"
+  [ "equalize-level"
+  , "camera-level"
+  , "glide-level"
+  , "back-level"
+  , "lvlnn-level"
+  , "rotate-level"
+  , "hide-level"
+  , "dazzle-level"
+  , "showmehow-level"
+  , "crush-level"
+  , "amplify-level"
   ]
 
 storybookCC :: Effect Unit

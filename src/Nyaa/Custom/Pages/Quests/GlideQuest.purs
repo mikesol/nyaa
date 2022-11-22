@@ -1,4 +1,4 @@
-module Nyaa.Custom.Pages.GlideQuest where
+module Nyaa.Custom.Pages.Quests.GlideQuest where
 
 import Prelude
 
@@ -9,7 +9,6 @@ import Effect (Effect)
 import Effect.Ref as Ref
 import Nyaa.Constants.Scores (glideScore)
 import Nyaa.Custom.Builders.QuestPage (questPage)
-import Nyaa.Types.BattleRoute (BattleRoute(..))
 import Nyaa.Types.Quest (Quest(..))
 import Nyaa.Util.IntToString (intToString)
 import Ocarina.WebAPI (AudioContext)
@@ -31,5 +30,4 @@ glideQuest { audioContextRef } = questPage
   , quest: Glide
   , showFriend: true
   , audioContextRef
-  , battleRoute: NewbLevel
   }

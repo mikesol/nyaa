@@ -1,30 +1,32 @@
-module Nyaa.Custom.Pages.DeityLevel where
+module Nyaa.Custom.Pages.Levels.Lvl99Level where
 
 import Prelude
 
 import Effect (Effect)
 import Effect.Ref as Ref
 import FRP.Event (Event, EventIO)
-import Nyaa.Charts.ShowMeHow (showMeHow)
+import Nyaa.Assets (lvl99URL)
+import Nyaa.Charts.Hypersynthetic (hypersynthetic)
+import Nyaa.Constants.Scores (track2Score)
 import Nyaa.Custom.Builders.Game (FxData, game)
 import Nyaa.Firebase.Firebase (Profile)
-import Nyaa.Types.BattleRoute (BattleRoute(..))
+import Nyaa.Types.Quest (Quest(..))
 import Ocarina.WebAPI (AudioContext)
 
-deityLevel
+lvl99Level
   :: { audioContextRef :: Ref.Ref AudioContext
-     , audioUri :: String
      , fxEvent :: EventIO FxData
      , profile :: Event Profile
      }
   -> Effect Unit
-deityLevel { audioContextRef, audioUri, fxEvent, profile } = game
-  { name: "deity-level"
+lvl99Level { audioContextRef, fxEvent, profile } = game
+  { name: "lvlnn-level"
+  , quest: Lvl99
+  , scoreToWin: track2Score
   , audioContextRef
-  , audioUri
+  , audioUri: lvl99URL
   , fxEvent
   , profile
-  , chart: showMeHow
-  , battleRoute: DeityLevel
+  , chart: hypersynthetic
   , isTutorial: false
   }

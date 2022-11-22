@@ -1,4 +1,4 @@
-module Nyaa.Custom.Pages.DazzleQuest where
+module Nyaa.Custom.Pages.Quests.DazzleQuest where
 
 import Prelude
 
@@ -9,7 +9,6 @@ import Effect (Effect)
 import Effect.Ref as Ref
 import Nyaa.Constants.Scores (dazzleScore)
 import Nyaa.Custom.Builders.QuestPage (questPage)
-import Nyaa.Types.BattleRoute (BattleRoute(..))
 import Nyaa.Types.Quest (Quest(..))
 import Nyaa.Util.IntToString (intToString)
 import Ocarina.WebAPI (AudioContext)
@@ -30,5 +29,4 @@ dazzleQuest { audioContextRef } = questPage
       ]
   , quest: Dazzle
   , audioContextRef
-  , battleRoute: ProLevel
   }

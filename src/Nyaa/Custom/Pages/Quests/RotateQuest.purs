@@ -1,4 +1,4 @@
-module Nyaa.Custom.Pages.RotateQuest where
+module Nyaa.Custom.Pages.Quests.RotateQuest where
 
 import Prelude
 
@@ -9,7 +9,6 @@ import Effect (Effect)
 import Effect.Ref as Ref
 import Nyaa.Constants.Scores (rotateScore)
 import Nyaa.Custom.Builders.QuestPage (questPage)
-import Nyaa.Types.BattleRoute (BattleRoute(..))
 import Nyaa.Types.Quest (Quest(..))
 import Nyaa.Util.IntToString (intToString)
 import Ocarina.WebAPI (AudioContext)
@@ -28,5 +27,4 @@ rotateQuest { audioContextRef } = questPage
   , quest: Rotate
   , showFriend: true
   , audioContextRef
-  , battleRoute: ProLevel
   }

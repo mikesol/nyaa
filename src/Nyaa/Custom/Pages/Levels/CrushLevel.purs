@@ -1,30 +1,32 @@
-module Nyaa.Custom.Pages.TutorialLevel where
+module Nyaa.Custom.Pages.Levels.CrushLevel where
 
 import Prelude
 
 import Effect (Effect)
 import Effect.Ref as Ref
 import FRP.Event (Event, EventIO)
-import Nyaa.Charts.Tutorial (tutorial)
+import Nyaa.Assets (showMeHowURL)
+import Nyaa.Charts.ShowMeHow (showMeHow)
+import Nyaa.Constants.Scores (crushScore)
 import Nyaa.Custom.Builders.Game (FxData, game)
 import Nyaa.Firebase.Firebase (Profile)
-import Nyaa.Types.BattleRoute (BattleRoute(..))
+import Nyaa.Types.Quest (Quest(..))
 import Ocarina.WebAPI (AudioContext)
 
-tutorialLevel
+crushLevel
   :: { audioContextRef :: Ref.Ref AudioContext
-     , audioUri :: String
      , fxEvent :: EventIO FxData
      , profile :: Event Profile
      }
   -> Effect Unit
-tutorialLevel { audioContextRef, audioUri, fxEvent, profile } = game
-  { name: "tutorial-level"
+crushLevel { audioContextRef, fxEvent, profile } = game
+  { name: "crush-level"
+  , scoreToWin: crushScore
+  , quest: Audio
   , audioContextRef
-  , audioUri
+  , audioUri: showMeHowURL
   , fxEvent
   , profile
-  , battleRoute: TutorialLevel
-  , chart: tutorial
-  , isTutorial: true
+  , chart: showMeHow
+  , isTutorial: false
   }

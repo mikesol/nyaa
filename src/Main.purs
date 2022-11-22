@@ -14,33 +14,40 @@ import Effect.Ref as Ref
 import Effect.Uncurried (mkEffectFn1, runEffectFn1)
 import FRP.Event (burning, create, createO)
 import Nyaa.App (app, storybook, storybookCC)
-import Nyaa.Assets (lvl99URL, showMeHowURL)
 import Nyaa.Audio (newAudioContext)
 import Nyaa.Capacitor.Utils (Platform(..), getPlatform)
-import Nyaa.Custom.Pages.AmplifyQuest (amplifyQuest)
-import Nyaa.Custom.Pages.BackQuest (backQuest)
-import Nyaa.Custom.Pages.BuzzQuest (buzzQuest)
-import Nyaa.Custom.Pages.CrushQuest (crushQuest)
-import Nyaa.Custom.Pages.DazzleQuest (dazzleQuest)
-import Nyaa.Custom.Pages.DeityLevel (deityLevel)
 import Nyaa.Custom.Pages.DeityLounge (deityLounge)
 import Nyaa.Custom.Pages.DevAdmin (devAdmin)
-import Nyaa.Custom.Pages.FlatQuest (flatQuest)
-import Nyaa.Custom.Pages.GlideQuest (glideQuest)
-import Nyaa.Custom.Pages.HideQuest (hideQuest)
 import Nyaa.Custom.Pages.IntroScreen (introScreen)
-import Nyaa.Custom.Pages.LVL99Quest (lvl99Quest)
+import Nyaa.Custom.Pages.Levels.AmplifyLevel (amplifyLevel)
+import Nyaa.Custom.Pages.Levels.BackLevel (backLevel)
+import Nyaa.Custom.Pages.Levels.CameraLevel (cameraLevel)
+import Nyaa.Custom.Pages.Levels.CrushLevel (crushLevel)
+import Nyaa.Custom.Pages.Levels.DazzleLevel (dazzleLevel)
+import Nyaa.Custom.Pages.Levels.EqualizeLevel (equalizeLevel)
+import Nyaa.Custom.Pages.Levels.GlideLevel (glideLevel)
+import Nyaa.Custom.Pages.Levels.HideLevel (hideLevel)
+import Nyaa.Custom.Pages.Levels.Lvl99Level (lvl99Level)
+import Nyaa.Custom.Pages.Levels.RotateLevel (rotateLevel)
+import Nyaa.Custom.Pages.Levels.ShowMeHowLevel (showMeHowLevel)
+import Nyaa.Custom.Pages.Levels.TutorialLevel (tutorialLevel)
 import Nyaa.Custom.Pages.LoungePicker (loungePicker)
-import Nyaa.Custom.Pages.NewbLevel (newbLevel)
 import Nyaa.Custom.Pages.NewbLounge (newbLounge)
 import Nyaa.Custom.Pages.PathTest (pathTest)
-import Nyaa.Custom.Pages.ProLevel (proLevel)
 import Nyaa.Custom.Pages.ProLounge (proLounge)
 import Nyaa.Custom.Pages.ProfilePage (profilePage)
-import Nyaa.Custom.Pages.RotateQuest (rotateQuest)
-import Nyaa.Custom.Pages.ShowMeHowQuest (showMeHowQuest)
-import Nyaa.Custom.Pages.TutorialLevel (tutorialLevel)
-import Nyaa.Custom.Pages.TutorialQuest (tutorialQuest)
+import Nyaa.Custom.Pages.Quests.AmplifyQuest (amplifyQuest)
+import Nyaa.Custom.Pages.Quests.BackQuest (backQuest)
+import Nyaa.Custom.Pages.Quests.BuzzQuest (buzzQuest)
+import Nyaa.Custom.Pages.Quests.CrushQuest (crushQuest)
+import Nyaa.Custom.Pages.Quests.DazzleQuest (dazzleQuest)
+import Nyaa.Custom.Pages.Quests.FlatQuest (flatQuest)
+import Nyaa.Custom.Pages.Quests.GlideQuest (glideQuest)
+import Nyaa.Custom.Pages.Quests.HideQuest (hideQuest)
+import Nyaa.Custom.Pages.Quests.LVL99Quest (lvl99Quest)
+import Nyaa.Custom.Pages.Quests.RotateQuest (rotateQuest)
+import Nyaa.Custom.Pages.Quests.ShowMeHowQuest (showMeHowQuest)
+import Nyaa.Custom.Pages.Quests.TutorialQuest (tutorialQuest)
 import Nyaa.FRP.Dedup (dedup)
 import Nyaa.Firebase.Firebase (getCurrentUser, listenToAuthStateChange, reactToNewUser, signInWithGameCenter, signInWithPlayGames)
 import Nyaa.Fullscreen (androidFullScreen)
@@ -102,25 +109,61 @@ main = do
         }
       tutorialLevel
         { audioContextRef
-        , audioUri: lvl99URL
         , fxEvent
         , profile: _.profile <$> compactedProfile
         }
-      newbLevel
+      equalizeLevel
         { audioContextRef
-        , audioUri: lvl99URL
         , fxEvent
         , profile: _.profile <$> compactedProfile
         }
-      proLevel
+      cameraLevel
         { audioContextRef
-        , audioUri: lvl99URL
         , fxEvent
         , profile: _.profile <$> compactedProfile
         }
-      deityLevel
+      glideLevel
         { audioContextRef
-        , audioUri: showMeHowURL
+        , fxEvent
+        , profile: _.profile <$> compactedProfile
+        }
+      backLevel
+        { audioContextRef
+        , fxEvent
+        , profile: _.profile <$> compactedProfile
+        }
+      lvl99Level
+        { audioContextRef
+        , fxEvent
+        , profile: _.profile <$> compactedProfile
+        }
+      rotateLevel
+        { audioContextRef
+        , fxEvent
+        , profile: _.profile <$> compactedProfile
+        }
+      hideLevel
+        { audioContextRef
+        , fxEvent
+        , profile: _.profile <$> compactedProfile
+        }
+      dazzleLevel
+        { audioContextRef
+        , fxEvent
+        , profile: _.profile <$> compactedProfile
+        }
+      showMeHowLevel
+        { audioContextRef
+        , fxEvent
+        , profile: _.profile <$> compactedProfile
+        }
+      crushLevel
+        { audioContextRef
+        , fxEvent
+        , profile: _.profile <$> compactedProfile
+        }
+      amplifyLevel
+        { audioContextRef
         , fxEvent
         , profile: _.profile <$> compactedProfile
         }

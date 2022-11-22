@@ -24,3 +24,33 @@ derive instance Eq Quest
 derive instance Ord Quest
 instance Show Quest where
   show = genericShow
+
+questToPath :: Quest -> String
+questToPath = case _ of
+  Hypersynthetic -> "/tutorial-level"
+  Equalize -> "/equalize-level"
+  Camera -> "/camera-level"
+  Glide -> "/glide-level"
+  Back -> "/back-level"
+  Lvl99 -> "/lvlnn-level"
+  Rotate -> "/rotate-level"
+  Hide -> "/hide-level"
+  Dazzle -> "/dazzle-level"
+  ShowMeHow -> "/showmehow-level"
+  Audio -> "/crush-level"
+  Amplify -> "/amplify-level"
+
+questToRoomNumber :: Quest -> Int
+questToRoomNumber = case _ of
+  Hypersynthetic -> 0
+  Equalize -> 1
+  Camera -> 1
+  Glide -> 1
+  Back -> 1
+  Lvl99 -> 1
+  Rotate -> 2
+  Hide -> 2
+  Dazzle -> 2
+  ShowMeHow -> 2
+  Audio -> 3
+  Amplify -> 3

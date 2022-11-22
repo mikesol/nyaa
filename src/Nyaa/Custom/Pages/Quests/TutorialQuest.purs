@@ -1,4 +1,4 @@
-module Nyaa.Custom.Pages.TutorialQuest where
+module Nyaa.Custom.Pages.Quests.TutorialQuest where
 
 import Prelude
 
@@ -6,7 +6,6 @@ import Deku.Control (text_)
 import Effect (Effect)
 import Effect.Ref as Ref
 import Nyaa.Custom.Builders.QuestPage (questPage)
-import Nyaa.Types.BattleRoute (BattleRoute(..))
 import Nyaa.Types.Quest (Quest(..))
 import Ocarina.WebAPI (AudioContext)
 
@@ -22,5 +21,4 @@ tutorialQuest { audioContextRef } = questPage
       ]
   , showFriend: false
   , audioContextRef
-  , battleRoute: TutorialLevel
   }

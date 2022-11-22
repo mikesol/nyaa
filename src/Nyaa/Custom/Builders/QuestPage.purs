@@ -31,8 +31,7 @@ import Nyaa.Ionic.Loading (dismissLoading, presentLoading)
 import Nyaa.Ionic.Title (ionTitle_)
 import Nyaa.Ionic.Toolbar (ionToolbar_)
 import Nyaa.Matchmaking (doMatchmaking)
-import Nyaa.Types.BattleRoute (BattleRoute(..), battleRouteToPath, battleRouteToRoomNumber)
-import Nyaa.Types.Quest (Quest)
+import Nyaa.Types.Quest (Quest(..), questToPath, questToRoomNumber)
 import Ocarina.WebAPI (AudioContext)
 import Routing.Hash (setHash)
 
@@ -43,7 +42,6 @@ questPage
      , scoreToWin :: Int
      , explainer ::  forall lock payload. Array (Domable lock payload)
      , showFriend :: Boolean
-     , battleRoute :: BattleRoute
      , audioContextRef :: Ref.Ref AudioContext
      }
   -> Effect Unit
@@ -61,8 +59,8 @@ questPage i = customComponent_ i.name {} questy
         delay (Milliseconds 1200.0)
         liftEffect do
           setHash
-            ( ( battleRouteToPath
-                  i.battleRoute
+            ( ( questToPath
+                  i.quest
               ) <> "/" <> channel
                 <> "/"
                 <> isHost
@@ -70,15 +68,15 @@ questPage i = customComponent_ i.name {} questy
         toAffE $ dismissLoading loading2
       startBattle = do
         refreshAudioContext i.audioContextRef
-        case i.battleRoute of
-          TutorialLevel -> setHash
-            (battleRouteToPath i.battleRoute)
+        case i.quest of
+          Hypersynthetic -> setHash
+            (questToPath i.quest)
           _ -> launchAff_ do --matchmaking
             loading <- toAffE $ presentLoading
               "Finding someone to battle"
             makeAff \cb -> do
               doMatchmaking
-                (battleRouteToRoomNumber i.battleRoute)
+                (questToRoomNumber i.quest)
                 ( do
                     cb (Right unit)
                     launchAff_ do
@@ -118,8 +116,8 @@ questPage i = customComponent_ i.name {} questy
             , click_ do
                 refreshAudioContext i.audioContextRef
                 setHash
-                  ( ( battleRouteToPath
-                        i.battleRoute
+                  ( ( questToPath
+                        i.quest
                     ) <> "/bot/true"
                   )
             ]

@@ -1,4 +1,4 @@
-module Nyaa.Custom.Pages.HideQuest where
+module Nyaa.Custom.Pages.Quests.HideQuest where
 
 import Prelude
 
@@ -9,7 +9,6 @@ import Effect (Effect)
 import Effect.Ref as Ref
 import Nyaa.Constants.Scores (hideScore)
 import Nyaa.Custom.Builders.QuestPage (questPage)
-import Nyaa.Types.BattleRoute (BattleRoute(..))
 import Nyaa.Types.Quest (Quest(..))
 import Nyaa.Util.IntToString (intToString)
 import Ocarina.WebAPI (AudioContext)
@@ -30,5 +29,4 @@ hideQuest { audioContextRef } = questPage
   , quest: Hide
   , showFriend: true
   , audioContextRef
-  , battleRoute: ProLevel
   }

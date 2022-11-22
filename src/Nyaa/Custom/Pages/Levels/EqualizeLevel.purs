@@ -1,30 +1,32 @@
-module Nyaa.Custom.Pages.ProLevel where
+module Nyaa.Custom.Pages.Levels.EqualizeLevel where
 
 import Prelude
 
 import Effect (Effect)
 import Effect.Ref as Ref
+import Nyaa.Assets (lvl99URL)
 import FRP.Event (Event, EventIO)
-import Nyaa.Charts.LVL99 (lvl99)
+import Nyaa.Charts.Hypersynthetic (hypersynthetic)
+import Nyaa.Constants.Scores (equalizeScore)
 import Nyaa.Custom.Builders.Game (FxData, game)
 import Nyaa.Firebase.Firebase (Profile)
-import Nyaa.Types.BattleRoute (BattleRoute(..))
+import Nyaa.Types.Quest (Quest(..))
 import Ocarina.WebAPI (AudioContext)
 
-proLevel
+equalizeLevel
   :: { audioContextRef :: Ref.Ref AudioContext
-     , audioUri :: String
      , fxEvent :: EventIO FxData
      , profile :: Event Profile
      }
   -> Effect Unit
-proLevel { audioContextRef, audioUri, fxEvent, profile } = game
-  { name: "pro-level"
+equalizeLevel { audioContextRef, fxEvent, profile } = game
+  { name: "equalize-level"
+  , quest: Equalize
+  , scoreToWin: equalizeScore
   , audioContextRef
-  , audioUri
+  , audioUri: lvl99URL -- change!!
   , fxEvent
   , profile
-  , chart: lvl99
-  , battleRoute: ProLevel
+  , chart: hypersynthetic
   , isTutorial: false
   }
