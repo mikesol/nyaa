@@ -6,13 +6,16 @@ import Data.Generic.Rep (class Generic)
 import Data.Show.Generic (genericShow)
 
 data Quests
-  = Equalize
+  = Hypersynthetic
+  | Equalize
   | Camera
   | Glide
   | Back
+  | Lvl99
   | Rotate
   | Hide
   | Dazzle
+  | ShowMeHow
   | Audio
   | Amplify
 
