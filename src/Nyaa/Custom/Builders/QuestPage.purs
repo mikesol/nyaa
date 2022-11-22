@@ -32,12 +32,15 @@ import Nyaa.Ionic.Title (ionTitle_)
 import Nyaa.Ionic.Toolbar (ionToolbar_)
 import Nyaa.Matchmaking (doMatchmaking)
 import Nyaa.Types.BattleRoute (BattleRoute(..), battleRouteToPath, battleRouteToRoomNumber)
+import Nyaa.Types.Quest (Quest)
 import Ocarina.WebAPI (AudioContext)
 import Routing.Hash (setHash)
 
 questPage
   :: { name :: String
      , title :: String
+     , quest :: Quest
+     , scoreToWin :: Int
      , explainer ::  forall lock payload. Array (Domable lock payload)
      , showFriend :: Boolean
      , battleRoute :: BattleRoute

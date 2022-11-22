@@ -1,11 +1,11 @@
-module Nyaa.Types.Quests where
+module Nyaa.Types.Quest where
 
 import Prelude
 
 import Data.Generic.Rep (class Generic)
 import Data.Show.Generic (genericShow)
 
-data Quests
+data Quest
   = Hypersynthetic
   | Equalize
   | Camera
@@ -19,8 +19,8 @@ data Quests
   | Audio
   | Amplify
 
-derive instance Generic Quests _
-derive instance Eq Quests
-derive instance Ord Quests
-instance Show Quests where
+derive instance Generic Quest _
+derive instance Eq Quest
+derive instance Ord Quest
+instance Show Quest where
   show = genericShow
