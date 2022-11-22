@@ -1,6 +1,12 @@
 module Nyaa.Charts.NoteInfo (NoteInfo, Column, cOne, cTwo, cThree, cFour) where
 
+import Data.Eq (class Eq)
+import Data.Ord (class Ord)
+
 newtype Column = Column Int
+
+derive newtype instance Eq Column
+derive newtype instance Ord Column
 
 cOne :: Column
 cOne = Column 0
