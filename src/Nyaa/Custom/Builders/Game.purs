@@ -123,6 +123,7 @@ foreign import startGame
   -> Boolean
   -> AudioContext
   -> BrowserAudioBuffer
+  -> Int
   -> Effect { time :: Milliseconds, diff :: Number, pdiff :: Number }
   -> Array NoteInfo
   -> Boolean
@@ -174,6 +175,7 @@ game
   { name
   , audioContextRef
   , audioUri
+  , scoreToWin
   , fxEvent
   , profile
   , chart
@@ -239,6 +241,7 @@ game
                 (isHost == "true")
                 audioContext
                 audioBuffer
+                scoreToWin
                 n.now
                 chart
                 isTutorial

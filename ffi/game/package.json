@@ -3,6 +3,7 @@
     "version": "0.0.0",
     "dependencies": {
         "pubnub": "^7.2.0",
+        "js-confetti": "^0.11.0",
         "three": "^0.144.0"
     }
 }

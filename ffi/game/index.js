@@ -10,6 +10,9 @@ import { CameraEffect } from "./effects/camera.js";
 import { Guides } from "./visuals/guides.js";
 import { Hits } from "./visuals/hits.js";
 import { Reference } from "./visuals/reference.js";
+import JSConfetti from 'js-confetti'
+
+const jsConfetti = new JSConfetti()
 
 async function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -42,6 +45,7 @@ export function startGameImpl(
   isHost,
   audioContext,
   audioBuffer,
+  scoreToWin,
   getTime,
   noteInfo,
   isTutorial,
@@ -104,6 +108,7 @@ export function startGameImpl(
   const enemyScoreElement = document.getElementById("score-enemy");
   const judgmentElement = document.getElementById("judgment");
   const uiState = {
+    didConfetti: false,
     playerScore: 0,
     enemyScore: 0,
     judgment: "",
@@ -328,6 +333,10 @@ export function startGameImpl(
             uiState.playerScore += nearScore;
             uiState.judgment = "Near";
             uiState.needsUpdate = true;
+          }
+          if (uiState.playerScore > scoreToWin && !uiState.didConfetti) {
+            uiState.didConfetti = true;
+            jsConfetti.addConfetti();
           }
         });
       }

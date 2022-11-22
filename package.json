@@ -63,7 +63,6 @@
     "ffi-game": "workspace:*",
     "firebase": "^8.10.1",
     "flowbite": "^1.5.3",
-    "js-confetti": "^0.11.0",
     "mobile-detect": "^1.4.5",
     "pubnub": "^7.2.0",
     "rxjs": "^7.5.7",

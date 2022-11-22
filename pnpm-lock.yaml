@@ -38,7 +38,6 @@ importers:
       firebase: ^8.10.1
       flowbite: ^1.5.3
       htmlhint: ^1.1.4
-      js-confetti: ^0.11.0
       lil-gui: ^0.17.0
       mobile-detect: ^1.4.5
       postcss: ^8.4.18
@@ -86,7 +85,6 @@ importers:
       ffi-game: link:ffi/game
       firebase: 8.10.1
       flowbite: 1.5.4
-      js-confetti: 0.11.0
       mobile-detect: 1.4.5
       pubnub: 7.2.1
       rxjs: 7.5.7
@@ -117,9 +115,11 @@ importers:
 
   ffi/game:
     specifiers:
+      js-confetti: ^0.11.0
       pubnub: ^7.2.0
       three: ^0.144.0
     dependencies:
+      js-confetti: 0.11.0
       pubnub: 7.2.1
       three: 0.144.0
 
