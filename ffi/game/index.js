@@ -30,6 +30,7 @@ export function startGameImpl(
   noteInfo,
   isTutorial
 ) {
+  const isBot = roomId === "bot";
   if (audioContext.state !== "running") {
     console.log("Catastrophic failure!!!");
   }
@@ -188,7 +189,7 @@ export function startGameImpl(
     subscribeKey: "sub-c-829590e3-62e9-40a8-9354-b8161c2fbcd8",
     userId,
   });
-  if (!isTutorial) {
+  if (!isTutorial && !isBot) {
     userId = `${userId}-${Math.random()}`;
 
     const listener = {
@@ -329,7 +330,7 @@ export function startGameImpl(
     start() {
       renderer.render(scene, camera);
       requestAnimationFrame(render);
-      if (isTutorial) {
+      if (isTutorial || isBot) {
         setTimeout(() => {
           startAudio();
         }, 1000);
