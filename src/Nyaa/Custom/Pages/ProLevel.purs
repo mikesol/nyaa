@@ -6,7 +6,6 @@ import Effect (Effect)
 import Effect.Ref as Ref
 import FRP.Event (Event, EventIO)
 import Nyaa.Charts.LVL99 (lvl99)
-import Nyaa.Charts.ShowMeHow (showMeHow)
 import Nyaa.Custom.Builders.Game (FxData, game)
 import Nyaa.Firebase.Firebase (Profile)
 import Nyaa.Types.BattleRoute (BattleRoute(..))
