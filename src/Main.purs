@@ -14,7 +14,7 @@ import Effect.Ref as Ref
 import Effect.Uncurried (mkEffectFn1, runEffectFn1)
 import FRP.Event (burning, create, createO)
 import Nyaa.App (app, storybook, storybookCC)
-import Nyaa.Assets (akiraURL, showMeHowURL)
+import Nyaa.Assets (akiraURL, hypersyntheticURL, showMeHowURL)
 import Nyaa.Audio (newAudioContext)
 import Nyaa.Capacitor.Utils (Platform(..), getPlatform)
 import Nyaa.Custom.Pages.AmplifyQuest (amplifyQuest)
@@ -110,7 +110,7 @@ main = do
         }
       newbLevel
         { audioContextRef
-        , audioUri: akiraURL
+        , audioUri: hypersyntheticURL
         , fxEvent
         , profile: _.profile <$> compactedProfile
         }
