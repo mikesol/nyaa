@@ -1,19 +1,30 @@
 module Nyaa.Custom.Pages.BackQuest where
 
-import Effect.Ref as Ref
-import Ocarina.WebAPI (AudioContext)
-
 import Prelude
 
+import Deku.Attributes (klass_)
+import Deku.Control (text_)
+import Deku.DOM as D
 import Effect (Effect)
+import Effect.Ref as Ref
 import Nyaa.Custom.Builders.QuestPage (questPage)
 import Nyaa.Types.BattleRoute (BattleRoute(..))
+import Ocarina.WebAPI (AudioContext)
 
 backQuest :: { audioContextRef :: Ref.Ref AudioContext } -> Effect Unit
 backQuest { audioContextRef } = questPage
   { name: "back-quest"
   , title: "Unlock Back!"
   , showFriend: true
+  , explainer:
+      [ text_
+          "Your prowess makes me smile. Perhaps I will reveal to you why I ask you to partake in these epic battles. Or not. Armed with "
+      , D.span (klass_ "font-bold") [ text_ "Glide" ]
+      , text_
+          ", you are now invited to achieve "
+      , D.span (klass_ "font-bold") [ text_ "Back" ]
+      , text_ ", an infectiously cute effect, Nyā. To do so, you must garner 35,000 points. Don't fail me."
+      ]
   , audioContextRef
   , battleRoute: NewbLevel
   }

@@ -28,7 +28,6 @@ import Nyaa.Custom.Pages.DevAdmin (devAdmin)
 import Nyaa.Custom.Pages.FlatQuest (flatQuest)
 import Nyaa.Custom.Pages.GlideQuest (glideQuest)
 import Nyaa.Custom.Pages.HideQuest (hideQuest)
-import Nyaa.Custom.Pages.HypersyntheticQuest (hypersyntheticQuest)
 import Nyaa.Custom.Pages.IntroScreen (introScreen)
 import Nyaa.Custom.Pages.LVL99Quest (lvl99Quest)
 import Nyaa.Custom.Pages.LoungePicker (loungePicker)
@@ -81,7 +80,6 @@ main = do
         { profileState: profileState.event
         }
       tutorialQuest { audioContextRef }
-      hypersyntheticQuest { audioContextRef }
       flatQuest { audioContextRef }
       buzzQuest { audioContextRef }
       glideQuest { audioContextRef }

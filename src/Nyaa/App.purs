@@ -58,7 +58,6 @@ basicPages =
   , "intro-screen"
   , "dev-admin"
   , "tutorial-quest"
-  , "hypersynthetic-quest"
   , "flat-quest"
   , "buzz-quest"
   , "glide-quest"
