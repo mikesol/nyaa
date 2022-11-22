@@ -5,6 +5,7 @@ import Prelude
 import Effect (Effect)
 import Effect.Ref as Ref
 import FRP.Event (Event, EventIO)
+import Nyaa.Charts.LVL99 (lvl99)
 import Nyaa.Charts.ShowMeHow (showMeHow)
 import Nyaa.Custom.Builders.Game (FxData, game)
 import Nyaa.Firebase.Firebase (Profile)
@@ -24,7 +25,7 @@ proLevel { audioContextRef, audioUri, fxEvent, profile } = game
   , audioUri
   , fxEvent
   , profile
-  , chart: showMeHow
+  , chart: lvl99
   , battleRoute: ProLevel
   , isTutorial: false
   }
