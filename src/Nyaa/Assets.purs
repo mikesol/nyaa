@@ -5,3 +5,4 @@ foreign import testURL :: String
 foreign import catURL :: String
 foreign import akiraURL :: String
 foreign import nyaaBeachURL :: String
+foreign import showMeHowURL :: String
