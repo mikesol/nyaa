@@ -14,40 +14,28 @@ toTime measureCount beatCount =
     measureCount' = max (measureCount - 1.0) 0.0
     beatCount' = max (beatCount - 1.0) 0.0
   in
-    measureLength * measureCount' + introNoteGap * beatCount'
+    measureLength * measureCount' + tresilloLength * beatCount'
 
-introNoteGap :: Number
-introNoteGap = (60.0 / 152.0 * 4.0 * 7.0 / 8.0) / 7.0
+tresilloLength :: Number
+tresilloLength = (60.0 / 152.0 * 4.0 * 7.0 / 8.0) / 7.0
 
 melodyStart :: Number
-melodyStart = (introNoteGap * 7.0) * 9.0 + introNoteGap
+melodyStart = (tresilloLength * 7.0) * 9.0 + tresilloLength
 
 introNotes :: Array NoteInfo
 introNotes =
---   [ { timing: introNoteGap * 0.0, column: cFour }
---   , { timing: introNoteGap * 3.0, column: cFour }
---   , { timing: introNoteGap * 6.0, column: cFour }
---   , { timing: introNoteGap * 8.0, column: cThree }
---   , { timing: introNoteGap * 11.0, column: cThree }
---   , { timing: introNoteGap * 14.0, column: cThree }
---   , { timing: introNoteGap * 16.0, column: cTwo }
---   , { timing: introNoteGap * 19.0, column: cTwo }
---   , { timing: introNoteGap * 22.0, column: cTwo }
---   , { timing: introNoteGap * 24.0, column: cOne }
---   , { timing: introNoteGap * 27.0, column: cOne }
---   , { timing: introNoteGap * 30.0, column: cOne }
-  [ { timing: introNoteGap * 32.0, column: cFour }
-  , { timing: introNoteGap * 35.0, column: cFour }
-  , { timing: introNoteGap * 38.0, column: cFour }
-  , { timing: introNoteGap * 40.0, column: cThree }
-  , { timing: introNoteGap * 43.0, column: cThree }
-  , { timing: introNoteGap * 46.0, column: cThree }
-  , { timing: introNoteGap * 48.0, column: cTwo }
-  , { timing: introNoteGap * 51.0, column: cTwo }
-  , { timing: introNoteGap * 54.0, column: cTwo }
-  , { timing: introNoteGap * 56.0, column: cOne }
-  , { timing: introNoteGap * 59.0, column: cOne }
-  , { timing: introNoteGap * 62.0, column: cOne }
+  [ { timing: tresilloLength * 32.0, column: cFour }
+  , { timing: tresilloLength * 35.0, column: cFour }
+  , { timing: tresilloLength * 38.0, column: cFour }
+  , { timing: tresilloLength * 40.0, column: cThree }
+  , { timing: tresilloLength * 43.0, column: cThree }
+  , { timing: tresilloLength * 46.0, column: cThree }
+  , { timing: tresilloLength * 48.0, column: cTwo }
+  , { timing: tresilloLength * 51.0, column: cTwo }
+  , { timing: tresilloLength * 54.0, column: cTwo }
+  , { timing: tresilloLength * 56.0, column: cOne }
+  , { timing: tresilloLength * 59.0, column: cOne }
+  , { timing: tresilloLength * 62.0, column: cOne }
   ]
 
 melodyNotes :: Array NoteInfo
@@ -101,7 +89,6 @@ melodyNotes = Array.sort
   , { timing: toTime 19.0 1.0, column: cFour }
   , { timing: toTime 19.0 1.5, column: cFour }
   , { timing: toTime 19.0 2.0, column: cFour }
-  -- Note
   , { timing: toTime 19.0 3.0, column: cOne }
   , { timing: toTime 19.0 6.0, column: cOne }
   , { timing: toTime 20.0 2.0, column: cOne }
@@ -136,7 +123,6 @@ melodyNotes = Array.sort
   , { timing: toTime 28.0 1.0, column: cThree }
   , { timing: toTime 28.0 2.0, column: cFour }
   , { timing: toTime 28.0 3.0, column: cFour }
-
   , { timing: toTime 28.0 4.0, column: cOne }
   , { timing: toTime 28.0 6.0, column: cOne }
   , { timing: toTime 29.0 1.0, column: cOne }
@@ -145,7 +131,6 @@ melodyNotes = Array.sort
   , { timing: toTime 29.0 7.0, column: cOne }
   , { timing: toTime 30.0 2.0, column: cOne }
   , { timing: toTime 30.0 4.0, column: cOne }
-
   , { timing: toTime 30.0 6.0, column: cTwo }
   , { timing: toTime 31.0 1.0, column: cTwo }
   , { timing: toTime 31.0 3.0, column: cTwo }
@@ -154,7 +139,6 @@ melodyNotes = Array.sort
   , { timing: toTime 32.0 2.0, column: cTwo }
   , { timing: toTime 32.0 4.0, column: cTwo }
   , { timing: toTime 32.0 6.0, column: cTwo }
-
   , { timing: toTime 33.0 1.0, column: cThree }
   , { timing: toTime 33.0 3.0, column: cThree }
   , { timing: toTime 33.0 5.0, column: cThree }
@@ -163,8 +147,6 @@ melodyNotes = Array.sort
   , { timing: toTime 34.0 4.0, column: cThree }
   , { timing: toTime 34.0 6.0, column: cThree }
   , { timing: toTime 35.0 1.0, column: cThree }
-
---   , { timing: toTime 35.0 2.0, column: cFour }
   , { timing: toTime 35.0 3.0, column: cFour }
   , { timing: toTime 35.0 4.0, column: cFour }
   , { timing: toTime 35.0 5.0, column: cTwo }
@@ -173,7 +155,6 @@ melodyNotes = Array.sort
   , { timing: toTime 36.0 1.0, column: cThree }
   , { timing: toTime 36.0 2.0, column: cOne }
   , { timing: toTime 36.0 3.0, column: cOne }
-
   , { timing: toTime 36.0 4.0, column: cTwo }
   , { timing: toTime 36.0 4.0, column: cThree }
   ]
