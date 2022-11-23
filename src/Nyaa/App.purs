@@ -75,6 +75,7 @@ basicPages =
   , "lounge-picker"
   , "profile-page"
   , "tutorial-level"
+  , "tutorial-page"
   ]
 
 levelPages :: Array String

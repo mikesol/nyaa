@@ -48,6 +48,7 @@ import Nyaa.Custom.Pages.Quests.LVL99Quest (lvl99Quest)
 import Nyaa.Custom.Pages.Quests.RotateQuest (rotateQuest)
 import Nyaa.Custom.Pages.Quests.ShowMeHowQuest (showMeHowQuest)
 import Nyaa.Custom.Pages.Quests.TutorialQuest (tutorialQuest)
+import Nyaa.Custom.Pages.TutorialPage (tutorialPage)
 import Nyaa.FRP.Dedup (dedup)
 import Nyaa.Firebase.Firebase (getCurrentUser, listenToAuthStateChange, reactToNewUser, signInWithGameCenter, signInWithPlayGames)
 import Nyaa.Fullscreen (androidFullScreen)
@@ -86,6 +87,7 @@ main = do
       introScreen
         { profileState: profileState.event
         }
+      tutorialPage
       tutorialQuest { audioContextRef }
       flatQuest { audioContextRef }
       buzzQuest { audioContextRef }
