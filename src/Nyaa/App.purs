@@ -73,6 +73,7 @@ basicPages =
   , "deity-lounge"
   , "lounge-picker"
   , "profile-page"
+  , "tutorial-page"
   ]
 
 levelPages :: Array String
