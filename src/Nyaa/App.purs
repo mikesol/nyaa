@@ -68,6 +68,7 @@ basicPages =
   , "lvlnn-quest"
   , "crush-quest"
   , "amplify-quest"
+  , "youwon-quest"
   , "lounge-picker"
   , "profile-page"
   , "tutorial-page"
@@ -87,6 +88,7 @@ levelPages =
   , "showmehow-level"
   , "crush-level"
   , "amplify-level"
+  , "youwon-level"
   ]
 
 storybookCC :: Effect Unit

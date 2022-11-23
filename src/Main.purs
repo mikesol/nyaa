@@ -29,6 +29,7 @@ import Nyaa.Custom.Pages.Levels.HideLevel (hideLevel)
 import Nyaa.Custom.Pages.Levels.Lvl99Level (lvl99Level)
 import Nyaa.Custom.Pages.Levels.RotateLevel (rotateLevel)
 import Nyaa.Custom.Pages.Levels.ShowMeHowLevel (showMeHowLevel)
+import Nyaa.Custom.Pages.Levels.YouWonLevel (youwonLevel)
 import Nyaa.Custom.Pages.LoungePicker (loungePicker)
 import Nyaa.Custom.Pages.PathTest (pathTest)
 import Nyaa.Custom.Pages.ProfilePage (profilePage)
@@ -43,6 +44,7 @@ import Nyaa.Custom.Pages.Quests.HideQuest (hideQuest)
 import Nyaa.Custom.Pages.Quests.LVL99Quest (lvl99Quest)
 import Nyaa.Custom.Pages.Quests.RotateQuest (rotateQuest)
 import Nyaa.Custom.Pages.Quests.ShowMeHowQuest (showMeHowQuest)
+import Nyaa.Custom.Pages.Quests.YouWonQuest (youwonQuest)
 import Nyaa.Custom.Pages.TutorialPage (tutorialPage)
 import Nyaa.FRP.Dedup (dedup)
 import Nyaa.Firebase.Firebase (getCurrentUser, listenToAuthStateChange, reactToNewUser, signInWithGameCenter, signInWithPlayGames)
@@ -85,72 +87,35 @@ main = do
       tutorialPage
       informationPage
       storybookCC
-      flatQuest { audioContextRef }
-      buzzQuest { audioContextRef }
-      glideQuest { audioContextRef }
-      backQuest { audioContextRef }
-      showMeHowQuest { audioContextRef }
-      rotateQuest { audioContextRef }
-      hideQuest { audioContextRef }
-      dazzleQuest { audioContextRef }
-      lvl99Quest { audioContextRef }
-      crushQuest { audioContextRef }
-      amplifyQuest { audioContextRef }
-      equalizeLevel
-        { audioContextRef
+      let questInfo = { audioContextRef }
+      flatQuest questInfo
+      buzzQuest questInfo
+      glideQuest questInfo
+      backQuest questInfo
+      showMeHowQuest questInfo
+      rotateQuest questInfo
+      hideQuest questInfo
+      dazzleQuest questInfo
+      lvl99Quest questInfo
+      crushQuest questInfo
+      amplifyQuest questInfo
+      youwonQuest questInfo
+      let levelInfo = { audioContextRef
         , fxEvent
         , profile: _.profile <$> compactedProfile
         }
-      cameraLevel
-        { audioContextRef
-        , fxEvent
-        , profile: _.profile <$> compactedProfile
-        }
-      glideLevel
-        { audioContextRef
-        , fxEvent
-        , profile: _.profile <$> compactedProfile
-        }
-      backLevel
-        { audioContextRef
-        , fxEvent
-        , profile: _.profile <$> compactedProfile
-        }
-      lvl99Level
-        { audioContextRef
-        , fxEvent
-        , profile: _.profile <$> compactedProfile
-        }
-      rotateLevel
-        { audioContextRef
-        , fxEvent
-        , profile: _.profile <$> compactedProfile
-        }
-      hideLevel
-        { audioContextRef
-        , fxEvent
-        , profile: _.profile <$> compactedProfile
-        }
-      dazzleLevel
-        { audioContextRef
-        , fxEvent
-        , profile: _.profile <$> compactedProfile
-        }
-      showMeHowLevel
-        { audioContextRef
-        , fxEvent
-        , profile: _.profile <$> compactedProfile
-        }
-      crushLevel
-        { audioContextRef
-        , fxEvent
-        , profile: _.profile <$> compactedProfile
-        }
-      amplifyLevel
-        { audioContextRef
-        , fxEvent
-        , profile: _.profile <$> compactedProfile
-        }
+      equalizeLevel levelInfo
+      cameraLevel levelInfo
+      glideLevel levelInfo
+      backLevel levelInfo
+      lvl99Level levelInfo
+      rotateLevel levelInfo
+      hideLevel levelInfo
+      dazzleLevel levelInfo
+      showMeHowLevel levelInfo
+      crushLevel levelInfo
+      amplifyLevel levelInfo
+      youwonLevel levelInfo
       loungePicker
         { profileState: compactedProfile
         }

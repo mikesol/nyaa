@@ -18,6 +18,7 @@ data Quest
   | ShowMeHow
   | Audio
   | Amplify
+  | YouWon
 
 derive instance Generic Quest _
 derive instance Eq Quest
@@ -39,6 +40,7 @@ questToPath = case _ of
   ShowMeHow -> "/showmehow-level"
   Audio -> "/crush-level"
   Amplify -> "/amplify-level"
+  YouWon -> "/youwon-level"
 
 questToRoomNumber :: Quest -> Int
 questToRoomNumber = case _ of
@@ -54,3 +56,4 @@ questToRoomNumber = case _ of
   ShowMeHow -> 2
   Audio -> 3
   Amplify -> 3
+  YouWon -> 3

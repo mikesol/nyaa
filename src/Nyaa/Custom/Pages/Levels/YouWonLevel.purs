@@ -1,4 +1,4 @@
-module Nyaa.Custom.Pages.Levels.AmplifyLevel where
+module Nyaa.Custom.Pages.Levels.YouWonLevel where
 
 import Prelude
 
@@ -10,20 +10,19 @@ import Nyaa.Assets (showMeHowURL)
 import Nyaa.Charts.ShowMeHow (showMeHow)
 import Nyaa.Constants.Scores (amplifyScore)
 import Nyaa.Custom.Builders.Game (FxData, game)
-import Nyaa.Custom.Pages.DevAdmin (amplifyEndgameRitual, doEndgameSuccessRitual, doEndgameFailureRitual)
 import Nyaa.Firebase.Firebase (Profile)
 import Nyaa.Types.Quest (Quest(..))
 import Ocarina.WebAPI (AudioContext)
 
-amplifyLevel
+youwonLevel
   :: { audioContextRef :: Ref.Ref AudioContext
      , fxEvent :: EventIO FxData
      , profile :: Event Profile
      }
   -> Effect Unit
-amplifyLevel { audioContextRef, fxEvent, profile } = game
-  { name: "amplify-level"
-  , quest: Amplify
+youwonLevel { audioContextRef, fxEvent, profile } = game
+  { name: "youwon-level"
+  , quest: YouWon
   , scoreToWin: amplifyScore
   , audioContextRef
   , audioUri: showMeHowURL
@@ -31,7 +30,7 @@ amplifyLevel { audioContextRef, fxEvent, profile } = game
   , profile
   , chart: showMeHow
   , successPath: "/youwon-quest"
-  , failurePath: "/amplify-quest"
-  , successCb: map fromAff (doEndgameSuccessRitual amplifyEndgameRitual)
-  , failureCb: map fromAff (doEndgameFailureRitual amplifyEndgameRitual)
+  , failurePath: "/youwon-quest"
+  , successCb: \_ -> fromAff (pure unit)
+  , failureCb: \_ -> fromAff (pure unit)
   }
