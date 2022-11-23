@@ -179,11 +179,7 @@ main = do
       h <- getHash
       when (h == "") do
         setHash "/"
-      if false then do
-        runInBody (app audioContextRef)
-      else do
-        storybookCC
-        runInBody (storybook audioContextRef)
+      runInBody (app audioContextRef)
       launchAff_ do
         cu <- liftEffect getCurrentUser
         liftEffect do

@@ -54,7 +54,7 @@ import Ocarina.WebAPI (AudioContext)
 
 basicPages :: Array String
 basicPages =
-  [ "story-book"
+  [ "mhofot-wvbsuhb"
   , "intro-screen"
   , "dev-admin"
   , "flat-quest"
@@ -93,7 +93,7 @@ levelPages =
 
 storybookCC :: Effect Unit
 storybookCC = do
-  customComponent_ "story-book" {} \_ -> do
+  customComponent_ "mhofot-wvbsuhb" {} \_ -> do
     let
       basicEntries :: forall lock payload. Array (Domable lock payload)
       basicEntries = basicPages <#> \page ->
@@ -149,7 +149,7 @@ makeApp withAdmin homeIs _ = ionApp_
     basicPages
 
 storybook :: forall lock payload. (Ref.Ref AudioContext) -> Domable lock payload
-storybook = makeApp true "story-book"
+storybook = makeApp true "mhofot-wvbsuhb"
 
 app :: forall lock payload. (Ref.Ref AudioContext) -> Domable lock payload
 app = makeApp false "intro-screen"
