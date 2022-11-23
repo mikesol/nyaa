@@ -299,8 +299,6 @@ profilePage opts = customComponent_ "profile-page" {} \_ ->
                               let
                                 store =
                                   [ get (Proxy :: _ "hasCompletedTutorial")
-                                      profile /\ "Tutorial"
-                                  , get (Proxy :: _ "track1")
                                       profile /\ "HYPERSYNTHETIC"
                                   , get (Proxy :: _ "flat")
                                       profile /\ "Flat"

@@ -16,7 +16,6 @@ import FRP.Event (burning, create, createO)
 import Nyaa.App (app, storybookCC)
 import Nyaa.Audio (newAudioContext)
 import Nyaa.Capacitor.Utils (Platform(..), getPlatform)
-import Nyaa.Custom.Pages.DeityLounge (deityLounge)
 import Nyaa.Custom.Pages.InformationPage (informationPage)
 import Nyaa.Custom.Pages.IntroScreen (introScreen)
 import Nyaa.Custom.Pages.Levels.AmplifyLevel (amplifyLevel)
@@ -31,9 +30,7 @@ import Nyaa.Custom.Pages.Levels.Lvl99Level (lvl99Level)
 import Nyaa.Custom.Pages.Levels.RotateLevel (rotateLevel)
 import Nyaa.Custom.Pages.Levels.ShowMeHowLevel (showMeHowLevel)
 import Nyaa.Custom.Pages.LoungePicker (loungePicker)
-import Nyaa.Custom.Pages.NewbLounge (newbLounge)
 import Nyaa.Custom.Pages.PathTest (pathTest)
-import Nyaa.Custom.Pages.ProLounge (proLounge)
 import Nyaa.Custom.Pages.ProfilePage (profilePage)
 import Nyaa.Custom.Pages.Quests.AmplifyQuest (amplifyQuest)
 import Nyaa.Custom.Pages.Quests.BackQuest (backQuest)
@@ -99,15 +96,6 @@ main = do
       lvl99Quest { audioContextRef }
       crushQuest { audioContextRef }
       amplifyQuest { audioContextRef }
-      newbLounge
-        { profileState: compactedProfile
-        }
-      proLounge
-        { profileState: compactedProfile
-        }
-      deityLounge
-        { profileState: compactedProfile
-        }
       equalizeLevel
         { audioContextRef
         , fxEvent

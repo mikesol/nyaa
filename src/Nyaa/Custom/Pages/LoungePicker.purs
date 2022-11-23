@@ -3,8 +3,10 @@ module Nyaa.Custom.Pages.LoungePicker where
 import Prelude
 
 import Data.Foldable (oneOf)
+import Data.List (List(..), (:))
 import Data.Maybe (Maybe(..))
 import Data.Monoid (guard)
+import Data.Tuple.Nested ((/\), type (/\))
 import Deku.Attribute ((!:=))
 import Deku.Attributes (klass_)
 import Deku.Control (switcher, text_)
@@ -33,22 +35,36 @@ newtype Lounge = Lounge
   { title :: String
   , index :: Int
   , img :: String
-  , path :: String
   , unlocker :: Some Profile' -> Maybe Boolean
   }
 
+pathToRealPath
+  :: String
+  -> List ((Some Profile' -> Maybe Boolean) /\ String)
+  -> Profile
+  -> String
+pathToRealPath default arr (Profile p) = case actualized arr of
+  Nothing -> default
+  Just s -> s
+  where
+  actualized ((x /\ y) : z) = case x p of
+    Just true -> actualized z
+    _ -> Just y
+  actualized Nil = Nothing
+
 lounge
   :: forall lock payload
-   . Profile
+   . String
+  -> Profile
   -> Lounge
   -> Domable lock payload
-lounge (Profile profile) (Lounge opts) = do
+lounge path (Profile profile) (Lounge opts) = do
   let profileNotUnlocked = opts.unlocker profile /= Just true
   ionCard
     ( oneOf
         ( [ D.Disabled !:= profileNotUnlocked, klass_ "grow" ] <> guard
             (not profileNotUnlocked)
-            [ D.Href !:= opts.path ]
+            [ D.Href !:= path ]
         )
     )
     [ D.div (klass_ "flex")
@@ -66,11 +82,8 @@ lounge (Profile profile) (Lounge opts) = do
         ]
     , ionCardHeader_
         [ ionCardTitle_ [ text_ opts.title ]
-        , ionCardSubtitle_ [ text_ ("Mission " <> show opts.index) ]
+        , ionCardSubtitle_ [ text_ ("Track " <> show opts.index) ]
         ]
-    -- , ionCardContent_
-    --     [ opts.description
-    --     ]
     ]
 
 lounges :: Array Lounge
@@ -79,42 +92,21 @@ lounges =
       { title: "HYPERSYNTHETIC"
       , index: 1
       , img: catURL
-      , path: "/nweb-lounge"
-      , unlocker: get
-          ( Proxy
-              :: Proxy
-                   "hasCompletedTutorial"
-          )
+      , unlocker: get (Proxy :: Proxy "hasCompletedTutorial")
       }
   , Lounge
       { title: "Show Me How"
       , index: 1
       , img: catURL
-      , path: "/nweb-lounge"
-      , unlocker: get
-          ( Proxy
-              :: Proxy
-                   "back"
-          )
+      , unlocker: get (Proxy :: Proxy "track2")
       }
   , Lounge
       { title: "LVL.99"
       , index: 1
       , img: catURL
-      , path: "/nweb-lounge"
       , unlocker: \p -> (&&)
-          <$> get
-            ( Proxy
-                :: Proxy
-                     "dazzle"
-            )
-            p
-          <*> get
-            ( Proxy
-                :: Proxy
-                     "hasPaid"
-            )
-            p
+          <$> get (Proxy :: Proxy "track3") p
+          <*> get (Proxy :: Proxy "hasPaid") p
       }
   ]
 
@@ -133,11 +125,28 @@ loungePicker i = customComponent_ "lounge-picker" {}
             ]
         ]
     , ionContent (oneOf [ I.Fullscren !:= true ])
-        [ flip switcher i.profileState \{ profile } -> D.div
-            (oneOf [ klass_ "flex-col flex w-full h-full" ])
-            [ D.div (klass_ "grow") []
-            , D.div (klass_ "flex flex-row") (lounges <#> lounge profile)
-            , D.div (klass_ "grow") []
-            ]
+        [ flip switcher i.profileState \{ profile } -> do
+            let
+              path = pathToRealPath "/you-won"
+                ( (get (Proxy :: _ "flat") /\ "/equalize-level")
+                    : (get (Proxy :: _ "buzz") /\ "/camera-level")
+                    : (get (Proxy :: _ "glide") /\ "/glide-level")
+                    : (get (Proxy :: _ "back") /\ "/back-level")
+                    : (get (Proxy :: _ "track2") /\ "/lvlnn-level")
+                    : (get (Proxy :: _ "rotate") /\ "/rotate-level")
+                    : (get (Proxy :: _ "hide") /\ "/hide-level")
+                    : (get (Proxy :: _ "dazzle") /\ "/dazzle-level")
+                    : (get (Proxy :: _ "track3") /\ "/showmehow-level")
+                    : (get (Proxy :: _ "crush") /\ "/crush-level")
+                    : (get (Proxy :: _ "amplify") /\ "/amplify-level")
+                    : Nil
+                )
+                profile
+            D.div
+              (oneOf [ klass_ "flex-col flex w-full h-full" ])
+              [ D.div (klass_ "grow") []
+              , D.div (klass_ "flex flex-row") (lounges <#> lounge path profile)
+              , D.div (klass_ "grow") []
+              ]
         ]
     ]

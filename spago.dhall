@@ -26,6 +26,7 @@
   , "integers"
   , "js-date"
   , "js-timers"
+  , "lists"
   , "maybe"
   , "newtype"
   , "now"

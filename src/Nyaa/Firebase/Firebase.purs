@@ -56,7 +56,6 @@ type Profile' =
   ( avatarUrl :: String
   , username :: String
   , hasCompletedTutorial :: Boolean
-  , track1 :: Boolean
   , flat :: Boolean
   , buzz :: Boolean
   , glide :: Boolean
