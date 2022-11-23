@@ -59,7 +59,7 @@ main :: Effect Unit
 main = do
   -- isProd <- prod
   fxEvent <- create
-  isRealDeal <- noStory
+  -- isRealDeal <- noStory
   unsubProfileListener <- Ref.new (pure unit)
   authListener <- createO
   profileListener <- createO
