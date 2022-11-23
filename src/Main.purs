@@ -13,11 +13,10 @@ import Effect.Class (liftEffect)
 import Effect.Ref as Ref
 import Effect.Uncurried (mkEffectFn1, runEffectFn1)
 import FRP.Event (burning, create, createO)
-import Nyaa.App (app, storybook, storybookCC)
+import Nyaa.App (app)
 import Nyaa.Audio (newAudioContext)
 import Nyaa.Capacitor.Utils (Platform(..), getPlatform)
 import Nyaa.Custom.Pages.DeityLounge (deityLounge)
-import Nyaa.Custom.Pages.DevAdmin (devAdmin)
 import Nyaa.Custom.Pages.IntroScreen (introScreen)
 import Nyaa.Custom.Pages.Levels.AmplifyLevel (amplifyLevel)
 import Nyaa.Custom.Pages.Levels.BackLevel (backLevel)
@@ -164,7 +163,7 @@ main = do
       loungePicker
         { profileState: compactedProfile
         }
-      devAdmin { platform }
+      -- devAdmin { platform }
       pathTest
       profilePage
         { platform
