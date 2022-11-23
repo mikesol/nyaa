@@ -4,7 +4,6 @@ import Prelude
 
 import Data.Foldable (oneOf)
 import Data.Maybe (Maybe(..))
-import Debug (spy)
 import Deku.Attribute ((!:=))
 import Deku.Attributes (klass_)
 import Deku.Control (switcher, text_)
@@ -78,13 +77,8 @@ introScreen opts = customComponent_ "intro-screen" {} \_ ->
                               true ->
                               fixed (playGame TrackPicker <> baseSignedIn)
                           | get (Proxy :: _ "hasCompletedTutorial") p == Just
-                              true ->
-                              let
-                                _ = spy "newb" p
-                              in
-                                fixed (playGame NewbTrack <> baseSignedIn)
-                          | otherwise ->
-                              let _ = spy "newb" p in fixed baseSignedIn
+                              true -> fixed (playGame NewbTrack <> baseSignedIn)
+                          | otherwise -> fixed baseSignedIn
                   ]
               , D.div (oneOf [ klass_ "grow" ]) []
               ]
