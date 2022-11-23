@@ -13,8 +13,9 @@ import Deku.Listeners (click_)
 import Effect (Effect)
 import Effect.Aff (launchAff_)
 import FRP.Event (Event)
+import Nyaa.Custom.Pages.DevAdmin (doScorelessAchievement, tutorialAchievement)
 import Nyaa.Firebase.Firebase (Profile(..))
-import Nyaa.Ionic.Button (ionButton, ionButton_)
+import Nyaa.Ionic.Button (ionButton)
 import Nyaa.Ionic.Content (ionContent_)
 import Nyaa.Ionic.Custom (customComponent_)
 import Nyaa.SignIn (signInFlow)
@@ -46,7 +47,13 @@ introScreen opts = customComponent_ "intro-screen" {} \_ ->
                       [ D.h1 (oneOf [ klass_ "moichy-font text-center" ])
                           [ text_ "Nya" ]
                       ] -- "Nyā"
-                  , ionButton (oneOf [ D.Href !:= "/tutorial-quest" ])
+                  , ionButton
+                      ( oneOf
+                          [ D.Href !:= "/tutorial-quest"
+                          , click_ $ launchAff_ do
+                              doScorelessAchievement tutorialAchievement
+                          ]
+                      )
                       [ text_ "Tutorial" ]
                   , flip switcher opts.profileState $ _.profile >>> do
                       let

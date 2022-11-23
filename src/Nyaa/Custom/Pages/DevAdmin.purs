@@ -442,8 +442,7 @@ tutorialAchievement = ScorelessAchievement
 
 track1Achievement :: ScorelessAchievement
 track1Achievement = ScorelessAchievement
-  -- ugh, double dipping
-  { modProfileAchievement: ProfileSetter $ some { hasCompletedTutorial: true }
+  { modProfileAchievement: ProfileSetter $ some { track1: true }
   , iosAchievement: GC.reportAchievements
       { achievements:
           [ ReportableAchievement
@@ -492,19 +491,19 @@ businessLogic =
     , android: PG.unlockAchievement
         { achievementID: PGConstants.tutorialAchievement }
     }
---   , { text: "Unlock track 1"
---     , modProfile: ProfileSetter $ some { track1: true }
---     , ios: GC.reportAchievements
---         { achievements:
---             [ ReportableAchievement
---                 { achievementID: GCContants.track1Achievement
---                 , percentComplete: 100.0
---                 }
---             ]
---         }
-    -- , android: PG.unlockAchievement
-    --     { achievementID: PGConstants.track1Achievement }
-    -- }
+  , { text: "Unlock track 1"
+    , modProfile: ProfileSetter $ some { track1: true }
+    , ios: GC.reportAchievements
+        { achievements:
+            [ ReportableAchievement
+                { achievementID: GCContants.track1Achievement
+                , percentComplete: 100.0
+                }
+            ]
+        }
+    , android: PG.unlockAchievement
+        { achievementID: PGConstants.track1Achievement }
+    }
   , { text: "Unlock flat"
     , modProfile: ProfileSetter $ some { flat: true }
     , ios: GC.reportAchievements
