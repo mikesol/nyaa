@@ -14,7 +14,7 @@ import Effect (Effect)
 import Effect.Aff (launchAff_)
 import FRP.Event (Event)
 import Nyaa.Firebase.Firebase (Profile(..))
-import Nyaa.Ionic.Button (ionButton)
+import Nyaa.Ionic.Button (ionButton, ionButton_)
 import Nyaa.Ionic.Content (ionContent_)
 import Nyaa.Ionic.Custom (customComponent_)
 import Nyaa.SignIn (signInFlow)
@@ -29,7 +29,10 @@ introScreen
   -> Effect Unit
 introScreen opts = customComponent_ "intro-screen" {} \_ ->
   [ ionContent_
-      [ D.div
+      [ ionButton (oneOf [ D.Href !:= "/information-page", klass_ "absolute" ])
+          [ text_ "?"
+          ]
+      , D.div
           ( oneOf
               [ klass_
                   "bg-beach bg-center bg-cover flex flex-col justify-between w-full h-full"

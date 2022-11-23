@@ -13,9 +13,10 @@ import Effect.Class (liftEffect)
 import Effect.Ref as Ref
 import Effect.Uncurried (mkEffectFn1, runEffectFn1)
 import FRP.Event (burning, create, createO)
-import Nyaa.App (app)
+import Nyaa.App (app, storybookCC)
 import Nyaa.Audio (newAudioContext)
 import Nyaa.Capacitor.Utils (Platform(..), getPlatform)
+import Nyaa.Custom.Pages.InformationPage (informationPage)
 import Nyaa.Custom.Pages.IntroScreen (introScreen)
 import Nyaa.Custom.Pages.Levels.AmplifyLevel (amplifyLevel)
 import Nyaa.Custom.Pages.Levels.BackLevel (backLevel)
@@ -82,6 +83,8 @@ main = do
         { profileState: profileState.event
         }
       tutorialPage
+      informationPage
+      storybookCC
       flatQuest { audioContextRef }
       buzzQuest { audioContextRef }
       glideQuest { audioContextRef }
