@@ -47,14 +47,6 @@ introScreen opts = customComponent_ "intro-screen" {} \_ ->
                       [ D.h1 (oneOf [ klass_ "moichy-font text-center" ])
                           [ text_ "Nya" ]
                       ] -- "Nyā"
-                  , ionButton
-                      ( oneOf
-                          [ D.Href !:= "/tutorial-quest"
-                          , click_ $ launchAff_ do
-                              doScorelessAchievement tutorialAchievement
-                          ]
-                      )
-                      [ text_ "Tutorial" ]
                   , flip switcher opts.profileState $ _.profile >>> do
                       let
                         playGame gameStartsAt =
@@ -69,7 +61,15 @@ introScreen opts = customComponent_ "intro-screen" {} \_ ->
                           ]
                       let
                         baseSignedIn =
-                          [ ionButton (oneOf [ D.Href !:= "/profile-page" ])
+                          [ ionButton
+                              ( oneOf
+                                  [ D.Href !:= "/tutorial-page"
+                                  , click_ $ launchAff_ do
+                                      doScorelessAchievement tutorialAchievement
+                                  ]
+                              )
+                              [ text_ "Tutorial" ]
+                          , ionButton (oneOf [ D.Href !:= "/profile-page" ])
                               [ text_ "Profile" ]
                           ]
                       case _ of
