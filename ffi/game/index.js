@@ -350,13 +350,30 @@ export function startGameImpl(
 
   // SECTION START - PUBNUB or NOT //
   let unsubFromEffects = () => {};
+  userId = `${userId}-${Math.random()}`;
   const pubnub = new PubNub({
     publishKey: "pub-c-494ce265-0510-4bb9-8871-5039406a833a",
     subscribeKey: "sub-c-829590e3-62e9-40a8-9354-b8161c2fbcd8",
     userId,
   });
   if (!isTutorial && !isBot) {
-    userId = `${userId}-${Math.random()}`;
+    const monitorScore = async () => {
+        let currentScore = latestScore;
+        while (true) {
+            if (isFinished) {
+                return;
+            };
+            await sleep(5000);
+            if (currentScore === latestScore) {
+                onTimeout();
+                return;
+            } else {
+                currentScore = latestScore;
+            }
+        }
+    }
+
+    let latestScore = null;
 
     const listener = {
       status: (statusEvent) => {
@@ -365,6 +382,7 @@ export function startGameImpl(
         }
       },
       message: (messageEvent) => {
+        console.log(messageEvent.publisher, userId);
         if (messageEvent.publisher === userId) {
           console.log("[PubNub] Ignoring message from self...");
           return;
@@ -383,6 +401,9 @@ export function startGameImpl(
               const { score } = messageEvent.message;
               uiState.enemyScore = score.toString().padStart(7, "0");
               uiState.needsUpdate = true;
+              console.log("Setting latest score", messageEvent.publisher, userId);
+              console.log(roomId);
+              latestScore = parseFloat(messageEvent.timetoken);
             }
             break;
           case `${roomId}-nyaa-effect`:
@@ -415,12 +436,18 @@ export function startGameImpl(
                 sendScore().then(() => {
                   console.log("[PubNub] Finished sending scores");
                 });
+                monitorScore().then(() => {
+                  console.log("[PubNub] Finished monitoring scores");
+                });
               }, messageEvent.message.startTime - getTime().time);
             } else if (messageEvent.message.action === "ack2") {
               setTimeout(() => {
                 startAudio();
                 sendScore().then(() => {
                   console.log("[PubNub] Finished sending scores");
+                });
+                monitorScore().then(() => {
+                  console.log("[PubNub] Finished monitoring scores");
                 });
               }, messageEvent.message.startTime - getTime().time);
             }
@@ -439,17 +466,18 @@ export function startGameImpl(
     });
 
     const sendScore = async () => {
-      if (isFinished) {
-        return;
+      while (true) {
+        if (isFinished) {
+            return;
+          }
+          await pubnub.publish({
+            channel: `${roomId}-nyaa-score`,
+            message: {
+              score: uiState.playerScore,
+            },
+          });
+          await sleep(1000);
       }
-      await pubnub.publish({
-        channel: `${roomId}-nyaa-score`,
-        message: {
-          score: uiState.playerScore,
-        },
-      });
-      await sleep(1000);
-      sendScore();
     };
 
     unsubFromEffects = subToEffects(({ fx, startTime, duration }) => () => {
@@ -473,6 +501,28 @@ export function startGameImpl(
   }
 
   // SECTION END - PUBNUB //
+
+  // SECTION START - TIMEOUT //
+
+  async function onTimeout() {
+    const alert = document.createElement('ion-alert');
+
+    alert.header = "oh nyo, a timeout!?";
+    alert.message = "Either you, or your opponent's connection timed out! This match will be exited...";
+    alert.buttons = [
+        {
+            text: "Exit",
+            handler: () => {
+                window.location.href = "/#/";
+            }
+        }
+    ];
+
+    document.body.appendChild(alert);
+    await alert.present();
+  }
+
+  // SECTION END - TIMEOUT
 
   function render() {
     animateUiState();
