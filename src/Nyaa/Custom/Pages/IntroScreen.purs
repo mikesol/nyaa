@@ -22,7 +22,7 @@ import Nyaa.SignIn (signInFlow)
 import Nyaa.Some (get)
 import Type.Proxy (Proxy(..))
 
-data GameStartsAt = NewbLounge | LoungePicker
+data GameStartsAt = NewbTrack | TrackPicker
 
 introScreen
   :: { profileState :: Event { profile :: Maybe Profile }
@@ -52,8 +52,8 @@ introScreen opts = customComponent_ "intro-screen" {} \_ ->
                           [ ionButton
                               ( oneOf
                                   [ D.Href !:= case gameStartsAt of
-                                      NewbLounge -> "/newb-lounge"
-                                      LoungePicker -> "/lounge-picker"
+                                      NewbTrack -> "/newb-lounge"
+                                      TrackPicker -> "/lounge-picker"
                                   ]
                               )
                               [ text_ "Play" ]
@@ -72,15 +72,17 @@ introScreen opts = customComponent_ "intro-screen" {} \_ ->
                               [ text_ "Sign in" ]
                           ]
                         Just (Profile p)
-                          | get (Proxy :: _ "back") p == Just
+                          -- if track 2 is unlocked, then by definition we can 
+                          -- go to the track picker
+                          | get (Proxy :: _ "track2") p == Just
                               true ->
-                              fixed (playGame LoungePicker <> baseSignedIn)
+                              fixed (playGame TrackPicker <> baseSignedIn)
                           | get (Proxy :: _ "hasCompletedTutorial") p == Just
                               true ->
                               let
                                 _ = spy "newb" p
                               in
-                                fixed (playGame NewbLounge <> baseSignedIn)
+                                fixed (playGame NewbTrack <> baseSignedIn)
                           | otherwise ->
                               let _ = spy "newb" p in fixed baseSignedIn
                   ]
