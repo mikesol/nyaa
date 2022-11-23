@@ -7,6 +7,10 @@
     "FirebaseAuthentication": {
       "skipNativeAuth": false,
       "providers": ["gc.apple.com", "google.com", "playgames.google.com"]
+    },
+    "SplashScreen": {
+      "launchShowDuration": 3000,
+      "launchAutoHide": true
     }
   }
 }
