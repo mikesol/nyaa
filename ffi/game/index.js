@@ -11,6 +11,7 @@ import { Guides } from "./visuals/guides.js";
 import { Hits } from "./visuals/hits.js";
 import { Reference } from "./visuals/reference.js";
 import JSConfetti from "js-confetti";
+import { Capacitor } from "@capacitor/core";
 
 const jsConfetti = new JSConfetti();
 
@@ -49,10 +50,11 @@ export function startGameImpl({
   getTime,
   noteInfo,
   roomNumber,
-  // successPath,
-  // failurePath,
-  // successCb,
-  // failureCb,
+  successPath,
+  failurePath,
+  successCb,
+  failureCb,
+  showLeaderboard
 }) {
   const isBot = roomId === "bot";
   if (audioContext.state !== "running") {
@@ -310,23 +312,44 @@ export function startGameImpl({
       alert.message = didWin
         ? "You've unlocked the next achievement. Keep going 😺"
         : "Your score wasn't high enough to unlock the next achievement 😿";
-      alert.buttons = didWin
-        ? [
-            {
-              text: "Nyā",
+      // to do - this is a promise. do we care? def don't want to wait in case
+      // reporting takes too long
+      didWin ? successCb(uiState.playerScore)() : failureCb();
+
+      const buttons = [];
+      buttons.push({
+        text: "Home",
+        handler: () => {
+          window.location.hash = "/";
+        },
+      });
+      if (Capacitor.getPlatform() !== "web") {
+        buttons.push({
+          text: "View leaderboard",
+          handler: () => {
+            window.location.hash = successPath;
+            // todo: this is a promise
+            // do we care?
+            showLeaderboard();
+          },
+        });
+      }
+      buttons.push(
+        didWin
+          ? {
+              text: "Onwards",
               handler: () => {
-                window.location.hash = "/";
+                window.location.hash = successPath;
               },
-            },
-          ]
-        : [
-            {
+            }
+          : {
               text: "Try again",
               handler: () => {
-                window.location.hash = "/";
+                window.location.hash = failurePath;
               },
-            },
-          ];
+            }
+      );
+      alert.buttons = buttons;
 
       document.body.appendChild(alert);
       await alert.present();
@@ -387,20 +410,20 @@ export function startGameImpl({
   });
   if (!isBot) {
     const monitorScore = async () => {
-        let currentScore = latestScore;
-        while (true) {
-            if (isFinished) {
-                return;
-            }
-            await sleep(5000);
-            if (currentScore === latestScore) {
-                onTimeout();
-                return;
-            } else {
-                currentScore = latestScore;
-            }
+      let currentScore = latestScore;
+      while (true) {
+        if (isFinished) {
+          return;
         }
-    }
+        await sleep(5000);
+        if (currentScore === latestScore) {
+          onTimeout();
+          return;
+        } else {
+          currentScore = latestScore;
+        }
+      }
+    };
 
     let latestScore = null;
 
@@ -430,7 +453,11 @@ export function startGameImpl({
               const { score } = messageEvent.message;
               uiState.enemyScore = score.toString().padStart(7, "0");
               uiState.needsUpdate = true;
-              console.log("Setting latest score", messageEvent.publisher, userId);
+              console.log(
+                "Setting latest score",
+                messageEvent.publisher,
+                userId
+              );
               console.log(roomId);
               latestScore = parseFloat(messageEvent.timetoken);
             }
@@ -497,15 +524,15 @@ export function startGameImpl({
     const sendScore = async () => {
       while (true) {
         if (isFinished) {
-            return;
-          }
-          await pubnub.publish({
-            channel: `${roomId}-nyaa-score`,
-            message: {
-              score: uiState.playerScore,
-            },
-          });
-          await sleep(1000);
+          return;
+        }
+        await pubnub.publish({
+          channel: `${roomId}-nyaa-score`,
+          message: {
+            score: uiState.playerScore,
+          },
+        });
+        await sleep(1000);
       }
     };
 
@@ -534,17 +561,18 @@ export function startGameImpl({
   // SECTION START - TIMEOUT //
 
   async function onTimeout() {
-    const alert = document.createElement('ion-alert');
+    const alert = document.createElement("ion-alert");
 
     alert.header = "oh nyo, a timeout!?";
-    alert.message = "Either you, or your opponent's connection timed out! This match will be exited...";
+    alert.message =
+      "Either you, or your opponent's connection timed out! This match will be exited...";
     alert.buttons = [
-        {
-            text: "Exit",
-            handler: () => {
-                window.location.href = "/#/";
-            }
-        }
+      {
+        text: "Exit",
+        handler: () => {
+          window.location.href = "/#/";
+        },
+      },
     ];
 
     document.body.appendChild(alert);

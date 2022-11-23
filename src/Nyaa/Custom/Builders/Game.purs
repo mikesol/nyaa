@@ -4,7 +4,7 @@ import Prelude
 
 import Control.Alt ((<|>))
 import Control.Plus (empty)
-import Control.Promise (Promise)
+import Control.Promise (Promise, fromAff)
 import Data.Foldable (oneOf)
 import Data.Int (floor)
 import Data.Maybe (Maybe(..))
@@ -24,14 +24,18 @@ import Effect.Console (log)
 import Effect.Ref as Ref
 import FRP.Event (Event, EventIO, create, subscribe)
 import Nyaa.Audio (refreshAudioContext)
+import Nyaa.Capacitor.Utils (Platform(..), getPlatform)
 import Nyaa.Charts.NoteInfo (NoteInfo)
 import Nyaa.Constants.Effects (EffectTiming, effectTimings)
+import Nyaa.Constants.PlayGames as PGConstants
 import Nyaa.CoordinatedNow (coordinatedNow)
 import Nyaa.FRP.Dedup (dedup)
 import Nyaa.Firebase.Firebase (Profile(..))
+import Nyaa.GameCenter as GC
 import Nyaa.Ionic.Attributes as I
 import Nyaa.Ionic.Content (ionContent)
 import Nyaa.Ionic.Custom (customComponent)
+import Nyaa.PlayGames as PG
 import Nyaa.Some (get, some)
 import Nyaa.Types.Quest (Quest, questToRoomNumber)
 import Nyaa.Util.Countdown (countdown)
@@ -133,6 +137,7 @@ foreign import startGame
      , failurePath :: String
      , successCb :: Int -> Effect (Promise Unit)
      , failureCb :: Int -> Effect (Promise Unit)
+     , showLeaderboard :: Effect (Promise Unit)
      }
   -> Effect { start :: Effect Unit, kill :: Effect Unit }
 
@@ -261,6 +266,19 @@ game
                 , failurePath
                 , successCb
                 , failureCb
+                , showLeaderboard: do
+                    platform <- getPlatform
+                    case platform of
+                      IOS -> GC.showGameCenter { state: "leaderboards" }
+                      Android -> PG.showLeaderboard
+                        { leaderboardID:
+                            -- ugh, hacky as it's relying on numbers, make more solid!
+                            case questToRoomNumber quest of
+                              1 -> PGConstants.track1LeaderboardID
+                              2 -> PGConstants.track2LeaderboardID
+                              _ -> PGConstants.track3LeaderboardID
+                        }
+                      Web -> fromAff $ pure unit
                 }
               controls.start
               Ref.write (controls.kill *> n.cancelNow) killRef
