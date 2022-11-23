@@ -4,6 +4,7 @@ import Prelude
 
 import Data.Foldable (oneOf)
 import Deku.Attribute ((!:=))
+import Deku.Attributes (klass_)
 import Deku.Control (text_)
 import Deku.DOM as D
 import Effect (Effect)
@@ -22,14 +23,13 @@ youwonQuest { audioContextRef } = questPage
   , explainer:
       [ D.p_
           [ text_
-              "So that whole reward thing I was talking about. Your reward for finishing this whole game is..."
-          ]
-      , D.p_
-          [ text_
-              "The right to join the joyride.fm Discord! Ok, the cat (me) is out of the bag, this is just a quick game we made to test out some ideas. By getting to the end of it, you've proven that either our ideas were good or you're obsessed with cartoon cats. Either way, you should join our Discord community! To join, "
+              "So that whole reward thing I was talking about. Your reward for finishing this game is...the right to join our "
+          , D.a (klass_ "font-bold") [ text_ "Discord" ]
+          , text_
+              "! Tbh, this is just a quick game we made to test out some ideas. By getting to the end of it, you've proven that either we're on the right track or you're obsessed with cats. Either way, you should "
           , D.a (oneOf [ D.Href !:= "https://discord.gg/gUAPQAtbS8" ])
               [ text_ "click here" ]
-          , text_ "!"
+          , text_ " to join our community!"
           ]
       ]
   , quest: Amplify

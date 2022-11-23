@@ -30,7 +30,7 @@ introScreen
   -> Effect Unit
 introScreen opts = customComponent_ "intro-screen" {} \_ ->
   [ ionContent_
-      [ ionButton (oneOf [ D.Href !:= "/information-page", klass_ "absolute" ])
+      [ ionButton (oneOf [ D.Href !:= "/information-page", klass_ "absolute m-2",  D.Size !:= "small" ])
           [ text_ "?"
           ]
       , D.div

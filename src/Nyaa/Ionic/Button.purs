@@ -37,6 +37,12 @@ instance Attr IonButton_ D.Style String where
 instance Attr IonButton_ I.Slot String where
   attr I.Slot value = unsafeAttribute { key: "slot", value: prop' value }
 
+instance Attr IonButton_ D.Shape String where
+  attr D.Shape value = unsafeAttribute { key: "shape", value: prop' value }
+
+instance Attr IonButton_ D.Size String where
+  attr D.Size value = unsafeAttribute { key: "size", value: prop' value }
+
 instance Attr IonButton_ D.Color E.Color where
   attr D.Color value = unsafeAttribute
     { key: "color", value: prop' (E.unColor value) }
