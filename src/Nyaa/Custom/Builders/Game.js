@@ -1,7 +1,11 @@
 import { startGameImpl } from "ffi-game";
 
-export const startGame = (canvas) => (subToEffects) => (pushBeginTime) => (myEffect) => (theirEffect) => (userId) => (roomId) => (isHost) => (audioContext) => (audioBuffer) => (scoreToWin) => (getTime) => (noteInfo) => (isTutorial) => (roomNumber) => () => {
-    return startGameImpl(canvas, subToEffects, pushBeginTime, myEffect, theirEffect, userId, roomId, isHost, audioContext, audioBuffer, scoreToWin, getTime, noteInfo, isTutorial, roomNumber);
+//   successPath,
+//   failurePath,
+//   successCb,
+//   failureCb,
+export const startGame = i => () => {
+    return startGameImpl(i);
 }
 
 export const currentTime = (ctx) => () => ctx.currentTime;

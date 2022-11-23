@@ -113,21 +113,23 @@ fxButton' push activated aStateEv ctxRef eni i = do
     [ text_ (if isActive then i.icon else "?") ]
 
 foreign import startGame
-  :: HTMLCanvasElement
-  -> ((FxData -> Effect Unit) -> Effect (Effect Unit))
-  -> (Number -> Effect Unit)
-  -> (FxData -> Effect Unit)
-  -> (FxData -> Effect Unit)
-  -> String
-  -> String
-  -> Boolean
-  -> AudioContext
-  -> BrowserAudioBuffer
-  -> Int
-  -> Effect { time :: Milliseconds, diff :: Number, pdiff :: Number }
-  -> Array NoteInfo
-  -> Boolean
-  -> Int
+  :: { canvas :: HTMLCanvasElement
+     , subToEffects :: ((FxData -> Effect Unit) -> Effect (Effect Unit))
+     , pushBeginTime :: (Number -> Effect Unit)
+     , myEffect :: (FxData -> Effect Unit)
+     , theirEffect :: (FxData -> Effect Unit)
+     , userId :: String
+     , roomId :: String
+     , isHost :: Boolean
+     , audioContext :: AudioContext
+     , audioBuffer :: BrowserAudioBuffer
+     , scoreToWin :: Int
+     , getTime ::
+         Effect { time :: Milliseconds, diff :: Number, pdiff :: Number }
+     , noteInfo :: Array NoteInfo
+     , isTutorial :: Boolean
+     , roomNumber :: Int
+     }
   -> Effect { start :: Effect Unit, kill :: Effect Unit }
 
 newtype Fx = Fx String
@@ -231,21 +233,22 @@ game
           case c >>= HTMLCanvasElement.fromElement of
             Just canvas -> do
               controls <- startGame
-                canvas
-                (subscribe fx)
-                (currentTimeEvent.push)
-                myEffectPuhser
-                theirEffectPusher
-                "nyaa!"
-                roomId
-                (isHost == "true")
-                audioContext
-                audioBuffer
-                scoreToWin
-                n.now
-                chart
-                isTutorial
-                (questToRoomNumber quest)
+                { canvas
+                , subToEffects: subscribe fx
+                , pushBeginTime: currentTimeEvent.push
+                , myEffect: myEffectPuhser
+                , theirEffect: theirEffectPusher
+                , userId: "nyaa!"
+                , roomId
+                , isHost: isHost == "true"
+                , audioContext
+                , audioBuffer
+                , scoreToWin
+                , getTime: n.now
+                , noteInfo: chart
+                , isTutorial
+                , roomNumber: questToRoomNumber quest
+                }
               controls.start
               Ref.write (controls.kill *> n.cancelNow) killRef
             Nothing ->

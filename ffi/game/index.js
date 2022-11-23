@@ -10,9 +10,9 @@ import { CameraEffect } from "./effects/camera.js";
 import { Guides } from "./visuals/guides.js";
 import { Hits } from "./visuals/hits.js";
 import { Reference } from "./visuals/reference.js";
-import JSConfetti from 'js-confetti'
+import JSConfetti from "js-confetti";
 
-const jsConfetti = new JSConfetti()
+const jsConfetti = new JSConfetti();
 
 async function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -34,7 +34,7 @@ const choose = (choices) => {
   return choices[index];
 };
 
-export function startGameImpl(
+export function startGameImpl({
   canvas,
   subToEffects,
   pushBeginTime,
@@ -49,8 +49,12 @@ export function startGameImpl(
   getTime,
   noteInfo,
   isTutorial,
-  roomNumber
-) {
+  roomNumber,
+  // successPath,
+  // failurePath,
+  // successCb,
+  // failureCb,
+}) {
   const isBot = roomId === "bot";
   if (audioContext.state !== "running") {
     console.log("Catastrophic failure!!!");
@@ -302,6 +306,35 @@ export function startGameImpl(
   let beginTime = null;
   function startAudio() {
     audioTrack.start();
+    audioTrack.addEventListener("ended", async () => {
+      const alert = document.createElement("ion-alert");
+      alert.backdropDismiss = false;
+      const didWin = uiState.playerScore > scoreToWin;
+      alert.header = didWin ? "Congrats!" : "Almost there!";
+      alert.message = didWin
+        ? "You've unlocked the next achievement. Keep going 😺"
+        : "Your score wasn't high enough to unlock the next achievement 😿";
+      alert.buttons = didWin
+        ? [
+            {
+              text: "Nyā",
+              handler: () => {
+                window.location.hash = "/";
+              },
+            },
+          ]
+        : [
+            {
+              text: "Try again",
+              handler: () => {
+                window.location.hash = "/";
+              },
+            },
+          ];
+
+      document.body.appendChild(alert);
+      await alert.present();
+    });
     beginTime = audioContext.currentTime;
     pushBeginTime(beginTime)();
   }
