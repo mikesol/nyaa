@@ -48,7 +48,6 @@ export function startGameImpl({
   scoreToWin,
   getTime,
   noteInfo,
-  isTutorial,
   roomNumber,
   // successPath,
   // failurePath,
@@ -197,46 +196,43 @@ export function startGameImpl({
         });
         let t = 3.0;
         const effects = [];
-        if (!isTutorial) {
-          const effectEndTime =
-            botNoteInfo[botNoteInfo.length - 1].timing - 10.0;
-          while (t < effectEndTime) {
-            t += Math.random() * 10.0;
-            if (t > effectEndTime) {
-              break;
-            }
-            const newbEffects = ["equalize", "camera", "glide", "compress"];
-            const proEffects = [
-              "equalize",
-              "camera",
-              "glide",
-              "compress",
-              "rotate",
-              "dazzle",
-              "hide",
-            ];
-            const deityEffects = [
-              "equalize",
-              "camera",
-              "glide",
-              "compress",
-              "rotate",
-              "dazzle",
-              "hide",
-              "audio",
-              "amplify",
-            ];
-            effects.push({
-              timing: t,
-              effect:
-                roomNumber === 1
-                  ? choose(newbEffects)
-                  : roomNumber === 2
-                  ? choose(proEffects)
-                  : choose(deityEffects),
-            });
-            t += 6.0; // hard-coded effect window. change?
+        const effectEndTime = botNoteInfo[botNoteInfo.length - 1].timing - 10.0;
+        while (t < effectEndTime) {
+          t += Math.random() * 10.0;
+          if (t > effectEndTime) {
+            break;
           }
+          const newbEffects = ["equalize", "camera", "glide", "compress"];
+          const proEffects = [
+            "equalize",
+            "camera",
+            "glide",
+            "compress",
+            "rotate",
+            "dazzle",
+            "hide",
+          ];
+          const deityEffects = [
+            "equalize",
+            "camera",
+            "glide",
+            "compress",
+            "rotate",
+            "dazzle",
+            "hide",
+            "audio",
+            "amplify",
+          ];
+          effects.push({
+            timing: t,
+            effect:
+              roomNumber === 1
+                ? choose(newbEffects)
+                : roomNumber === 2
+                ? choose(proEffects)
+                : choose(deityEffects),
+          });
+          t += 6.0; // hard-coded effect window. change?
         }
 
         return () => {
@@ -388,7 +384,7 @@ export function startGameImpl({
     subscribeKey: "sub-c-829590e3-62e9-40a8-9354-b8161c2fbcd8",
     userId,
   });
-  if (!isTutorial && !isBot) {
+  if (!isBot) {
     userId = `${userId}-${Math.random()}`;
 
     const listener = {
@@ -520,12 +516,12 @@ export function startGameImpl({
     start() {
       renderer.render(scene, camera);
       requestAnimationFrame(render);
-      if (isTutorial || isBot) {
+      if (isBot) {
         setTimeout(() => {
           startAudio();
         }, 1000);
       }
-      if (!isHost && !isTutorial) {
+      if (!isHost) {
         const currentTime = getTime().time;
         pubnub.publish({
           channel: `${roomId}-nyaa-info`,

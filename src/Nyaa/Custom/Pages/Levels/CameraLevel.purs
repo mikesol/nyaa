@@ -2,6 +2,7 @@ module Nyaa.Custom.Pages.Levels.CameraLevel where
 
 import Prelude
 
+import Control.Promise (fromAff)
 import Effect (Effect)
 import Effect.Ref as Ref
 import FRP.Event (Event, EventIO)
@@ -9,6 +10,7 @@ import Nyaa.Assets (lvl99URL)
 import Nyaa.Charts.Hypersynthetic (hypersynthetic)
 import Nyaa.Constants.Scores (cameraScore)
 import Nyaa.Custom.Builders.Game (FxData, game)
+import Nyaa.Custom.Pages.DevAdmin (doEndgameSuccessRitual, doEndgameFailureRitual, buzzEndgameRitual)
 import Nyaa.Firebase.Firebase (Profile)
 import Nyaa.Types.Quest (Quest(..))
 import Ocarina.WebAPI (AudioContext)
@@ -28,5 +30,8 @@ cameraLevel { audioContextRef, fxEvent, profile } = game
   , fxEvent
   , profile
   , chart: hypersynthetic
-  , isTutorial: false
+  , successPath: "/glide-quest"
+  , failurePath: "/buzz-quest"
+  , successCb: map fromAff (doEndgameSuccessRitual buzzEndgameRitual)
+  , failureCb: map fromAff (doEndgameFailureRitual buzzEndgameRitual)
   }

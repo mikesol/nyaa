@@ -57,7 +57,6 @@ basicPages =
   [ "story-book"
   , "intro-screen"
   , "dev-admin"
-  , "tutorial-quest"
   , "flat-quest"
   , "buzz-quest"
   , "glide-quest"
@@ -74,7 +73,6 @@ basicPages =
   , "deity-lounge"
   , "lounge-picker"
   , "profile-page"
-  , "tutorial-level"
   ]
 
 levelPages :: Array String

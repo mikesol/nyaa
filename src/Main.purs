@@ -30,7 +30,6 @@ import Nyaa.Custom.Pages.Levels.HideLevel (hideLevel)
 import Nyaa.Custom.Pages.Levels.Lvl99Level (lvl99Level)
 import Nyaa.Custom.Pages.Levels.RotateLevel (rotateLevel)
 import Nyaa.Custom.Pages.Levels.ShowMeHowLevel (showMeHowLevel)
-import Nyaa.Custom.Pages.Levels.TutorialLevel (tutorialLevel)
 import Nyaa.Custom.Pages.LoungePicker (loungePicker)
 import Nyaa.Custom.Pages.NewbLounge (newbLounge)
 import Nyaa.Custom.Pages.PathTest (pathTest)
@@ -47,7 +46,6 @@ import Nyaa.Custom.Pages.Quests.HideQuest (hideQuest)
 import Nyaa.Custom.Pages.Quests.LVL99Quest (lvl99Quest)
 import Nyaa.Custom.Pages.Quests.RotateQuest (rotateQuest)
 import Nyaa.Custom.Pages.Quests.ShowMeHowQuest (showMeHowQuest)
-import Nyaa.Custom.Pages.Quests.TutorialQuest (tutorialQuest)
 import Nyaa.FRP.Dedup (dedup)
 import Nyaa.Firebase.Firebase (getCurrentUser, listenToAuthStateChange, reactToNewUser, signInWithGameCenter, signInWithPlayGames)
 import Nyaa.Fullscreen (androidFullScreen)
@@ -86,7 +84,6 @@ main = do
       introScreen
         { profileState: profileState.event
         }
-      tutorialQuest { audioContextRef }
       flatQuest { audioContextRef }
       buzzQuest { audioContextRef }
       glideQuest { audioContextRef }
@@ -106,11 +103,6 @@ main = do
         }
       deityLounge
         { profileState: compactedProfile
-        }
-      tutorialLevel
-        { audioContextRef
-        , fxEvent
-        , profile: _.profile <$> compactedProfile
         }
       equalizeLevel
         { audioContextRef

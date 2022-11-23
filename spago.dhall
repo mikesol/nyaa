@@ -31,6 +31,7 @@
   , "now"
   , "nullable"
   , "ocarina"
+  , "parallel"
   , "prelude"
   , "refs"
   , "routing"

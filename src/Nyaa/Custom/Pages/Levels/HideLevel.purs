@@ -2,6 +2,7 @@ module Nyaa.Custom.Pages.Levels.HideLevel where
 
 import Prelude
 
+import Control.Promise (fromAff)
 import Effect (Effect)
 import Effect.Ref as Ref
 import FRP.Event (Event, EventIO)
@@ -9,6 +10,7 @@ import Nyaa.Assets (lvl99URL)
 import Nyaa.Charts.LVL99 (lvl99)
 import Nyaa.Constants.Scores (hideScore)
 import Nyaa.Custom.Builders.Game (FxData, game)
+import Nyaa.Custom.Pages.DevAdmin (doEndgameFailureRitual, doEndgameSuccessRitual, hideEndgameRitual)
 import Nyaa.Firebase.Firebase (Profile)
 import Nyaa.Types.Quest (Quest(..))
 import Ocarina.WebAPI (AudioContext)
@@ -28,5 +30,8 @@ hideLevel { audioContextRef, fxEvent, profile } = game
   , fxEvent
   , profile
   , chart: lvl99
-  , isTutorial: false
+  , successPath: "/dazzle-quest"
+  , failurePath: "/hide-quest"
+  , successCb: map fromAff (doEndgameSuccessRitual hideEndgameRitual)
+  , failureCb: map fromAff (doEndgameFailureRitual hideEndgameRitual)
   }

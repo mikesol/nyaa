@@ -4,6 +4,7 @@ import Prelude
 
 import Control.Alt ((<|>))
 import Control.Plus (empty)
+import Control.Promise (Promise)
 import Data.Foldable (oneOf)
 import Data.Int (floor)
 import Data.Maybe (Maybe(..))
@@ -127,8 +128,11 @@ foreign import startGame
      , getTime ::
          Effect { time :: Milliseconds, diff :: Number, pdiff :: Number }
      , noteInfo :: Array NoteInfo
-     , isTutorial :: Boolean
      , roomNumber :: Int
+     , successPath :: String
+     , failurePath :: String
+     , successCb :: Int -> Effect (Promise Unit)
+     , failureCb :: Int -> Effect (Promise Unit)
      }
   -> Effect { start :: Effect Unit, kill :: Effect Unit }
 
@@ -170,7 +174,10 @@ game
      , profile :: Event Profile
      , fxEvent :: EventIO FxData
      , chart :: Array NoteInfo
-     , isTutorial :: Boolean
+     , successPath :: String
+     , failurePath :: String
+     , successCb :: Int -> Effect (Promise Unit)
+     , failureCb :: Int -> Effect (Promise Unit)
      }
   -> Effect Unit
 game
@@ -181,8 +188,11 @@ game
   , fxEvent
   , profile
   , chart
-  , isTutorial
   , quest
+  , successPath
+  , failurePath
+  , successCb
+  , failureCb
   } =
   do
     myCountdownRef <- Ref.new (pure unit)
@@ -246,8 +256,11 @@ game
                 , scoreToWin
                 , getTime: n.now
                 , noteInfo: chart
-                , isTutorial
                 , roomNumber: questToRoomNumber quest
+                , successPath
+                , failurePath
+                , successCb
+                , failureCb
                 }
               controls.start
               Ref.write (controls.kill *> n.cancelNow) killRef
