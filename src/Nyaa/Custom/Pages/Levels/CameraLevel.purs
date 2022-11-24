@@ -27,6 +27,7 @@ cameraLevel { audioContextRef, fxEvent, profile } = game
   , quest: Camera
   , audioContextRef
   , audioUri: hypersyntheticURL
+  , backgroundName: "bg-hypersynthetic"
   , fxEvent
   , profile
   , chart: hypersynthetic

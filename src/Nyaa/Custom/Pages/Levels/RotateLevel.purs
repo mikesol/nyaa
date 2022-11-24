@@ -27,6 +27,7 @@ rotateLevel { audioContextRef, fxEvent, profile } = game
   , scoreToWin: rotateScore
   , audioContextRef
   , audioUri: lvl99URL
+  , backgroundName: "bg-lvl99"
   , fxEvent
   , profile
   , chart: lvl99

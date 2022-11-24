@@ -27,6 +27,7 @@ lvl99Level { audioContextRef, fxEvent, profile } = game
   , scoreToWin: track2Score
   , audioContextRef
   , audioUri: hypersyntheticURL
+  , backgroundName: "bg-hypersynthetic"
   , fxEvent
   , profile
   , chart: hypersynthetic

@@ -27,6 +27,7 @@ hideLevel { audioContextRef, fxEvent, profile } = game
   , scoreToWin: hideScore
   , audioContextRef
   , audioUri: lvl99URL
+  , backgroundName: "bg-lvl99"
   , fxEvent
   , profile
   , chart: lvl99
