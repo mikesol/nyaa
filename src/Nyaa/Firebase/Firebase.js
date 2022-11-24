@@ -305,16 +305,17 @@ export const createTicketImpl =
     return unsub;
   };
 
+
 // Initialize Analytics and get a reference to the service
-const analytics = firebase.analytics();
+
 
 export const logPageNavToAnalytics = (path) => () => {
-  analytics.logEvent("page_nav", {
+  firebase.analytics().logEvent("page_nav", {
     path,
   });
 };
 
 export const setUserId = (userId) => () => {
-  analytics.setUserId(userId);
+  firebase.analytics().setUserId(userId);
 }
 
