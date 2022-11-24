@@ -2,6 +2,17 @@
 
 import * as THREE from "three";
 
+import guideImage from "assets/guide.png";
+import noteImage from "assets/note.png";
+
+const LOADER = new THREE.TextureLoader();
+
+// `flipY` here is GPU weirdness
+export const guideTexture = LOADER.load(guideImage);
+guideTexture.flipY = true;
+export const noteTexture = LOADER.load(noteImage);
+noteTexture.flipY = false;
+
 export const COMMON_VERTEX_HEADERS = `
 // Encodes effect data, such as when it begins and ends, an offset are
 // ramped up and down to, and a flag which determines if they should

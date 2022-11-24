@@ -1,9 +1,12 @@
 "use strict";
 
 import * as THREE from "three";
-import { activateCommon, animateCommon, DEFAULT_cEnemyTerminal, DEFAULT_cPlayerTerminal, onBeforeCompileCommon } from "./common.js";
+import { activateCommon, animateCommon, DEFAULT_cEnemyTerminal, DEFAULT_cPlayerTerminal, guideTexture, onBeforeCompileCommon } from "./common.js";
 
 const BEGIN_VERTEX = `
+vRotation = radians(0.0);
+vAlpha = 1.0;
+
 int columnIndex = int(aIndex.y);
 
 vec3 current = isPlayer() ? cPlayerTerminal[columnIndex] : cEnemyTerminal[columnIndex];
@@ -60,8 +63,11 @@ export class Guides {
         this.geometry.setAttribute("aIndex", new THREE.Float32BufferAttribute(aIndex, 2));
 
         this.material = new THREE.PointsMaterial({
+            alphaTest: 1.0,
+            map: guideTexture,
             size: 0.50,
-            sizeAttenuation: true
+            sizeAttenuation: true,
+            transparent: true,
         });
 
         this.material.onBeforeCompile = function (shader) {

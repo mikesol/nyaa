@@ -9,6 +9,7 @@ export class Reference {
         this.mesh = new THREE.Mesh(this.geometry, this.material);
         this.mesh.rotation.x = -90 * Math.PI / 180.0;
         this.mesh.position.z = -2;
+        this.mesh.visible = false;
     }
 
     into(scene) {

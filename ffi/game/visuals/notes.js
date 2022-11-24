@@ -1,11 +1,10 @@
 "use strict";
 
 import * as THREE from "three";
-import { activateCommon, animateCommon, DEFAULT_cNotesInitial, onBeforeCompileCommon } from "./common.js";
-import noteImage from "assets/note.png";
+import { activateCommon, animateCommon, DEFAULT_cNotesInitial, noteTexture, onBeforeCompileCommon } from "./common.js";
 
 const BEGIN_VERTEX = `
-vRotation = radians(180.0);
+vRotation = radians(0.0);
 vAlpha = 1.0;
 
 int columnIndex = int(aIndex.y);
@@ -141,7 +140,7 @@ const MAP_PARTICLE_FRAGMENT = `
 
 const OUTPUT_FRAGMENT = `
 #include <output_fragment>
-if (vAlpha == 0.0) discard;
+if (vAlpha < 0.20) discard;
 gl_FragColor.a = vAlpha;
 `;
 
@@ -175,7 +174,7 @@ export class Notes {
 
         this.material = new THREE.PointsMaterial({
             alphaTest: 1.0,
-            map: new THREE.TextureLoader().load(noteImage),
+            map: noteTexture,
             size: 0.50,
             sizeAttenuation: true,
             transparent: true,
