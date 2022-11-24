@@ -7,3 +7,7 @@ foreign import lvl99URL :: String
 foreign import nyaaBeachURL :: String
 foreign import showMeHowURL :: String
 foreign import hypersyntheticURL :: String
+foreign import tutorial0URL :: String
+foreign import tutorial1URL :: String
+foreign import tutorial2URL :: String
+foreign import logoURL :: String
