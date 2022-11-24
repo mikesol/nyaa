@@ -24,7 +24,7 @@ buzzQuest { audioContextRef } = questPage
           "I am not unpleased. Nyā. Now that you can wield "
       , D.span (klass_ "font-bold") [ text_ "Flat" ]
       , text_ $
-          ", I expect you to use it with reckless abandon. Score " <> intToString cameraScore <> " points to unlock the next effect that I affectionately (nyā) call"
+          ", I expect you to use it with reckless abandon. Score " <> intToString cameraScore <> " points to unlock the next effect that I affectionately (nyā) call "
       , D.span (klass_ "font-bold") [ text_ "Buzz" ]
       , text_ "."
       ]

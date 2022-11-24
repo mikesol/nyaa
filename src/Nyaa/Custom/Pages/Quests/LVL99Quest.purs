@@ -23,7 +23,7 @@ lvl99Quest { audioContextRef } = questPage
       [ text_ "You've broken so many barriers and souls already. With "
       , D.span (klass_ "font-bold") [ text_ "Back" ]
       , text_ $
-          ", you can finally reach a Nyā level of consciousness. Score " <> intToString track2Score <> " points to unlock "
+          ", you can finally reach a Nyā level of consciousness. Score " <> intToString track2Score <> " points to unlock the coveted "
       , D.span (klass_ "font-bold") [ text_ "Pro" ]
       , text_ " level."
       ]

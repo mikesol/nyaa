@@ -616,8 +616,10 @@ export function startGameImpl({
       guides.destroy();
       hits.destroy();
       reference.destroy();
-      audioTrack.stop();
-      audioContext.suspend();
+      if (audioContext.state !== "closed") {
+        audioTrack.stop();
+        audioContext.suspend();  
+      }
       pubnub.unsubscribeAll();
       unsubFromEffects();
     },

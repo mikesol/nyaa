@@ -9,6 +9,7 @@ import Data.List (List(..), (:))
 import Data.Maybe (Maybe(..))
 import Data.Monoid (guard)
 import Data.Tuple.Nested ((/\), type (/\))
+import Debug (spy)
 import Deku.Attribute ((!:=))
 import Deku.Attributes (klass_)
 import Deku.Control (switcher, text_)
@@ -78,9 +79,9 @@ lounge isWeb path (Profile profile) (Lounge opts) = do
         ( [ D.Disabled !:= profileNotUnlocked, klass_ "grow cursor-pointer" ]
             <> guard
               ( (not opts.isBehindPaywall && profileUnlocked) ||
-                  (profileUnlocked && hasPaid)
+                  (profileUnlocked && hasPaid) || isWeb
               )
-              [ D.Href !:= path ]
+              [ let _ = spy "shit" path in D.Href !:= path ]
             <> guard
               ( profileUnlocked && hasntPaidYet && not isWeb &&
                   opts.isBehindPaywall
@@ -237,18 +238,18 @@ loungePicker i = customComponent_ "lounge-picker" {}
     , ionContent (oneOf [ I.Fullscren !:= true ])
         [ flip switcher i.profileState \{ profile } -> do
             let
-              path = pathToRealPath "/youwon-level"
-                ( (get (Proxy :: _ "flat") /\ "/equalize-level")
-                    : (get (Proxy :: _ "buzz") /\ "/camera-level")
-                    : (get (Proxy :: _ "glide") /\ "/glide-level")
-                    : (get (Proxy :: _ "back") /\ "/back-level")
-                    : (get (Proxy :: _ "track2") /\ "/lvlnn-level")
-                    : (get (Proxy :: _ "rotate") /\ "/rotate-level")
-                    : (get (Proxy :: _ "hide") /\ "/hide-level")
-                    : (get (Proxy :: _ "dazzle") /\ "/dazzle-level")
-                    : (get (Proxy :: _ "track3") /\ "/showmehow-level")
-                    : (get (Proxy :: _ "crush") /\ "/crush-level")
-                    : (get (Proxy :: _ "amplify") /\ "/amplify-level")
+              path = pathToRealPath "/youwon-quest"
+                ( (get (Proxy :: _ "flat") /\ "/equalize-quest")
+                    : (get (Proxy :: _ "buzz") /\ "/camera-quest")
+                    : (get (Proxy :: _ "glide") /\ "/glide-quest")
+                    : (get (Proxy :: _ "back") /\ "/back-quest")
+                    : (get (Proxy :: _ "track2") /\ "/lvlnn-quest")
+                    : (get (Proxy :: _ "rotate") /\ "/rotate-quest")
+                    : (get (Proxy :: _ "hide") /\ "/hide-quest")
+                    : (get (Proxy :: _ "dazzle") /\ "/dazzle-quest")
+                    : (get (Proxy :: _ "track3") /\ "/showmehow-quest")
+                    : (get (Proxy :: _ "crush") /\ "/crush-quest")
+                    : (get (Proxy :: _ "amplify") /\ "/amplify-quest")
                     : Nil
                 )
                 profile
