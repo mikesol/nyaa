@@ -27,6 +27,7 @@ crushLevel { audioContextRef, fxEvent, profile } = game
   , quest: Audio
   , audioContextRef
   , audioUri: showMeHowURL
+  , backgroundName: "bg-showmehow"
   , fxEvent
   , profile
   , chart: showMeHow

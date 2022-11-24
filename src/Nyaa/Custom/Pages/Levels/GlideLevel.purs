@@ -27,6 +27,7 @@ glideLevel { audioContextRef, fxEvent, profile } = game
   , scoreToWin: glideScore
   , audioContextRef
   , audioUri: hypersyntheticURL
+  , backgroundName: "bg-hypersynthetic"
   , fxEvent
   , profile
   , chart: hypersynthetic

@@ -27,6 +27,7 @@ equalizeLevel { audioContextRef, fxEvent, profile } = game
   , scoreToWin: equalizeScore
   , audioContextRef
   , audioUri: hypersyntheticURL
+  , backgroundName: "bg-hypersynthetic"
   , fxEvent
   , profile
   , chart: hypersynthetic

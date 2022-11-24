@@ -26,6 +26,7 @@ lvl99DoneLevel { audioContextRef, fxEvent, profile } = game
   , scoreToWin: amplifyScore
   , audioContextRef
   , audioUri: lvl99URL
+  , backgroundName: "bg-dark-beach"
   , fxEvent
   , profile
   , chart: lvl99

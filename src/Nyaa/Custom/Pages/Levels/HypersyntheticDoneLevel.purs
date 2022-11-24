@@ -26,6 +26,7 @@ hypersyntheticDoneLevel { audioContextRef, fxEvent, profile } = game
   , scoreToWin: amplifyScore
   , audioContextRef
   , audioUri: hypersyntheticURL
+  , backgroundName: "bg-hypersynthetic"
   , fxEvent
   , profile
   , chart: hypersynthetic

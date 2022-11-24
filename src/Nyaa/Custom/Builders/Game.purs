@@ -174,6 +174,7 @@ game
   :: { name :: String
      , audioContextRef :: Ref.Ref AudioContext
      , audioUri :: String
+     , backgroundName :: String
      , quest :: Quest
      , scoreToWin :: Int
      , profile :: Event Profile
@@ -189,6 +190,7 @@ game
   { name
   , audioContextRef
   , audioUri
+  , backgroundName
   , scoreToWin
   , fxEvent
   , profile
@@ -304,12 +306,12 @@ game
                 currentTimeEvent.event
             ionContent (oneOf [ I.Fullscren !:= true ])
               [ D.div
-                  (oneOf [ klass_ "absolute w-full h-full bg-dark-beach bg-no-repeat bg-cover bg-center" ])
+                  (oneOf [ klass_ $ "absolute w-full h-full bg-no-repeat bg-cover bg-center " <> backgroundName ])
                   [
                   ]
               , D.canvas
                   ( oneOf
-                      [ klass_ "absolute w-full h-full"
+                      [ klass_ "absolute w-full h-full backdrop-blur"
                       , id_ (name <> "-canvas")
                       ]
                   )

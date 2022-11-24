@@ -27,6 +27,7 @@ dazzleLevel { audioContextRef, fxEvent, profile } = game
   , scoreToWin: dazzleScore
   , audioContextRef
   , audioUri: lvl99URL
+  , backgroundName: "bg-dark-beach"
   , fxEvent
   , profile
   , chart: lvl99

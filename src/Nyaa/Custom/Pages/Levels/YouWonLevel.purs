@@ -26,6 +26,7 @@ youwonLevel { audioContextRef, fxEvent, profile } = game
   , scoreToWin: amplifyScore
   , audioContextRef
   , audioUri: showMeHowURL
+  , backgroundName: "bg-showmehow"
   , fxEvent
   , profile
   , chart: showMeHow

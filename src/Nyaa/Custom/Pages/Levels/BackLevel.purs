@@ -27,6 +27,7 @@ backLevel { audioContextRef, fxEvent, profile } = game
   , scoreToWin: backScore
   , audioContextRef
   , audioUri: hypersyntheticURL
+  , backgroundName: "bg-hypersynthetic"
   , fxEvent
   , profile
   , chart: hypersynthetic
