@@ -38,6 +38,7 @@
   , "routing"
   , "simple-json"
   , "st"
+  , "strings"
   , "transformers"
   , "tuples"
   , "unsafe-coerce"

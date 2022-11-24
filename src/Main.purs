@@ -6,6 +6,7 @@ import Control.Promise (toAffE)
 import Data.Compactable (compact)
 import Data.Maybe (Maybe(..))
 import Data.Nullable (toMaybe)
+import Data.String (Pattern(..), contains)
 import Deku.Toplevel (runInBody)
 import Effect (Effect)
 import Effect.Aff (apathize, launchAff_)
@@ -140,7 +141,9 @@ main = do
       runInBody (app audioContextRef)
       onBackgrounded do
         shutItDown audioContextRef
-        setHash "/"
+        hsh <- getHash
+        when (contains (Pattern "-level") hsh) do
+          setHash "/"
       launchAff_ do
         cu <- liftEffect getCurrentUser
         liftEffect do
