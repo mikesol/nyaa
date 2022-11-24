@@ -160,7 +160,7 @@ lounge isWeb path (Profile profile) (Lounge opts) = do
             , ionCardSubtitle_
                 [ D.div (klass_ "flex flex-row justify-between")
                     ( [ D.div_ [ text_ ("Track " <> show opts.index) ] ] <>
-                        guard (profileUnlocked && hasntPaidYet && not isWeb)
+                        guard (profileUnlocked && hasntPaidYet && not isWeb && opts.isBehindPaywall)
                           [ D.a
                               ( oneOf
                                   [ click_ do
@@ -237,7 +237,7 @@ loungePicker i = customComponent_ "lounge-picker" {}
     , ionContent (oneOf [ I.Fullscren !:= true ])
         [ flip switcher i.profileState \{ profile } -> do
             let
-              path = pathToRealPath "/you-won"
+              path = pathToRealPath "/youwon-level"
                 ( (get (Proxy :: _ "flat") /\ "/equalize-level")
                     : (get (Proxy :: _ "buzz") /\ "/camera-level")
                     : (get (Proxy :: _ "glide") /\ "/glide-level")

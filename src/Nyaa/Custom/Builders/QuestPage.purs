@@ -28,7 +28,7 @@ import Nyaa.Ionic.Content (ionContent)
 import Nyaa.Ionic.Custom (customComponent_)
 import Nyaa.Ionic.Header (ionHeader)
 import Nyaa.Ionic.Loading (dismissLoading, presentLoading)
-import Nyaa.Ionic.Title (ionTitle_)
+import Nyaa.Ionic.Title (ionTitle)
 import Nyaa.Ionic.Toolbar (ionToolbar_)
 import Nyaa.Matchmaking (doMatchmaking)
 import Nyaa.Types.Quest (Quest(..), questToPath, questToRoomNumber)
@@ -40,14 +40,14 @@ questPage
      , title :: String
      , quest :: Quest
      , scoreToWin :: Int
-     , explainer ::  forall lock payload. Array (Domable lock payload)
+     , explainer :: forall lock payload. Array (Domable lock payload)
      , showFriend :: Boolean
      , audioContextRef :: Ref.Ref AudioContext
      }
   -> Effect Unit
 questPage i = customComponent_ i.name {} questy
   where
-  questy :: forall lock payload. { } -> Array (Domable lock payload)
+  questy :: forall lock payload. {} -> Array (Domable lock payload)
   questy _ = do
     let
       playAction name channel isHost = do
@@ -96,10 +96,10 @@ questPage i = customComponent_ i.name {} questy
                         ]
                 )
                 ( \{ player1
-                  , player2
-                  , player1Name
-                  , player2Name
-                  } -> do
+                   , player2
+                   , player1Name
+                   , player2Name
+                   } -> do
                     me <- getCurrentUser
                     for_ (toMaybe me) \{ uid } -> launchAff_
                       do
@@ -113,20 +113,22 @@ questPage i = customComponent_ i.name {} questy
     [ ionHeader
         ( oneOf
             [ I.Translucent !:= true
-            , click_ do
-                refreshAudioContext i.audioContextRef
-                setHash
-                  ( ( questToPath
-                        i.quest
-                    ) <> "/bot/true"
-                  )
             ]
         )
         [ ionToolbar_
             [ ionButtons (oneOf [ I.Slot !:= "start" ])
                 [ ionBackButton (oneOf [ I.DefaultHref !:= "/" ]) []
                 ]
-            , ionTitle_ [ text_ "Prepare to battle" ]
+            , ionTitle
+                ( click_ do
+                    refreshAudioContext i.audioContextRef
+                    setHash
+                      ( ( questToPath
+                            i.quest
+                        ) <> "/bot/true"
+                      )
+                )
+                [ text_ "Prepare to battle" ]
             ]
         ]
     , ionContent (oneOf [ I.Fullscren !:= true ])
@@ -140,8 +142,10 @@ questPage i = customComponent_ i.name {} questy
                 ( klass_
                     "bg-zinc-200 bg-opacity-90 row-start-1 col-start-1 row-span-1 col-span-1"
                 )
-                ( [ D.h1 (oneOf [ klass_ "text-center text-2xl mt-2" ]) [ text_ i.title ]
-                  , D.p (oneOf [klass_ "p-4"]) (i.explainer :: Array (Domable lock payload))
+                ( [ D.h1 (oneOf [ klass_ "text-center text-2xl mt-2" ])
+                      [ text_ i.title ]
+                  , D.p (oneOf [ klass_ "p-4" ])
+                      (i.explainer :: Array (Domable lock payload))
                   , D.div (klass_ "flex flex-row")
                       [ D.div (klass_ "grow") []
                       , ionButton
