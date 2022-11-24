@@ -1,5 +1,7 @@
 package fm.joyride.nyaa;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -44,7 +46,7 @@ public class MoneyPlugin extends Plugin {
     private BillingClient billingClient = null;
 
     @PluginMethod()
-    public void initializeBillingClient(PluginCall call) {
+    public void initialize(PluginCall call) {
         billingClient = BillingClient.newBuilder(getContext())
                 .setListener(purchasesUpdatedListener)
                 .enablePendingPurchases()
@@ -88,6 +90,7 @@ public class MoneyPlugin extends Plugin {
     }
 
     private void buyImpl(PluginCall call) {
+        Log.d("Nyaa", "in buy impl");
         callbackId = call.getCallbackId();
 
         QueryProductDetailsParams queryProductDetailsParams =
@@ -106,7 +109,8 @@ public class MoneyPlugin extends Plugin {
                     public void onProductDetailsResponse(BillingResult billingResult,
                                                          List<ProductDetails> productDetailsList) {
                         for (int i = 0; i < productDetailsList.size(); i++) {
-                            if (productDetailsList.get(i).getProductId() == "nyaa.track.ac.0") {
+                            Log.d("Nyaa", productDetailsList.get(i).toString());
+                            if (productDetailsList.get(i).getProductId().equals("nyaa.track.ac.0")) {
                                 ImmutableList productDetailsParamsList =
                                         ImmutableList.of(
                                                 BillingFlowParams.ProductDetailsParams.newBuilder()
@@ -155,6 +159,8 @@ public class MoneyPlugin extends Plugin {
                     call.reject("Is disconnected");
                 }
             });
+        } else {
+            refreshStatusImpl(call);
         }
     }
 
@@ -178,6 +184,8 @@ public class MoneyPlugin extends Plugin {
                     call.reject("Is disconnected");
                 }
             });
+        } else {
+            buyImpl(call);
         }
     }
 }

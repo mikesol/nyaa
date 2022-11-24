@@ -86,12 +86,12 @@ lounge isWeb path (Profile profile) (Lounge opts) = do
                   opts.isBehindPaywall
               )
               [ click_ $ launchAff_ do
-                  alert "Achieve Greatness!" Nothing
+                  alert "Achieve Greatness" Nothing
                     ( Just
                         "Purchase the last track to access the best music and effects yet!"
                     )
                     [ { text: "Not yet", handler: pure unit }
-                    , { text: "I need this!"
+                    , { text: "I need this"
                       , handler: launchAff_ $ brackedWithLoading
                           "Get ready for sick ear candy!"
                           do
@@ -104,7 +104,7 @@ lounge isWeb path (Profile profile) (Lounge opts) = do
                                         ( Just
                                             "We couldn't process your payment 😳 Please try again."
                                         )
-                                        [ { text: "OK!"
+                                        [ { text: "OK"
                                           , handler: pure unit
                                           }
                                         ]
@@ -118,7 +118,7 @@ lounge isWeb path (Profile profile) (Lounge opts) = do
                                         ( Just
                                             "You've unlocked the final track 🎉"
                                         )
-                                        [ { text: "Game on!"
+                                        [ { text: "Game on"
                                           , handler: pure unit
                                           }
                                         ]
