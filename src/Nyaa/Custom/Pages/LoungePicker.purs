@@ -9,7 +9,6 @@ import Data.List (List(..), (:))
 import Data.Maybe (Maybe(..))
 import Data.Monoid (guard)
 import Data.Tuple.Nested ((/\), type (/\))
-import Debug (spy)
 import Deku.Attribute ((!:=))
 import Deku.Attributes (klass_)
 import Deku.Control (switcher, text_)
@@ -81,7 +80,7 @@ lounge isWeb path (Profile profile) (Lounge opts) = do
               ( (not opts.isBehindPaywall && profileUnlocked) ||
                   (profileUnlocked && hasPaid) || isWeb
               )
-              [ let _ = spy "shit" path in D.Href !:= path ]
+              [ D.Href !:= path ]
             <> guard
               ( profileUnlocked && hasntPaidYet && not isWeb &&
                   opts.isBehindPaywall
