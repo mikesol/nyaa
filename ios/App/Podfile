@@ -33,6 +33,7 @@ target 'App' do
   pod 'Firebase/Messaging' # Add this line
   pod 'Firebase/Auth'
   pod 'Firebase/Storage'
+  pod 'Firebase/Crashlytics'
   pod 'Alamofire'
 end
 

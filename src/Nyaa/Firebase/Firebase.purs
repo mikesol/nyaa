@@ -4,10 +4,10 @@ import Prelude
 
 import Control.Promise (Promise, toAffE)
 import Data.ArrayBuffer.Types (Uint8Array)
-import Data.Foldable (for_)
+import Data.Foldable (for_, traverse_)
 import Data.Maybe (Maybe(..))
 import Data.Newtype (class Newtype)
-import Data.Nullable (Nullable)
+import Data.Nullable (Nullable, toMaybe)
 import Data.Symbol (class IsSymbol, reflectSymbol)
 import Effect (Effect)
 import Effect.Aff (launchAff_)
@@ -152,3 +152,15 @@ createTicket :: Int -> (Ticket -> Effect Unit) -> Effect (Promise (Effect Unit))
 createTicket = createTicketImpl Nothing Just
 
 foreign import cancelTicket :: Effect (Promise Unit)
+
+foreign import logPageNavToAnalytics :: String -> Effect Unit
+foreign import setUserId :: String -> Effect Unit
+
+setUserIdFromUser :: User -> Effect Unit
+setUserIdFromUser { uid } = setUserId uid
+
+setUserIdFromMaybeUser :: Maybe User -> Effect Unit
+setUserIdFromMaybeUser = traverse_ setUserIdFromUser
+
+setUserIdFromNullableUser :: Nullable User -> Effect Unit
+setUserIdFromNullableUser = toMaybe >>> setUserIdFromMaybeUser

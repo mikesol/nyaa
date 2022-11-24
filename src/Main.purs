@@ -48,7 +48,7 @@ import Nyaa.Custom.Pages.Quests.ShowMeHowQuest (showMeHowQuest)
 import Nyaa.Custom.Pages.Quests.YouWonQuest (youwonQuest)
 import Nyaa.Custom.Pages.TutorialPage (tutorialPage)
 import Nyaa.FRP.Dedup (dedup)
-import Nyaa.Firebase.Firebase (getCurrentUser, listenToAuthStateChange, reactToNewUser, signInWithGameCenter, signInWithPlayGames)
+import Nyaa.Firebase.Firebase (getCurrentUser, listenToAuthStateChange, reactToNewUser, setUserIdFromNullableUser, signInWithGameCenter, signInWithPlayGames)
 import Nyaa.Fullscreen (androidFullScreen)
 import Nyaa.Ionic.Loading (brackedWithLoading)
 import Nyaa.Money as Money
@@ -144,10 +144,12 @@ main = do
       launchAff_ do
         cu <- liftEffect getCurrentUser
         liftEffect do
+          setUserIdFromNullableUser cu
           runEffectFn1 authListener.push { user: cu }
           let
             profileF1 = mkEffectFn1 \{ profile } -> do
               runEffectFn1 profileListener.push { profile: Just profile }
+          setUserIdFromNullableUser cu
           reactToNewUser
             { user: toMaybe cu
             , push: profileF1

@@ -10,6 +10,7 @@ import Deku.Core (Domable)
 import Deku.DOM as D
 import Effect (Effect)
 import Effect.Ref as Ref
+import Nyaa.Firebase.Firebase (logPageNavToAnalytics)
 import Nyaa.Ionic.App (ionApp_)
 import Nyaa.Ionic.Attributes as I
 import Nyaa.Ionic.Content (ionContent)
@@ -18,12 +19,13 @@ import Nyaa.Ionic.Header (ionHeader)
 import Nyaa.Ionic.Item (ionItem)
 import Nyaa.Ionic.Label (ionLabel_)
 import Nyaa.Ionic.List (ionList_)
-import Nyaa.Ionic.Nav (ionNav_)
+import Nyaa.Ionic.Nav (ionNav)
 import Nyaa.Ionic.Route (ionRoute)
 import Nyaa.Ionic.Router (ionRouter_)
 import Nyaa.Ionic.Title (ionTitle_)
 import Nyaa.Ionic.Toolbar (ionToolbar_)
 import Ocarina.WebAPI (AudioContext)
+import Routing.Hash (getHash)
 
 -- Front page [Tutorial -> (Tutorial, Play)]
 -- Tutorial quest
@@ -129,7 +131,13 @@ makeApp withAdmin homeIs _ = ionApp_
         ] <> basicIonRoutes <> levelIonRoutes
 
       )
-  , ionNav_ []
+  , ionNav
+      ( oneOf
+          [ I.OnIonNavDidChange !:= do
+              getHash >>= logPageNavToAnalytics
+          ]
+      )
+      []
   ]
   where
   basicIonRoutes :: Array (Domable lock payload)
