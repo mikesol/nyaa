@@ -423,11 +423,8 @@ newtype ScorelessAchievement = ScorelessAchievement
 
 tutorialAchievement :: ScorelessAchievement
 tutorialAchievement = ScorelessAchievement
-  { -- ugh, nothing in the profile here
-    -- do we even want the tutorial achievement?
-    -- do we care?
-    -- lesson learned: really think through achievements!!!
-    modProfileAchievement: ProfileSetter $ some { }
+  {
+    modProfileAchievement: ProfileSetter $ some { hasCompletedTutorial: true }
   , iosAchievement: GC.reportAchievements
       { achievements:
           [ ReportableAchievement

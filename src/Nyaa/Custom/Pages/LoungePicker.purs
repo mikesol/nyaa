@@ -12,10 +12,13 @@ import Deku.Attributes (klass_)
 import Deku.Control (switcher, text_)
 import Deku.Core (Domable)
 import Deku.DOM as D
+import Deku.Listeners (click_)
 import Effect (Effect)
+import Effect.Aff (launchAff_)
 import FRP.Event (Event)
 import Nyaa.Assets (catURL)
 import Nyaa.Firebase.Firebase (Profile(..), Profile')
+import Nyaa.Ionic.Alert (alert)
 import Nyaa.Ionic.Attributes as I
 import Nyaa.Ionic.BackButton (ionBackButton)
 import Nyaa.Ionic.Buttons (ionButtons)
@@ -26,6 +29,7 @@ import Nyaa.Ionic.CardTitle (ionCardTitle_)
 import Nyaa.Ionic.Content (ionContent)
 import Nyaa.Ionic.Custom (customComponent_)
 import Nyaa.Ionic.Header (ionHeader)
+import Nyaa.Ionic.Icon (ionIcon)
 import Nyaa.Ionic.Title (ionTitle_)
 import Nyaa.Ionic.Toolbar (ionToolbar_)
 import Nyaa.Some (Some, get)
@@ -35,6 +39,7 @@ newtype Lounge = Lounge
   { title :: String
   , index :: Int
   , img :: String
+  , isBehindPaywall :: Boolean
   , unlocker :: Some Profile' -> Maybe Boolean
   }
 
@@ -60,11 +65,27 @@ lounge
   -> Domable lock payload
 lounge path (Profile profile) (Lounge opts) = do
   let profileNotUnlocked = opts.unlocker profile /= Just true
+  let profileUnlocked = not profileNotUnlocked
+  let hasntPaidYet = get (Proxy :: Proxy "hasPaid") profile /= Just true
+  let hasPaid = not hasntPaidYet
   ionCard
     ( oneOf
-        ( [ D.Disabled !:= profileNotUnlocked, klass_ "grow" ] <> guard
-            (not profileNotUnlocked)
-            [ D.Href !:= path ]
+        ( [ D.Disabled !:= profileNotUnlocked, klass_ "grow cursor-pointer" ]
+            <> guard
+              ( (not opts.isBehindPaywall && profileUnlocked) ||
+                  (profileUnlocked && hasPaid)
+              )
+              [ D.Href !:= path ]
+            <> guard (profileUnlocked && hasntPaidYet)
+              [ click_ $ launchAff_ do
+                  alert "Achieve Greatness!" Nothing
+                    ( Just
+                        "Purchase the last track to access the best music and effects yet!"
+                    )
+                    [ { text: "Not yet", handler: pure unit }
+                    , { text: "I need this!", handler: pure unit }
+                    ]
+              ]
         )
     )
     [ D.div (klass_ "flex")
@@ -81,9 +102,23 @@ lounge path (Profile profile) (Lounge opts) = do
         , D.div (klass_ "grow") []
         ]
     , ionCardHeader_
-        [ ionCardTitle_ [ text_ opts.title ]
-        , ionCardSubtitle_ [ text_ ("Track " <> show opts.index) ]
-        ]
+        ( guard opts.isBehindPaywall
+            [ ionIcon
+                ( oneOf
+                    [ D.Name !:=
+                        ( if hasntPaidYet then "lock-closed-outline"
+                          else "lock-open-outline"
+                        )
+                    , D.Size !:= "small"
+                    , D.Class !:= "absolute -mt-4 cursor-pointer"
+                    ]
+                )
+                []
+            ] <>
+            [ ionCardTitle_ [ text_ opts.title ]
+            , ionCardSubtitle_ [ text_ ("Track " <> show opts.index) ]
+            ]
+        )
     ]
 
 lounges :: Array Lounge
@@ -92,21 +127,22 @@ lounges =
       { title: "HYPERSYNTHETIC"
       , index: 1
       , img: catURL
-      , unlocker: get (Proxy :: Proxy "hasCompletedTutorial")
-      }
-  , Lounge
-      { title: "Show Me How"
-      , index: 1
-      , img: catURL
-      , unlocker: get (Proxy :: Proxy "track2")
+      , isBehindPaywall: false
+      , unlocker: get (Proxy :: Proxy "track1")
       }
   , Lounge
       { title: "LVL.99"
-      , index: 1
+      , index: 2
       , img: catURL
-      , unlocker: \p -> (&&)
-          <$> get (Proxy :: Proxy "track3") p
-          <*> get (Proxy :: Proxy "hasPaid") p
+      , isBehindPaywall: false
+      , unlocker: get (Proxy :: Proxy "track2")
+      }
+  , Lounge
+      { title: "Show Me How"
+      , index: 3
+      , isBehindPaywall: true
+      , img: catURL
+      , unlocker: get (Proxy :: Proxy "track3")
       }
   ]
 
@@ -146,7 +182,16 @@ loungePicker i = customComponent_ "lounge-picker" {}
               (oneOf [ klass_ "flex-col flex w-full h-full" ])
               [ D.div (klass_ "grow") []
               , D.div (klass_ "flex flex-row") (lounges <#> lounge path profile)
-              , D.div (klass_ "grow") []
+              , D.div (klass_ "grow")
+                  [ D.h2 (klass_ "text-center")
+                      [ D.span (oneOf []) [ text_ "Music by " ]
+                      , D.a
+                          ( oneOf
+                              [ D.Href !:= "https://twitter.com/akiracomplex", D.Target !:= "blank_" ]
+                          )
+                          [ text_ " Akira Complex " ]
+                      ]
+                  ]
               ]
         ]
     ]
