@@ -33,33 +33,31 @@ slideOneText = "Welcome to Nyaa's tutorial! Swipe left to continue!"
 slideTwoText :: String
 slideTwoText =
   """
-Nyaa is a vertical scrolling rhythm game with a twist! First and foremost,
-let's talk about the UI. The arena is divided between you and your opponent,
-and notes come from the middle of the track. You must hit notes as they
+Nya is a vertical scrolling rhythm game with a twist!
+The arena is divided between you and your opponent,
+and notes come from the middle of the arena. You must hit notes as they
 approach your judgment guides!
 """
 
 slideThreeText :: String
 slideThreeText =
   """
-In the upper right, you can see you and your opponent's scores respectively.
-This is an indication of how well you perform in a chart. "Judgment" text
+In the upper right, you can see your score in green and your opponent's in blue.
+"Judgment" text
 may appear in the middle of the screen showing how well you hit a specific note!
 """
 
 slideFourText :: String
 slideFourText =
   """
-During gameplay, you or your opponent can mess with each other through various
-abilities, which can be activated through the UI in the upper right. Not all
-abilities are available though, and you have to work for them in order to be
-able to use them!
+During gameplay, you will earn abilities that you can use to
+throw your opponent off guard. These abilities can be activated through the buttons in the upper left.
 """
 
 slideFiveText :: String
 slideFiveText =
   """
-Go forth and appease the overlord!
+Go forth and appease the cat overlord!
 """
 
 tutorialPage :: Effect Unit
