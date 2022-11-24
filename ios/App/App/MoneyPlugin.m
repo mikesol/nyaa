@@ -11,4 +11,5 @@
 CAP_PLUGIN(MoneyPlugin, "Money",
     CAP_PLUGIN_METHOD(buy, CAPPluginReturnPromise);
     CAP_PLUGIN_METHOD(refreshStatus, CAPPluginReturnPromise);
+    CAP_PLUGIN_METHOD(initialize, CAPPluginReturnPromise);
 )

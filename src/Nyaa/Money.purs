@@ -7,3 +7,4 @@ import Effect (Effect)
 
 foreign import buy :: Effect Unit -> Effect Unit -> Effect Unit
 foreign import refreshStatus :: Effect (Promise Unit)
+foreign import initialize :: Effect (Promise Unit)

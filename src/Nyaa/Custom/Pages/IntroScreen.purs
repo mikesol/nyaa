@@ -22,8 +22,6 @@ import Nyaa.SignIn (signInFlow)
 import Nyaa.Some (get)
 import Type.Proxy (Proxy(..))
 
-data GameStartsAt = NewbTrack | TrackPicker
-
 introScreen
   :: { profileState :: Event { profile :: Maybe Profile }
      }
@@ -52,9 +50,7 @@ introScreen opts = customComponent_ "intro-screen" {} \_ ->
                         playGame gameStartsAt =
                           [ ionButton
                               ( oneOf
-                                  [ D.Href !:= case gameStartsAt of
-                                      NewbTrack -> "/newb-lounge"
-                                      TrackPicker -> "/lounge-picker"
+                                  [ D.Href !:= gameStartsAt
                                   ]
                               )
                               [ text_ "Play" ]
@@ -85,9 +81,17 @@ introScreen opts = customComponent_ "intro-screen" {} \_ ->
                           -- go to the track picker
                           | get (Proxy :: _ "track2") p == Just
                               true ->
-                              fixed (playGame TrackPicker <> baseSignedIn)
-                          | get (Proxy :: _ "hasCompletedTutorial") p == Just
-                              true -> fixed (playGame NewbTrack <> baseSignedIn)
+                              fixed (playGame "/lounge-picker" <> baseSignedIn)
+                          | get (Proxy :: _ "back") p == Just
+                              true -> fixed (playGame "/lvlnn-quest" <> baseSignedIn)
+                          | get (Proxy :: _ "glide") p == Just
+                              true -> fixed (playGame "/back-quest" <> baseSignedIn)
+                          | get (Proxy :: _ "buzz") p == Just
+                              true -> fixed (playGame "/glide-quest" <> baseSignedIn)
+                          | get (Proxy :: _ "flat") p == Just
+                              true -> fixed (playGame "/buzz-quest" <> baseSignedIn)
+                          | get (Proxy :: _ "track1") p == Just
+                              true -> fixed (playGame "/flat-quest" <> baseSignedIn)
                           | otherwise -> fixed baseSignedIn
                   ]
               , D.div (oneOf [ klass_ "grow" ]) []

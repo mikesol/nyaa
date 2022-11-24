@@ -6,7 +6,7 @@ import Control.Promise (fromAff)
 import Effect (Effect)
 import Effect.Ref as Ref
 import FRP.Event (Event, EventIO)
-import Nyaa.Assets (lvl99URL)
+import Nyaa.Assets (hypersyntheticURL)
 import Nyaa.Charts.Hypersynthetic (hypersynthetic)
 import Nyaa.Constants.Scores (track2Score)
 import Nyaa.Custom.Builders.Game (FxData, game)
@@ -26,7 +26,7 @@ lvl99Level { audioContextRef, fxEvent, profile } = game
   , quest: Lvl99
   , scoreToWin: track2Score
   , audioContextRef
-  , audioUri: lvl99URL
+  , audioUri: hypersyntheticURL
   , fxEvent
   , profile
   , chart: hypersynthetic

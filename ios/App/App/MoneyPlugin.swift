@@ -10,6 +10,9 @@ import StoreKit
 
 @objc(MoneyPlugin)
 public class MoneyPlugin: CAPPlugin {
+    @objc func initialize(_ call: CAPPluginCall) {
+        call.resolve();
+    }
     @objc func refreshStatus(_ call: CAPPluginCall) async {
         if #available(iOS 15.0, *) {
             do {

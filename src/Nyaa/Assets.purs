@@ -6,3 +6,4 @@ foreign import catURL :: String
 foreign import lvl99URL :: String
 foreign import nyaaBeachURL :: String
 foreign import showMeHowURL :: String
+foreign import hypersyntheticURL :: String

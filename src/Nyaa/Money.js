@@ -15,3 +15,4 @@ export const buy = (fail) => (success) => () => {
 };
 
 export const refreshStatus = () => Money.refreshStatus();
+export const initialize = () => Money.initialize();

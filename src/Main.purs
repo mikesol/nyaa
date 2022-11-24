@@ -50,6 +50,7 @@ import Nyaa.FRP.Dedup (dedup)
 import Nyaa.Firebase.Firebase (getCurrentUser, listenToAuthStateChange, reactToNewUser, signInWithGameCenter, signInWithPlayGames)
 import Nyaa.Fullscreen (androidFullScreen)
 import Nyaa.Ionic.Loading (brackedWithLoading)
+import Nyaa.Money as Money
 import Routing.Hash (getHash, setHash)
 
 foreign import prod :: Effect Boolean
@@ -118,6 +119,7 @@ main = do
       youwonLevel levelInfo
       loungePicker
         { profileState: compactedProfile
+        , isWeb: platform == Web
         }
       -- devAdmin { platform }
       pathTest
@@ -159,5 +161,9 @@ main = do
           case platform of
             IOS -> toAffE signInWithGameCenter
             Android -> toAffE signInWithPlayGames
+            Web -> pure unit
+        apathize $ case platform of
+            IOS -> toAffE Money.initialize
+            Android -> toAffE Money.initialize
             Web -> pure unit
       pure unit

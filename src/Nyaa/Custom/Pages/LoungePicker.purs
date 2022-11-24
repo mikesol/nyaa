@@ -35,7 +35,7 @@ import Nyaa.Ionic.Icon (ionIcon)
 import Nyaa.Ionic.Loading (brackedWithLoading)
 import Nyaa.Ionic.Title (ionTitle_)
 import Nyaa.Ionic.Toolbar (ionToolbar_)
-import Nyaa.Money (buy, refreshStatus)
+import Nyaa.Money as Money
 import Nyaa.Some (Some, get, some)
 import Type.Proxy (Proxy(..))
 
@@ -63,11 +63,12 @@ pathToRealPath default arr (Profile p) = case actualized arr of
 
 lounge
   :: forall lock payload
-   . String
+   . Boolean
+  -> String
   -> Profile
   -> Lounge
   -> Domable lock payload
-lounge path (Profile profile) (Lounge opts) = do
+lounge isWeb path (Profile profile) (Lounge opts) = do
   let profileNotUnlocked = opts.unlocker profile /= Just true
   let profileUnlocked = not profileNotUnlocked
   let hasntPaidYet = get (Proxy :: Proxy "hasPaid") profile /= Just true
@@ -80,7 +81,10 @@ lounge path (Profile profile) (Lounge opts) = do
                   (profileUnlocked && hasPaid)
               )
               [ D.Href !:= path ]
-            <> guard (profileUnlocked && hasntPaidYet)
+            <> guard
+              ( profileUnlocked && hasntPaidYet && not isWeb &&
+                  opts.isBehindPaywall
+              )
               [ click_ $ launchAff_ do
                   alert "Achieve Greatness!" Nothing
                     ( Just
@@ -92,7 +96,7 @@ lounge path (Profile profile) (Lounge opts) = do
                           "Get ready for sick ear candy!"
                           do
                             makeAff \cb -> do
-                              buy
+                              Money.buy
                                 ( do
                                     cb (Right unit)
                                     launchAff_ do
@@ -139,7 +143,7 @@ lounge path (Profile profile) (Lounge opts) = do
         , D.div (klass_ "grow") []
         ]
     , ionCardHeader_
-        ( guard opts.isBehindPaywall
+        ( guard (opts.isBehindPaywall && not isWeb)
             [ ionIcon
                 ( oneOf
                     [ D.Name !:=
@@ -156,7 +160,7 @@ lounge path (Profile profile) (Lounge opts) = do
             , ionCardSubtitle_
                 [ D.div (klass_ "flex flex-row justify-between")
                     ( [ D.div_ [ text_ ("Track " <> show opts.index) ] ] <>
-                        guard (profileUnlocked && hasntPaidYet)
+                        guard (profileUnlocked && hasntPaidYet && not isWeb)
                           [ D.a
                               ( oneOf
                                   [ click_ do
@@ -165,7 +169,7 @@ lounge path (Profile profile) (Lounge opts) = do
                                         do
                                           catchError
                                             ( do
-                                                toAffE refreshStatus
+                                                toAffE Money.refreshStatus
                                                 toAffE $ genericUpdate
                                                   ( Profile
                                                       (some { hasPaid: true })
@@ -217,6 +221,7 @@ lounges =
 
 loungePicker
   :: { profileState :: Event { profile :: Profile }
+     , isWeb :: Boolean
      }
   -> Effect Unit
 loungePicker i = customComponent_ "lounge-picker" {}
@@ -250,7 +255,8 @@ loungePicker i = customComponent_ "lounge-picker" {}
             D.div
               (oneOf [ klass_ "flex-col flex w-full h-full" ])
               [ D.div (klass_ "grow") []
-              , D.div (klass_ "flex flex-row") (lounges <#> lounge path profile)
+              , D.div (klass_ "flex flex-row")
+                  (lounges <#> lounge i.isWeb path profile)
               , D.div (klass_ "grow")
                   [ D.h2 (klass_ "text-center")
                       [ D.span (oneOf []) [ text_ "Music by " ]
