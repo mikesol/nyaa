@@ -303,7 +303,11 @@ game
                 audioContextRef
                 currentTimeEvent.event
             ionContent (oneOf [ I.Fullscren !:= true ])
-              [ D.canvas
+              [ D.div
+                  (oneOf [ klass_ "absolute w-full h-full bg-dark-beach bg-no-repeat bg-cover bg-center" ])
+                  [
+                  ]
+              , D.canvas
                   ( oneOf
                       [ klass_ "absolute w-full h-full"
                       , id_ (name <> "-canvas")
