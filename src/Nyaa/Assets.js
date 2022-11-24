@@ -5,6 +5,10 @@ import lvl99 from "assets/lvl99.mp3";
 import hypersynthetic from "assets/hypersynthetic.mp3";
 import showMeHow from "assets/showMeHow.mp3";
 import nyaaBeach from "assets/nyaaBeach.jpg";
+import tutorial0 from "assets/tutorial_0.png";
+import tutorial1 from "assets/tutorial_1.png";
+import tutorial2 from "assets/tutorial_2.png";
+import logo from "assets/logo.png";
 
 export const splashURL = splash;
 export const testURL = test;
@@ -13,3 +17,7 @@ export const lvl99URL = lvl99;
 export const hypersyntheticURL = hypersynthetic;
 export const showMeHowURL = showMeHow;
 export const nyaaBeachURL = nyaaBeach;
+export const tutorial0URL = tutorial0;
+export const tutorial1URL = tutorial1;
+export const tutorial2URL = tutorial2;
+export const logoURL = logo;

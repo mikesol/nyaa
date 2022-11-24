@@ -12,6 +12,7 @@ import Deku.DOM as D
 import Deku.Listeners (click_)
 import Effect (Effect)
 import Effect.Aff (launchAff_)
+import Nyaa.Assets (logoURL, tutorial0URL, tutorial1URL, tutorial2URL)
 import Nyaa.Custom.Pages.DevAdmin (doScorelessAchievement, track1Achievement)
 import Nyaa.Ionic.Attributes as I
 import Nyaa.Ionic.Button (ionButton)
@@ -79,11 +80,13 @@ tutorialPage =
     endTutorial :: _ -> Effect Unit
     endTutorial _ = pure unit
 
-    tutorialSlide :: String -> Nut
-    tutorialSlide textContent =
+    tutorialSlide :: String -> String -> Nut
+    tutorialSlide imageURL textContent =
       D.div (oneOf [ klass_ "swiper-slide p-4 grid grid-rows-3 grid-cols-3" ])
-        [ D.div (oneOf [ klass_ "px-12 col-span-3 row-span-2" ])
-            [ D.div (oneOf [ klass_ "bg-black h-full" ]) []
+        [ D.div (oneOf [ klass_ "px-12 col-span-3 row-span-2 flex justify-center" ])
+            [ D.img (oneOf [ D.Src !:= imageURL, klass_ "max-h-full bg-stone-800 p-4" ])
+                [
+                ]
             ]
         , D.article
             ( oneOf
@@ -127,10 +130,10 @@ tutorialPage =
       , ionContent_
           [ D.div (oneOf [ id_ "tutorial-content", klass_ "h-full" ])
               [ D.div (oneOf [ klass_ "swiper-wrapper" ])
-                  [ tutorialSlide slideOneText
-                  , tutorialSlide slideTwoText
-                  , tutorialSlide slideThreeText
-                  , tutorialSlide slideFourText
+                  [ tutorialSlide logoURL slideOneText
+                  , tutorialSlide tutorial0URL slideTwoText
+                  , tutorialSlide tutorial1URL slideThreeText
+                  , tutorialSlide tutorial2URL slideFourText
                   , finalSlide
                   ]
               , D.div (oneOf [ klass_ "swiper-button-prev" ]) []
