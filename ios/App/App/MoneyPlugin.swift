@@ -10,6 +10,32 @@ import StoreKit
 
 @objc(MoneyPlugin)
 public class MoneyPlugin: CAPPlugin {
+    @objc func refreshStatus(_ call: CAPPluginCall) async {
+        if #available(iOS 15.0, *) {
+            do {
+                let products = try await Product.products(for: [])
+                for product in products {
+                    if product.id == "nyaa.track.ac.0" {
+                        guard let resultingTransaction = await product.latestTransaction else {
+                            call.reject("No latest transaction")
+                            return
+                        }
+                        guard case .verified(_) = resultingTransaction else {
+                            call.reject("Transaction not verified")
+                            return
+                        }
+                        call.resolve()
+                        return;
+                    }
+                }
+                call.reject("Could not find product");
+            } catch {
+                call.reject("Could not access store kit \(error)")
+            }
+        } else {
+            call.reject("App too old")
+        };
+    }
     @objc func buy(_ call: CAPPluginCall) async {
         if #available(iOS 15.0, *) {
             do {
@@ -29,6 +55,7 @@ public class MoneyPlugin: CAPPlugin {
                             case .verified(let transaction):
                                 await transaction.finish()
                                 call.resolve()
+                                return
                             case .unverified(let transaction, let verificationError):
                                 call.reject("Unverified transaction \(transaction) \(verificationError)")
                                 return
@@ -38,8 +65,8 @@ public class MoneyPlugin: CAPPlugin {
                         }
                         return;
                     }
-                    call.reject("Could not find product");
                 }
+                call.reject("Could not find product");
             } catch {
                 call.reject("Could not access store kit \(error)")
             }

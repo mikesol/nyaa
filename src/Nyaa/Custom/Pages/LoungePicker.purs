@@ -16,7 +16,7 @@ import Deku.Core (Domable)
 import Deku.DOM as D
 import Deku.Listeners (click_)
 import Effect (Effect)
-import Effect.Aff (launchAff_, makeAff)
+import Effect.Aff (catchError, launchAff_, makeAff)
 import FRP.Event (Event)
 import Nyaa.Assets (catURL)
 import Nyaa.Firebase.Firebase (Profile(..), Profile', genericUpdate)
@@ -35,7 +35,7 @@ import Nyaa.Ionic.Icon (ionIcon)
 import Nyaa.Ionic.Loading (brackedWithLoading)
 import Nyaa.Ionic.Title (ionTitle_)
 import Nyaa.Ionic.Toolbar (ionToolbar_)
-import Nyaa.Money (buy)
+import Nyaa.Money (buy, refreshStatus)
 import Nyaa.Some (Some, get, some)
 import Type.Proxy (Proxy(..))
 
@@ -153,7 +153,39 @@ lounge path (Profile profile) (Lounge opts) = do
                 []
             ] <>
             [ ionCardTitle_ [ text_ opts.title ]
-            , ionCardSubtitle_ [ text_ ("Track " <> show opts.index) ]
+            , ionCardSubtitle_
+                [ D.div (klass_ "flex flex-row justify-between")
+                    ( [ D.div_ [ text_ ("Track " <> show opts.index) ] ] <>
+                        guard (profileUnlocked && hasntPaidYet)
+                          [ D.a
+                              ( oneOf
+                                  [ click_ do
+                                      launchAff_ $ brackedWithLoading
+                                        "Verifying payment"
+                                        do
+                                          catchError
+                                            ( do
+                                                toAffE refreshStatus
+                                                toAffE $ genericUpdate
+                                                  ( Profile
+                                                      (some { hasPaid: true })
+                                                  )
+                                            )
+                                            \_ -> do
+                                              alert "Apologies!" Nothing
+                                                ( Just
+                                                    "We could not confirm your payment. Contact support@joyride.fm."
+                                                )
+                                                [ { text: "OK"
+                                                  , handler: pure unit
+                                                  }
+                                                ]
+                                  ]
+                              )
+                              [ text_ "Refresh" ]
+                          ]
+                    )
+                ]
             ]
         )
     ]
