@@ -5,7 +5,7 @@ import { activateCommon, animateCommon, DEFAULT_cNotesInitial, onBeforeCompileCo
 import noteImage from "assets/note.png";
 
 const BEGIN_VERTEX = `
-vRotation = radians(180.0);
+vRotation = radians(0.0);
 vAlpha = 1.0;
 
 int columnIndex = int(aIndex.y);
@@ -173,9 +173,11 @@ export class Notes {
         this.geometry.setAttribute("aIndex", new THREE.Float32BufferAttribute(aIndex, 2));
         this.geometry.setAttribute("aTiming", new THREE.Float32BufferAttribute(aTiming, 1));
 
+        this.texture = new THREE.TextureLoader().load(noteImage);
+        this.texture.flipY = false;
         this.material = new THREE.PointsMaterial({
             alphaTest: 1.0,
-            map: new THREE.TextureLoader().load(noteImage),
+            map: this.texture,
             size: 0.50,
             sizeAttenuation: true,
             transparent: true,
