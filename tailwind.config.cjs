@@ -14,6 +14,7 @@ module.exports = {
         "dark-beach": "linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url('/assets/nyaaBeach.jpg')",
         hypersynthetic: "linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url('/assets/hypersyntheticCover.jpg')",
         showmehow: "linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url('/assets/showMeHowCover.jpg')",
+        lvl99: "linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url('/assets/lvl99Cover.png')",
       }
     },
   },

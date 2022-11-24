@@ -132,3 +132,4 @@ assets/showMeHow.mp3 filter=lfs diff=lfs merge=lfs -text
 assets/lvl99.mp3 filter=lfs diff=lfs merge=lfs -text
 assets/hypersyntheticCover.jpg filter=lfs diff=lfs merge=lfs -text
 assets/showMeHowCover.jpg filter=lfs diff=lfs merge=lfs -text
+assets/lvl99Cover.png filter=lfs diff=lfs merge=lfs -text

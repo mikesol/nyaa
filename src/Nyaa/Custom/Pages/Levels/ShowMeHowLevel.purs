@@ -27,7 +27,7 @@ showMeHowLevel { audioContextRef, fxEvent, profile } = game
   , scoreToWin: track3Score
   , audioContextRef
   , audioUri: lvl99URL
-  , backgroundName: "bg-dark-beach"
+  , backgroundName: "bg-lvl99"
   , fxEvent
   , profile
   , chart: lvl99
