@@ -12,6 +12,7 @@ def capacitor_pods
   pod 'Capacitor', :path => '../../node_modules/.pnpm/@capacitor+ios@4.4.0_@capacitor+core@4.4.0/node_modules/@capacitor/ios'
   pod 'CapacitorCordova', :path => '../../node_modules/.pnpm/@capacitor+ios@4.4.0_@capacitor+core@4.4.0/node_modules/@capacitor/ios'
   pod 'CapacitorFirebaseMessaging', :path => '../../node_modules/.pnpm/@capacitor-firebase+messaging@1.2.0_xjtau353dze36oiw2mzz4sxcni/node_modules/@capacitor-firebase/messaging'
+  pod 'CapacitorApp', :path => '../../node_modules/.pnpm/@capacitor+app@4.1.1_@capacitor+core@4.4.0/node_modules/@capacitor/app'
   pod 'CapacitorCamera', :path => '../../node_modules/.pnpm/@capacitor+camera@4.1.3_@capacitor+core@4.4.0/node_modules/@capacitor/camera'
   pod 'CapacitorDialog', :path => '../../node_modules/.pnpm/@capacitor+dialog@4.0.1_@capacitor+core@4.4.0/node_modules/@capacitor/dialog'
   pod 'CapacitorKeyboard', :path => '../../node_modules/.pnpm/@capacitor+keyboard@4.0.1_@capacitor+core@4.4.0/node_modules/@capacitor/keyboard'

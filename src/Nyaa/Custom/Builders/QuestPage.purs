@@ -140,7 +140,7 @@ questPage i = customComponent_ i.name {} questy
                 ( klass_
                     "bg-zinc-200 bg-opacity-90 row-start-1 col-start-1 row-span-1 col-span-1"
                 )
-                ( [ D.h1 (oneOf [ klass_ "text-center text-2xl" ]) [ text_ i.title ]
+                ( [ D.h1 (oneOf [ klass_ "text-center text-2xl mt-2" ]) [ text_ i.title ]
                   , D.p (oneOf [klass_ "p-4"]) (i.explainer :: Array (Domable lock payload))
                   , D.div (klass_ "flex flex-row")
                       [ D.div (klass_ "grow") []

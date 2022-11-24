@@ -14,7 +14,8 @@ import Effect.Ref as Ref
 import Effect.Uncurried (mkEffectFn1, runEffectFn1)
 import FRP.Event (burning, create, createO)
 import Nyaa.App (app, storybookCC)
-import Nyaa.Audio (newAudioContext)
+import Nyaa.AppState (onBackgrounded)
+import Nyaa.Audio (newAudioContext, shutItDown)
 import Nyaa.Capacitor.Utils (Platform(..), getPlatform)
 import Nyaa.Custom.Pages.InformationPage (informationPage)
 import Nyaa.Custom.Pages.IntroScreen (introScreen)
@@ -137,6 +138,9 @@ main = do
       when (h == "") do
         setHash "/"
       runInBody (app audioContextRef)
+      onBackgrounded do
+        shutItDown audioContextRef
+        setHash "/"
       launchAff_ do
         cu <- liftEffect getCurrentUser
         liftEffect do
