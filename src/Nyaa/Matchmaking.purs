@@ -57,7 +57,7 @@ doMatchmaking room failure success = do
           unsub
           success happy
       aiPath = do
-        delay (Milliseconds 7_000.0)
+        delay (Milliseconds 4_500.0)
         liftEffect $ log "killing ticket"
         toAffE cancelTicket
         liftEffect do
