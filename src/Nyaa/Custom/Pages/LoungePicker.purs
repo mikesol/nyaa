@@ -43,6 +43,7 @@ newtype Lounge = Lounge
   { title :: String
   , index :: Int
   , img :: String
+  , path :: Profile -> String
   , isBehindPaywall :: Boolean
   , unlocker :: Some Profile' -> Maybe Boolean
   }
@@ -64,11 +65,10 @@ pathToRealPath default arr (Profile p) = case actualized arr of
 lounge
   :: forall lock payload
    . Boolean
-  -> String
   -> Profile
   -> Lounge
   -> Domable lock payload
-lounge isWeb path (Profile profile) (Lounge opts) = do
+lounge isWeb pfl@(Profile profile) (Lounge opts) = do
   let profileNotUnlocked = opts.unlocker profile /= Just true
   let profileUnlocked = not profileNotUnlocked
   let hasntPaidYet = get (Proxy :: Proxy "hasPaid") profile /= Just true
@@ -77,10 +77,11 @@ lounge isWeb path (Profile profile) (Lounge opts) = do
     ( oneOf
         ( [ D.Disabled !:= profileNotUnlocked, klass_ "grow cursor-pointer" ]
             <> guard
-              ( (not opts.isBehindPaywall && profileUnlocked) ||
-                  (profileUnlocked && hasPaid) || isWeb
+              ( (not opts.isBehindPaywall && profileUnlocked)
+                  || (profileUnlocked && hasPaid)
+                  || isWeb
               )
-              [ D.Href !:= path ]
+              [ D.Href !:= opts.path pfl ]
             <> guard
               ( profileUnlocked && hasntPaidYet && not isWeb &&
                   opts.isBehindPaywall
@@ -160,7 +161,10 @@ lounge isWeb path (Profile profile) (Lounge opts) = do
             , ionCardSubtitle_
                 [ D.div (klass_ "flex flex-row justify-between")
                     ( [ D.div_ [ text_ ("Track " <> show opts.index) ] ] <>
-                        guard (profileUnlocked && hasntPaidYet && not isWeb && opts.isBehindPaywall)
+                        guard
+                          ( profileUnlocked && hasntPaidYet && not isWeb &&
+                              opts.isBehindPaywall
+                          )
                           [ D.a
                               ( oneOf
                                   [ click_ do
@@ -202,6 +206,14 @@ lounges =
       , img: catURL
       , isBehindPaywall: false
       , unlocker: get (Proxy :: Proxy "track1")
+      , path: pathToRealPath "/hypersyntheticdone-quest"
+          ( (get (Proxy :: _ "flat") /\ "/equalize-quest")
+              : (get (Proxy :: _ "buzz") /\ "/camera-quest")
+              : (get (Proxy :: _ "glide") /\ "/glide-quest")
+              : (get (Proxy :: _ "back") /\ "/back-quest")
+              : (get (Proxy :: _ "track2") /\ "/lvlnn-quest")
+              : Nil
+          )
       }
   , Lounge
       { title: "LVL.99"
@@ -209,6 +221,19 @@ lounges =
       , img: catURL
       , isBehindPaywall: false
       , unlocker: get (Proxy :: Proxy "track2")
+      , path: pathToRealPath "/lvlnndone-quest"
+          ( (get (Proxy :: _ "flat") /\ "/equalize-quest")
+              : (get (Proxy :: _ "buzz") /\ "/camera-quest")
+              : (get (Proxy :: _ "glide") /\ "/glide-quest")
+              : (get (Proxy :: _ "back") /\ "/back-quest")
+              : (get (Proxy :: _ "track2") /\ "/lvlnn-quest")
+              : (get (Proxy :: _ "rotate") /\ "/rotate-quest")
+              : (get (Proxy :: _ "hide") /\ "/hide-quest")
+              : (get (Proxy :: _ "dazzle") /\ "/dazzle-quest")
+              : (get (Proxy :: _ "track3") /\ "/showmehow-quest")
+              : Nil
+          )
+          
       }
   , Lounge
       { title: "Show Me How"
@@ -216,6 +241,21 @@ lounges =
       , isBehindPaywall: true
       , img: catURL
       , unlocker: get (Proxy :: Proxy "track3")
+      , path: pathToRealPath "/youwon-quest"
+          ( (get (Proxy :: _ "flat") /\ "/equalize-quest")
+              : (get (Proxy :: _ "buzz") /\ "/camera-quest")
+              : (get (Proxy :: _ "glide") /\ "/glide-quest")
+              : (get (Proxy :: _ "back") /\ "/back-quest")
+              : (get (Proxy :: _ "track2") /\ "/lvlnn-quest")
+              : (get (Proxy :: _ "rotate") /\ "/rotate-quest")
+              : (get (Proxy :: _ "hide") /\ "/hide-quest")
+              : (get (Proxy :: _ "dazzle") /\ "/dazzle-quest")
+              : (get (Proxy :: _ "track3") /\ "/showmehow-quest")
+              : (get (Proxy :: _ "crush") /\ "/crush-quest")
+              : (get (Proxy :: _ "amplify") /\ "/amplify-quest")
+              : Nil
+          )
+          
       }
   ]
 
@@ -236,27 +276,11 @@ loungePicker i = customComponent_ "lounge-picker" {}
         ]
     , ionContent (oneOf [ I.Fullscren !:= true ])
         [ flip switcher i.profileState \{ profile } -> do
-            let
-              path = pathToRealPath "/youwon-quest"
-                ( (get (Proxy :: _ "flat") /\ "/equalize-quest")
-                    : (get (Proxy :: _ "buzz") /\ "/camera-quest")
-                    : (get (Proxy :: _ "glide") /\ "/glide-quest")
-                    : (get (Proxy :: _ "back") /\ "/back-quest")
-                    : (get (Proxy :: _ "track2") /\ "/lvlnn-quest")
-                    : (get (Proxy :: _ "rotate") /\ "/rotate-quest")
-                    : (get (Proxy :: _ "hide") /\ "/hide-quest")
-                    : (get (Proxy :: _ "dazzle") /\ "/dazzle-quest")
-                    : (get (Proxy :: _ "track3") /\ "/showmehow-quest")
-                    : (get (Proxy :: _ "crush") /\ "/crush-quest")
-                    : (get (Proxy :: _ "amplify") /\ "/amplify-quest")
-                    : Nil
-                )
-                profile
             D.div
               (oneOf [ klass_ "flex-col flex w-full h-full" ])
               [ D.div (klass_ "grow") []
               , D.div (klass_ "flex flex-row")
-                  (lounges <#> lounge i.isWeb path profile)
+                  (lounges <#> lounge i.isWeb profile)
               , D.div (klass_ "grow")
                   [ D.h2 (klass_ "text-center")
                       [ D.span (oneOf []) [ text_ "Music by " ]

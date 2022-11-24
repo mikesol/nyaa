@@ -71,6 +71,8 @@ basicPages =
   , "crush-quest"
   , "amplify-quest"
   , "youwon-quest"
+  , "hypersyntheticdone-quest"
+  , "lvlnndone-quest"
   , "lounge-picker"
   , "profile-page"
   , "tutorial-page"
@@ -91,6 +93,8 @@ levelPages =
   , "crush-level"
   , "amplify-level"
   , "youwon-level"
+  , "hypersyntheticdone-level"
+  , "lvlnndone-level"
   ]
 
 storybookCC :: Effect Unit

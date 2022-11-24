@@ -28,6 +28,8 @@ import Nyaa.Custom.Pages.Levels.DazzleLevel (dazzleLevel)
 import Nyaa.Custom.Pages.Levels.EqualizeLevel (equalizeLevel)
 import Nyaa.Custom.Pages.Levels.GlideLevel (glideLevel)
 import Nyaa.Custom.Pages.Levels.HideLevel (hideLevel)
+import Nyaa.Custom.Pages.Levels.HypersyntheticDoneLevel (hypersyntheticDoneLevel)
+import Nyaa.Custom.Pages.Levels.Lvl99DoneLevel (lvl99DoneLevel)
 import Nyaa.Custom.Pages.Levels.Lvl99Level (lvl99Level)
 import Nyaa.Custom.Pages.Levels.RotateLevel (rotateLevel)
 import Nyaa.Custom.Pages.Levels.ShowMeHowLevel (showMeHowLevel)
@@ -43,7 +45,9 @@ import Nyaa.Custom.Pages.Quests.DazzleQuest (dazzleQuest)
 import Nyaa.Custom.Pages.Quests.FlatQuest (flatQuest)
 import Nyaa.Custom.Pages.Quests.GlideQuest (glideQuest)
 import Nyaa.Custom.Pages.Quests.HideQuest (hideQuest)
+import Nyaa.Custom.Pages.Quests.HypersyntheticDoneQuest (hypersyntheticDoneQuest)
 import Nyaa.Custom.Pages.Quests.LVL99Quest (lvl99Quest)
+import Nyaa.Custom.Pages.Quests.Lvl99DoneQuest (lvl99DoneQuest)
 import Nyaa.Custom.Pages.Quests.RotateQuest (rotateQuest)
 import Nyaa.Custom.Pages.Quests.ShowMeHowQuest (showMeHowQuest)
 import Nyaa.Custom.Pages.Quests.YouWonQuest (youwonQuest)
@@ -103,6 +107,8 @@ main = do
       crushQuest questInfo
       amplifyQuest questInfo
       youwonQuest questInfo
+      hypersyntheticDoneQuest questInfo
+      lvl99DoneQuest questInfo
       let levelInfo = { audioContextRef
         , fxEvent
         , profile: _.profile <$> compactedProfile
@@ -119,6 +125,8 @@ main = do
       crushLevel levelInfo
       amplifyLevel levelInfo
       youwonLevel levelInfo
+      hypersyntheticDoneLevel levelInfo
+      lvl99DoneLevel levelInfo
       loungePicker
         { profileState: compactedProfile
         , isWeb: platform == Web

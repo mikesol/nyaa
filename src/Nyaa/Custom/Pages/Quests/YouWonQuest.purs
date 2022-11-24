@@ -32,6 +32,6 @@ youwonQuest { audioContextRef } = questPage
           , text_ " to join our community!"
           ]
       ]
-  , quest: Amplify
+  , quest: YouWon
   , audioContextRef
   }

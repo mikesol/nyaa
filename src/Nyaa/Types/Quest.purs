@@ -12,10 +12,12 @@ data Quest
   | Glide
   | Back
   | Lvl99
+  | BeatHypersynthetic
   | Rotate
   | Hide
   | Dazzle
   | ShowMeHow
+  | BeatLvl99
   | Audio
   | Amplify
   | YouWon
@@ -34,9 +36,11 @@ questToPath = case _ of
   Glide -> "/glide-level"
   Back -> "/back-level"
   Lvl99 -> "/lvlnn-level"
+  BeatHypersynthetic -> "/hypersyntheticdone-level"
   Rotate -> "/rotate-level"
   Hide -> "/hide-level"
   Dazzle -> "/dazzle-level"
+  BeatLvl99 -> "/lvlnndone-level"
   ShowMeHow -> "/showmehow-level"
   Audio -> "/crush-level"
   Amplify -> "/amplify-level"
@@ -50,10 +54,12 @@ questToRoomNumber = case _ of
   Glide -> 1
   Back -> 1
   Lvl99 -> 1
+  BeatHypersynthetic -> 1
   Rotate -> 2
   Hide -> 2
   Dazzle -> 2
   ShowMeHow -> 2
+  BeatLvl99 -> 2
   Audio -> 3
   Amplify -> 3
   YouWon -> 3
