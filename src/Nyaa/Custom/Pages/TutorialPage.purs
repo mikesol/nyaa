@@ -28,7 +28,7 @@ import Web.HTML.HTMLDocument as HTMLDocument
 import Web.HTML.Window (document)
 
 slideOneText :: String
-slideOneText = "Welcome to Nyaa's tutorial!"
+slideOneText = "Welcome to Nyaa's tutorial! Swipe left to continue!"
 
 slideTwoText :: String
 slideTwoText =
