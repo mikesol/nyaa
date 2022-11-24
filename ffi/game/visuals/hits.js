@@ -31,6 +31,8 @@ export class Hits {
             offset: 0.0,
             isActive: false,
         };
+
+        this.mesh.visible = false;
     }
 
     into(scene) {
