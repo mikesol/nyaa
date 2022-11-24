@@ -2,22 +2,24 @@ module Nyaa.Custom.Pages.LoungePicker where
 
 import Prelude
 
+import Control.Promise (toAffE)
+import Data.Either (Either(..))
 import Data.Foldable (oneOf)
 import Data.List (List(..), (:))
 import Data.Maybe (Maybe(..))
 import Data.Monoid (guard)
 import Data.Tuple.Nested ((/\), type (/\))
-import Deku.Attribute ((!:=))
+import Deku.Attribute (cb, (!:=))
 import Deku.Attributes (klass_)
 import Deku.Control (switcher, text_)
 import Deku.Core (Domable)
 import Deku.DOM as D
 import Deku.Listeners (click_)
 import Effect (Effect)
-import Effect.Aff (launchAff_)
+import Effect.Aff (launchAff_, makeAff)
 import FRP.Event (Event)
 import Nyaa.Assets (catURL)
-import Nyaa.Firebase.Firebase (Profile(..), Profile')
+import Nyaa.Firebase.Firebase (Profile(..), Profile', genericUpdate)
 import Nyaa.Ionic.Alert (alert)
 import Nyaa.Ionic.Attributes as I
 import Nyaa.Ionic.BackButton (ionBackButton)
@@ -30,9 +32,11 @@ import Nyaa.Ionic.Content (ionContent)
 import Nyaa.Ionic.Custom (customComponent_)
 import Nyaa.Ionic.Header (ionHeader)
 import Nyaa.Ionic.Icon (ionIcon)
+import Nyaa.Ionic.Loading (brackedWithLoading)
 import Nyaa.Ionic.Title (ionTitle_)
 import Nyaa.Ionic.Toolbar (ionToolbar_)
-import Nyaa.Some (Some, get)
+import Nyaa.Money (buy)
+import Nyaa.Some (Some, get, some)
 import Type.Proxy (Proxy(..))
 
 newtype Lounge = Lounge
@@ -83,7 +87,40 @@ lounge path (Profile profile) (Lounge opts) = do
                         "Purchase the last track to access the best music and effects yet!"
                     )
                     [ { text: "Not yet", handler: pure unit }
-                    , { text: "I need this!", handler: pure unit }
+                    , { text: "I need this!"
+                      , handler: launchAff_ $ brackedWithLoading
+                          "Get ready for sick ear candy!"
+                          do
+                            makeAff \cb -> do
+                              buy
+                                ( do
+                                    cb (Right unit)
+                                    launchAff_ do
+                                      alert "Uh oh..." Nothing
+                                        ( Just
+                                            "We couldn't process your payment 😳 Please try again."
+                                        )
+                                        [ { text: "OK!"
+                                          , handler: pure unit
+                                          }
+                                        ]
+                                )
+                                ( do
+                                    cb (Right unit)
+                                    launchAff_ do
+                                      toAffE $ genericUpdate
+                                        (Profile (some { hasPaid: true }))
+                                      alert "Nice!" Nothing
+                                        ( Just
+                                            "You've unlocked the final track 🎉"
+                                        )
+                                        [ { text: "Game on!"
+                                          , handler: pure unit
+                                          }
+                                        ]
+                                )
+                              pure mempty
+                      }
                     ]
               ]
         )
@@ -187,7 +224,9 @@ loungePicker i = customComponent_ "lounge-picker" {}
                       [ D.span (oneOf []) [ text_ "Music by " ]
                       , D.a
                           ( oneOf
-                              [ D.Href !:= "https://twitter.com/akiracomplex", D.Target !:= "blank_" ]
+                              [ D.Href !:= "https://twitter.com/akiracomplex"
+                              , D.Target !:= "blank_"
+                              ]
                           )
                           [ text_ " Akira Complex " ]
                       ]
