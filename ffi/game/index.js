@@ -63,7 +63,7 @@ export function startGameImpl({
 
   // SECTION START - THREE //
 
-  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
   const raycaster = new THREE.Raycaster();
 
   const camera = new THREE.PerspectiveCamera(
