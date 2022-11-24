@@ -85,14 +85,14 @@ questPage i = customComponent_ i.name {} questy
                         ( Just
                             "We couldn't find a good match."
                         )
-                        [ { text: "Play a bot"
+                        [ { text: "Try again", handler: startBattle }
+                        , { text: "Play a bot"
                           , handler: launchAff_ do
                               playAction
                                 "our highly-intelligent bot"
                                 "bot"
                                 "true"
                           }
-                        , { text: "Try again", handler: startBattle }
                         ]
                 )
                 ( \{ player1
