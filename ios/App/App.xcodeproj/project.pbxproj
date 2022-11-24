@@ -20,6 +20,8 @@
 		D82B75E129236496001262BD /* GameCenterPlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = D82B75E029236496001262BD /* GameCenterPlugin.m */; };
 		D82B75E3292364CC001262BD /* GameCenterPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = D82B75E2292364CC001262BD /* GameCenterPlugin.swift */; };
 		D8872AC92912E63800CF6CED /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = D8872AC82912E63800CF6CED /* GoogleService-Info.plist */; };
+		D8B31C20292F2018006B45CD /* MoneyPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8B31C1F292F2018006B45CD /* MoneyPlugin.swift */; };
+		D8B31C22292F2044006B45CD /* MoneyPlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = D8B31C21292F2044006B45CD /* MoneyPlugin.m */; };
 		D8CA1B07291B97770020361E /* FriendsPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8CA1B06291B97770020361E /* FriendsPlugin.swift */; };
 		D8CA1B09291B98320020361E /* FriendsPlugin.m in Sources */ = {isa = PBXBuildFile; fileRef = D8CA1B08291B98320020361E /* FriendsPlugin.m */; };
 /* End PBXBuildFile section */
@@ -43,6 +45,8 @@
 		D8872AC82912E63800CF6CED /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../GoogleService-Info.plist"; sourceTree = "<group>"; };
 		D8872AD32912F8E100CF6CED /* App.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = App.entitlements; sourceTree = "<group>"; };
 		D8872AD82913BC8B00CF6CED /* App-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "App-Bridging-Header.h"; sourceTree = "<group>"; };
+		D8B31C1F292F2018006B45CD /* MoneyPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoneyPlugin.swift; sourceTree = "<group>"; };
+		D8B31C21292F2044006B45CD /* MoneyPlugin.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MoneyPlugin.m; sourceTree = "<group>"; };
 		D8CA1B06291B97770020361E /* FriendsPlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendsPlugin.swift; sourceTree = "<group>"; };
 		D8CA1B08291B98320020361E /* FriendsPlugin.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FriendsPlugin.m; sourceTree = "<group>"; };
 		FC68EB0AF532CFC21C3344DD /* Pods-App.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-App.debug.xcconfig"; path = "Pods/Target Support Files/Pods-App/Pods-App.debug.xcconfig"; sourceTree = "<group>"; };
@@ -94,6 +98,8 @@
 				504EC3071FED79650016851F /* AppDelegate.swift */,
 				504EC30B1FED79650016851F /* Main.storyboard */,
 				504EC30E1FED79650016851F /* Assets.xcassets */,
+				D8B31C1F292F2018006B45CD /* MoneyPlugin.swift */,
+				D8B31C21292F2044006B45CD /* MoneyPlugin.m */,
 				D8872AC82912E63800CF6CED /* GoogleService-Info.plist */,
 				504EC3101FED79650016851F /* LaunchScreen.storyboard */,
 				504EC3131FED79650016851F /* Info.plist */,
@@ -240,6 +246,8 @@
 				504EC3081FED79650016851F /* AppDelegate.swift in Sources */,
 				D82B75E129236496001262BD /* GameCenterPlugin.m in Sources */,
 				D8111864291EB3080075C820 /* GameCenterAuthPlugin.m in Sources */,
+				D8B31C20292F2018006B45CD /* MoneyPlugin.swift in Sources */,
+				D8B31C22292F2044006B45CD /* MoneyPlugin.m in Sources */,
 				D82B75E3292364CC001262BD /* GameCenterPlugin.swift in Sources */,
 				D8CA1B07291B97770020361E /* FriendsPlugin.swift in Sources */,
 				D8111862291EB1D70075C820 /* GameCenterAuthPlugin.swift in Sources */,
