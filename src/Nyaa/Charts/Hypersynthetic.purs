@@ -20,18 +20,33 @@ tresilloToTime measureCount beatCount =
 
 tresilloLength :: Number
 tresilloLength = (60.0 / 152.0 * 4.0 * 7.0 / 8.0) / 7.0
+
+veryIntroNotes :: Array NoteInfo
+veryIntroNotes =
+  [ { timing: tresilloToTime 1.0 7.0, column: cOne }
+  , { timing: tresilloToTime 2.0 2.0, column: cOne }
+  , { timing: tresilloToTime 2.0 5.0, column: cTwo }
+  , { timing: tresilloToTime 3.0 1.0, column: cTwo }
+  , { timing: tresilloToTime 3.0 3.0, column: cTwo }
+  , { timing: tresilloToTime 3.0 6.0, column: cTwo }
+  , { timing: tresilloToTime 4.0 2.0, column: cThree }
+  , { timing: tresilloToTime 4.0 4.0, column: cThree }
+  , { timing: tresilloToTime 4.0 7.0, column: cThree }
+  , { timing: tresilloToTime 5.0 3.0, column: cThree }
+  , { timing: tresilloToTime 5.0 5.0, column: cFour }
+  , { timing: tresilloToTime 6.0 1.0, column: cFour }
+  , { timing: tresilloToTime 6.0 4.0, column: cFour }
+  , { timing: tresilloToTime 6.0 6.0, column: cFour }
+  ]
+
 introNotes :: Array NoteInfo
 introNotes =
-  [ { timing: tresilloLength * 32.0, column: cFour }
-  , { timing: tresilloLength * 35.0, column: cFour }
-  , { timing: tresilloLength * 38.0, column: cFour }
-  , { timing: tresilloLength * 40.0, column: cThree }
-  , { timing: tresilloLength * 43.0, column: cThree }
+  [ { timing: tresilloLength * 43.0, column: cThree }
   , { timing: tresilloLength * 46.0, column: cThree }
-  , { timing: tresilloLength * 48.0, column: cTwo }
-  , { timing: tresilloLength * 51.0, column: cTwo }
+  , { timing: tresilloLength * 48.0, column: cThree }
+  , { timing: tresilloLength * 51.0, column: cThree }
   , { timing: tresilloLength * 54.0, column: cTwo }
-  , { timing: tresilloLength * 56.0, column: cOne }
+  , { timing: tresilloLength * 56.0, column: cTwo }
   , { timing: tresilloLength * 59.0, column: cOne }
   , { timing: tresilloLength * 62.0, column: cOne }
   ]
@@ -360,4 +375,4 @@ outroNotes =
   ]
 
 hypersynthetic :: Array NoteInfo
-hypersynthetic = nub $ sortBy (compare `on` _.timing) $ introNotes <> melodyNotes <> coreNotes <> outroNotes
+hypersynthetic = nub $ sortBy (compare `on` _.timing) $ veryIntroNotes <> introNotes <> melodyNotes <> coreNotes <> outroNotes
