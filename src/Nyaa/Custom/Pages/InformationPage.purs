@@ -63,7 +63,7 @@ informationPage = customComponent_ "information-page" {} \_ ->
               , text_ "Feel free to join our "
               , D.a
                   ( oneOf
-                      [ D.Href !:= "https://https://discord.gg/gUAPQAtbS8"
+                      [ D.Href !:= "https://discord.gg/gUAPQAtbS8"
                       , D.Target !:= "_blank"
                       ]
                   )
