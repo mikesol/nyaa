@@ -10,6 +10,7 @@ import Nyaa.Assets (lvl99URL)
 import Nyaa.Charts.LVL99 (lvl99)
 import Nyaa.Constants.Scores (amplifyScore)
 import Nyaa.Custom.Builders.Game (FxData, game)
+import Nyaa.Custom.Pages.DevAdmin (doScoreOnlyRitual, endgameRitualToScoreOnly, track3EndgameRitual)
 import Nyaa.Firebase.Firebase (Profile)
 import Nyaa.Types.Quest (Quest(..))
 import Ocarina.WebAPI (AudioContext)
@@ -32,6 +33,6 @@ lvl99DoneLevel { audioContextRef, fxEvent, profile } = game
   , chart: lvl99
   , successPath: "/lounge-picker"
   , failurePath: "/lounge-picker"
-  , successCb: \_ -> fromAff (pure unit)
-  , failureCb: \_ -> fromAff (pure unit)
+  , successCb: map fromAff (doScoreOnlyRitual (endgameRitualToScoreOnly track3EndgameRitual))
+  , failureCb: map fromAff (doScoreOnlyRitual (endgameRitualToScoreOnly track3EndgameRitual))
   }

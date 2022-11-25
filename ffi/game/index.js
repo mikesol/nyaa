@@ -369,7 +369,9 @@ export function startGameImpl({
         : "Your score wasn't high enough to unlock the next achievement 😿";
       // to do - this is a promise. do we care? def don't want to wait in case
       // reporting takes too long
-      didWin ? successCb(scoreState.playerScore)() : failureCb();
+      //console.log("Submitting score to native level", scoreState.playerScore);
+      const submittableScore = Math.round(scoreState.playerScore);
+      didWin ? successCb(submittableScore)() : failureCb(submittableScore)();
 
       const buttons = [];
       buttons.push({

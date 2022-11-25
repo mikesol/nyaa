@@ -42,7 +42,7 @@ approach your judgment guides!
 slideThreeText :: String
 slideThreeText =
   """
-In the upper right, you can see your score in green and your opponent's in blue.
+In the upper right, you can see your score in blue and your opponent's in green.
 "Judgment" text
 may appear in the middle of the screen showing how well you hit a specific note!
 """

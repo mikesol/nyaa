@@ -83,6 +83,22 @@ doEndgameSuccessRitual (EndgameRitual j) i = do
         Web -> pure unit
     ]
 
+doScoreOnlyRitual
+  :: ScoreOnly
+  -> Int
+  -> Aff Unit
+doScoreOnlyRitual (ScoreOnly j) i = do
+  platform <- liftEffect getPlatform
+  parSequence_
+    [ case j.modProfileScore i of
+        ProfileSetter ps -> toAffE $ genericUpdate (Profile ps)
+        ProfileTransaction po -> toAffE po
+    , case platform of
+        IOS -> toAffE $ j.iosScore i
+        Android -> toAffE $ j.androidScore i
+        Web -> pure unit
+    ]
+
 doEndgameFailureRitual
   :: EndgameRitual
   -> Int
@@ -98,6 +114,7 @@ doEndgameFailureRitual (EndgameRitual j) i = do
         Android -> toAffE $ j.androidScore i
         Web -> pure unit
     ]
+
 newtype EndgameRitual = EndgameRitual
   { androidAchievement :: Effect (Promise Unit)
   , iosAchievement :: Effect (Promise Unit)
@@ -421,10 +438,20 @@ newtype ScorelessAchievement = ScorelessAchievement
   , modProfileAchievement :: ProfileOp
   }
 
+newtype ScoreOnly = ScoreOnly
+  { androidScore :: Int -> Effect (Promise Unit)
+  , iosScore :: Int -> Effect (Promise Unit)
+  , modProfileScore :: Int -> ProfileOp
+  }
+
+endgameRitualToScoreOnly :: EndgameRitual -> ScoreOnly
+endgameRitualToScoreOnly
+  (EndgameRitual { androidScore, iosScore, modProfileScore }) = ScoreOnly
+  { androidScore, iosScore, modProfileScore }
+
 tutorialAchievement :: ScorelessAchievement
 tutorialAchievement = ScorelessAchievement
-  {
-    modProfileAchievement: ProfileSetter $ some { hasCompletedTutorial: true }
+  { modProfileAchievement: ProfileSetter $ some { hasCompletedTutorial: true }
   , iosAchievement: GC.reportAchievements
       { achievements:
           [ ReportableAchievement

@@ -57,6 +57,7 @@ public class PlayGamesPlugin extends Plugin {
 
     @PluginMethod()
     public void submitScore(PluginCall call) {
+        Log.d("Nyaa", "submitting score to " + call.getString("leaderboardID") + " with amount: " + call.getInt("amount"));
         String leaderboardID = call.getString("leaderboardID");
         if (leaderboardID == null) {
             call.reject("No leaderboardID");

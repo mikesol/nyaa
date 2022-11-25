@@ -10,6 +10,7 @@ import Nyaa.Assets (showMeHowURL)
 import Nyaa.Charts.ShowMeHow (showMeHow)
 import Nyaa.Constants.Scores (amplifyScore)
 import Nyaa.Custom.Builders.Game (FxData, game)
+import Nyaa.Custom.Pages.DevAdmin (amplifyEndgameRitual, doScoreOnlyRitual, endgameRitualToScoreOnly)
 import Nyaa.Firebase.Firebase (Profile)
 import Nyaa.Types.Quest (Quest(..))
 import Ocarina.WebAPI (AudioContext)
@@ -32,6 +33,6 @@ youwonLevel { audioContextRef, fxEvent, profile } = game
   , chart: showMeHow
   , successPath: "/youwon-quest"
   , failurePath: "/youwon-quest"
-  , successCb: \_ -> fromAff (pure unit)
-  , failureCb: \_ -> fromAff (pure unit)
+  , successCb: map fromAff (doScoreOnlyRitual (endgameRitualToScoreOnly amplifyEndgameRitual))
+  , failureCb: map fromAff (doScoreOnlyRitual (endgameRitualToScoreOnly amplifyEndgameRitual))
   }

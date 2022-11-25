@@ -10,6 +10,7 @@ import Nyaa.Assets (hypersyntheticURL)
 import Nyaa.Charts.Hypersynthetic (hypersynthetic)
 import Nyaa.Constants.Scores (amplifyScore)
 import Nyaa.Custom.Builders.Game (FxData, game)
+import Nyaa.Custom.Pages.DevAdmin (doScoreOnlyRitual, endgameRitualToScoreOnly, track2EndgameRitual)
 import Nyaa.Firebase.Firebase (Profile)
 import Nyaa.Types.Quest (Quest(..))
 import Ocarina.WebAPI (AudioContext)
@@ -32,6 +33,6 @@ hypersyntheticDoneLevel { audioContextRef, fxEvent, profile } = game
   , chart: hypersynthetic
   , successPath: "/lounge-picker"
   , failurePath: "/lounge-picker"
-  , successCb: \_ -> fromAff (pure unit)
-  , failureCb: \_ -> fromAff (pure unit)
+  , successCb: map fromAff (doScoreOnlyRitual (endgameRitualToScoreOnly track2EndgameRitual))
+  , failureCb: map fromAff (doScoreOnlyRitual (endgameRitualToScoreOnly track2EndgameRitual))
   }
