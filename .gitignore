@@ -50,3 +50,6 @@ amplifytools.xcconfig
 .secret-*
 **.sample
 #amplify-do-not-edit-end
+
+# if you want to use this folder instead of a volume in docker-compose.yml
+/devroot/

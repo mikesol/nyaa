@@ -1,0 +1,18 @@
+# can use ./devroot/ instead
+volumes:
+  nyaaroot: {}
+
+services:
+  nyaa:
+    build: .
+    container_name: nyaa
+    ports:
+      - '0.0.0.0:5173:5173'
+    volumes:
+      - nyaaroot:/root/
+      # here should also probably be some sort of sources mount (for live reloading)
+    tty: true
+    stop_signal: SIGINT
+
+# docker compose up -d --build
+# docker exec -it nyaa pnpm run dev --host
