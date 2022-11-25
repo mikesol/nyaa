@@ -2,7 +2,9 @@ module Nyaa.Charts.Hypersynthetic where
 
 import Prelude
 
+import Data.Array (nub, sortBy)
 import Data.Array as Array
+import Data.Function (on)
 import Nyaa.Charts.NoteInfo (NoteInfo, cFour, cOne, cThree, cTwo)
 
 tresilloMeasureLength :: Number
@@ -358,4 +360,4 @@ outroNotes =
   ]
 
 hypersynthetic :: Array NoteInfo
-hypersynthetic = introNotes <> melodyNotes <> coreNotes <> outroNotes
+hypersynthetic = nub $ sortBy (compare `on` _.timing) $ introNotes <> melodyNotes <> coreNotes <> outroNotes
