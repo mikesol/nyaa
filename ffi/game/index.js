@@ -121,18 +121,9 @@ export function startGameImpl({
 
   const uiState = {
     didConfetti: false,
-    judgment: "",
-    needsUpdate: false,
   };
   const perfectScore = 1_000_000 / noteInfo.length;
   const nearScore = perfectScore / 2;
-
-  function animateUiState() {
-    if (uiState.needsUpdate) {
-      judgmentElement.textContent = uiState.judgment;
-    }
-    uiState.needsUpdate = false;
-  }
 
   // SUBSECTION END - UI
 
@@ -142,10 +133,6 @@ export function startGameImpl({
     playerScore: 0,
     enemyScore: 0,
   }
-
-  const playerScoreTimeline = anime.timeline({
-    easing: "easeInQuad",
-  });
 
   const addPlayerScore = (scoreDelta) => {
     const previousScore = scoreState.playerScore;
@@ -170,7 +157,7 @@ export function startGameImpl({
       ],
       easing: 'spring(1, 80, 10, 0)',
       duration: 500,
-    })
+    });
   }
 
   const addEnemyScore = (scoreDelta) => {
@@ -187,6 +174,23 @@ export function startGameImpl({
       },
       easing: "easeInQuad",
       duration: 1000,
+    });
+  }
+
+  const updateJudgment = (textContent) => {
+    judgmentElement.textContent = textContent;
+    const shakeMax = 4;
+    anime({
+      targets: judgmentElement,
+      translateX: [
+        { value: shakeMax * -1 },
+        { value: shakeMax },
+        { value: shakeMax / -2 },
+        { value: shakeMax / 2 },
+        { value: 0 },
+      ],
+      easing: 'linear',
+      duration: 500,
     });
   }
 
@@ -212,6 +216,9 @@ export function startGameImpl({
       notes.animate(elapsedTime, 1.0);
       guides.animate(elapsedTime, 1.0);
       hits.animate(elapsedTime, 1.0);
+      judge.checkMiss(elapsedTime, () => {
+        updateJudgment("Miss!");
+      });
     }
   }
 
@@ -306,7 +313,6 @@ export function startGameImpl({
           ) {
             score += nearScore;
             addEnemyScore(nearScore);
-            uiState.needsUpdate = true;
             botNoteInfo.shift();
           } else if (
             botNoteInfo[0].hitInfo === PERFECT_HIT &&
@@ -315,7 +321,6 @@ export function startGameImpl({
           ) {
             score += perfectScore;
             addEnemyScore(perfectScore);
-            uiState.needsUpdate = true;
             botNoteInfo.shift();
           } else if (
             botNoteInfo[0].hitInfo === LATE_HIT &&
@@ -324,7 +329,6 @@ export function startGameImpl({
           ) {
             score += nearScore;
             addEnemyScore(nearScore);
-            uiState.needsUpdate = true;
             botNoteInfo.shift();
           } else {
             // programming error
@@ -434,12 +438,10 @@ export function startGameImpl({
         judge.judge(elapsedTime, column, (judgment) => {
           if (judgment === "perfect") {
             addPlayerScore(perfectScore);
-            uiState.judgment = "Perfect";
-            uiState.needsUpdate = true;
+            updateJudgment("Perfect");
           } else if (judgment === "near") {
             addPlayerScore(nearScore);
-            uiState.judgment = "Near";
-            uiState.needsUpdate = true;
+            updateJudgment("Near");
           }
           if (scoreState.playerScore > scoreToWin && !uiState.didConfetti) {
             uiState.didConfetti = true;
@@ -636,7 +638,6 @@ export function startGameImpl({
   // SECTION END - TIMEOUT
 
   function render() {
-    animateUiState();
     animateCoreUi();
     doBotStuff();
     requestAnimationFrame(render);
