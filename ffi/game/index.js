@@ -2,6 +2,7 @@
 
 import * as THREE from "three";
 import PubNub from "pubnub";
+import anime from "animejs";
 
 import { AudioEffect } from "./effects/audio.js";
 import { Judge } from "./core/judge.js";
@@ -112,10 +113,14 @@ export function startGameImpl({
   const playerScoreElement = document.getElementById("score-player");
   const enemyScoreElement = document.getElementById("score-enemy");
   const judgmentElement = document.getElementById("judgment");
-  const uiState = {
-    didConfetti: false,
+
+  const scoreState = {
     playerScore: 0,
     enemyScore: 0,
+  };
+
+  const uiState = {
+    didConfetti: false,
     judgment: "",
     needsUpdate: false,
   };
@@ -124,18 +129,68 @@ export function startGameImpl({
 
   function animateUiState() {
     if (uiState.needsUpdate) {
-      playerScoreElement.textContent = Math.floor(uiState.playerScore)
-        .toString()
-        .padStart(7, "0");
-      enemyScoreElement.textContent = Math.floor(uiState.enemyScore)
-        .toString()
-        .padStart(7, "0");
       judgmentElement.textContent = uiState.judgment;
     }
     uiState.needsUpdate = false;
   }
 
   // SUBSECTION END - UI
+
+  // SUBSECTION START - ANIME
+
+  const scoreStateFlux = {
+    playerScore: 0,
+    enemyScore: 0,
+  }
+
+  const playerScoreTimeline = anime.timeline({
+    easing: "easeInQuad",
+  });
+
+  const addPlayerScore = (scoreDelta) => {
+    const previousScore = scoreState.playerScore;
+    scoreState.playerScore += scoreDelta;
+    anime({
+      targets: scoreStateFlux,
+      playerScore: [
+        { value: previousScore },
+        { value: scoreState.playerScore },
+      ],
+      update() {
+        playerScoreElement.textContent = Math.floor(scoreStateFlux.playerScore).toString().padStart(7, "0");
+      },
+      easing: "easeInQuad",
+      duration: 1000,
+    });
+    anime({
+      targets: judgmentElement,
+      translateY: [
+        { value: -10 },
+        { value: 0 },
+      ],
+      easing: 'spring(1, 80, 10, 0)',
+      duration: 500,
+    })
+  }
+
+  const addEnemyScore = (scoreDelta) => {
+    const previousScore = scoreState.enemyScore;
+    scoreState.enemyScore += scoreDelta;
+    anime({
+      targets: scoreStateFlux,
+      enemyScore: [
+        { value: previousScore },
+        { value: scoreState.enemyScore },
+      ],
+      update() {
+        enemyScoreElement.textContent = Math.floor(scoreStateFlux.enemyScore).toString().padStart(7, "0");
+      },
+      easing: "easeInQuad",
+      duration: 1000,
+    });
+  }
+
+  // SUBSECTION END - ANIME
 
   // SUBSECTION START - CORE
 
@@ -181,122 +236,122 @@ export function startGameImpl({
 
   const doBotStuff = isBot
     ? (() => {
-        let score = 0;
-        const botNoteInfo = noteInfo.map((ni) => {
-          const rn = Math.random();
-          return {
-            ...ni,
-            hitInfo:
-              rn < BOT_EARLY
-                ? EARLY_HIT
-                : rn < BOT_PERFECT
+      let score = 0;
+      const botNoteInfo = noteInfo.map((ni) => {
+        const rn = Math.random();
+        return {
+          ...ni,
+          hitInfo:
+            rn < BOT_EARLY
+              ? EARLY_HIT
+              : rn < BOT_PERFECT
                 ? PERFECT_HIT
                 : rn < BOT_LATE
-                ? LATE_HIT
-                : NO_HIT,
-          };
-        });
-        let t = 3.0;
-        const effects = [];
-        const effectEndTime = botNoteInfo[botNoteInfo.length - 1].timing - 10.0;
-        while (t < effectEndTime) {
-          t += Math.random() * 10.0;
-          if (t > effectEndTime) {
-            break;
-          }
-          const newbEffects = ["equalize", "camera", "glide", "compress"];
-          const proEffects = [
-            "equalize",
-            "camera",
-            "glide",
-            "compress",
-            "rotate",
-            "dazzle",
-            "hide",
-          ];
-          const deityEffects = [
-            "equalize",
-            "camera",
-            "glide",
-            "compress",
-            "rotate",
-            "dazzle",
-            "hide",
-            "audio",
-            "amplify",
-          ];
-          effects.push({
-            timing: t,
-            effect:
-              roomNumber === 1
-                ? choose(newbEffects)
-                : roomNumber === 2
+                  ? LATE_HIT
+                  : NO_HIT,
+        };
+      });
+      let t = 3.0;
+      const effects = [];
+      const effectEndTime = botNoteInfo[botNoteInfo.length - 1].timing - 10.0;
+      while (t < effectEndTime) {
+        t += Math.random() * 10.0;
+        if (t > effectEndTime) {
+          break;
+        }
+        const newbEffects = ["equalize", "camera", "glide", "compress"];
+        const proEffects = [
+          "equalize",
+          "camera",
+          "glide",
+          "compress",
+          "rotate",
+          "dazzle",
+          "hide",
+        ];
+        const deityEffects = [
+          "equalize",
+          "camera",
+          "glide",
+          "compress",
+          "rotate",
+          "dazzle",
+          "hide",
+          "audio",
+          "amplify",
+        ];
+        effects.push({
+          timing: t,
+          effect:
+            roomNumber === 1
+              ? choose(newbEffects)
+              : roomNumber === 2
                 ? choose(proEffects)
                 : choose(deityEffects),
-          });
-          t += 6.0; // hard-coded effect window. change?
-        }
+        });
+        t += 6.0; // hard-coded effect window. change?
+      }
 
-        return () => {
-          const elapsedTime = audioContext.currentTime - beginTime;
-          while (true) {
-            if (!botNoteInfo[0]) {
-              break;
-            } else if (botNoteInfo[0].timing > elapsedTime + LARGE_EPSILON) {
-              break;
-            } else if (
-              botNoteInfo[0].hitInfo === EARLY_HIT &&
-              botNoteInfo[0].timing < elapsedTime + LARGE_EPSILON &&
-              botNoteInfo[0].timing > elapsedTime + SMALL_EPSILON
-            ) {
-              score += nearScore;
-              uiState.enemyScore = score.toString().padStart(7, "0");
-              uiState.needsUpdate = true;
-              botNoteInfo.shift();
-            } else if (
-              botNoteInfo[0].hitInfo === PERFECT_HIT &&
-              botNoteInfo[0].timing < elapsedTime + SMALL_EPSILON &&
-              botNoteInfo[0].timing > elapsedTime - SMALL_EPSILON
-            ) {
-              score += perfectScore;
-              uiState.enemyScore = score.toString().padStart(7, "0");
-              uiState.needsUpdate = true;
-              botNoteInfo.shift();
-            } else if (
-              botNoteInfo[0].hitInfo === LATE_HIT &&
-              botNoteInfo[0].timing < elapsedTime - SMALL_EPSILON &&
-              botNoteInfo[0].timing > elapsedTime - LARGE_EPSILON
-            ) {
-              score += nearScore;
-              uiState.enemyScore = score.toString().padStart(7, "0");
-              uiState.needsUpdate = true;
-              botNoteInfo.shift();
-            } else {
-              // programming error
-              // shift and continue
-              botNoteInfo.shift();
-            }
+      return () => {
+        const elapsedTime = audioContext.currentTime - beginTime;
+        while (true) {
+          if (!botNoteInfo[0]) {
+            break;
+          } else if (botNoteInfo[0].timing > elapsedTime + LARGE_EPSILON) {
+            break;
+          } else if (
+            botNoteInfo[0].hitInfo === EARLY_HIT &&
+            botNoteInfo[0].timing < elapsedTime + LARGE_EPSILON &&
+            botNoteInfo[0].timing > elapsedTime + SMALL_EPSILON
+          ) {
+            score += nearScore;
+            addEnemyScore(nearScore);
+            uiState.needsUpdate = true;
+            botNoteInfo.shift();
+          } else if (
+            botNoteInfo[0].hitInfo === PERFECT_HIT &&
+            botNoteInfo[0].timing < elapsedTime + SMALL_EPSILON &&
+            botNoteInfo[0].timing > elapsedTime - SMALL_EPSILON
+          ) {
+            score += perfectScore;
+            addEnemyScore(perfectScore);
+            uiState.needsUpdate = true;
+            botNoteInfo.shift();
+          } else if (
+            botNoteInfo[0].hitInfo === LATE_HIT &&
+            botNoteInfo[0].timing < elapsedTime - SMALL_EPSILON &&
+            botNoteInfo[0].timing > elapsedTime - LARGE_EPSILON
+          ) {
+            score += nearScore;
+            addEnemyScore(nearScore);
+            uiState.needsUpdate = true;
+            botNoteInfo.shift();
+          } else {
+            // programming error
+            // shift and continue
+            botNoteInfo.shift();
           }
-          while (true) {
-            if (!effects[0]) {
-              break;
-            } else if (effects[0].timing > elapsedTime + SMALL_EPSILON) {
-              break;
-            } else {
-              const msg = {
-                effect: effects[0].effect,
-                startTime: effects[0].timing,
-                duration: 4.0, // todo: un-hard-code
-                offset: 0.25, // todo: un-hard-code
-              };
-              theirEffect(msg)();
-              effectResponder(msg);
-              effects.shift();
-            }
+        }
+        while (true) {
+          if (!effects[0]) {
+            break;
+          } else if (effects[0].timing > elapsedTime + SMALL_EPSILON) {
+            break;
+          } else {
+            const msg = {
+              effect: effects[0].effect,
+              startTime: effects[0].timing,
+              duration: 4.0, // todo: un-hard-code
+              offset: 0.25, // todo: un-hard-code
+            };
+            theirEffect(msg)();
+            effectResponder(msg);
+            effects.shift();
           }
-        };
-      })()
-    : () => {};
+        }
+      };
+    })()
+    : () => { };
   // SUBSECTION END - BOT
 
   // SUBSECTION START - AUDIO
@@ -307,14 +362,14 @@ export function startGameImpl({
     audioTrack.addEventListener("ended", async () => {
       const alert = document.createElement("ion-alert");
       alert.backdropDismiss = false;
-      const didWin = uiState.playerScore > scoreToWin;
+      const didWin = scoreState.playerScore > scoreToWin;
       alert.header = didWin ? "Congrats!" : "Almost there!";
       alert.message = didWin
         ? "You've unlocked the next achievement. Keep going 😺"
         : "Your score wasn't high enough to unlock the next achievement 😿";
       // to do - this is a promise. do we care? def don't want to wait in case
       // reporting takes too long
-      didWin ? successCb(uiState.playerScore)() : failureCb();
+      didWin ? successCb(scoreState.playerScore)() : failureCb();
 
       const buttons = [];
       buttons.push({
@@ -337,17 +392,17 @@ export function startGameImpl({
       buttons.push(
         didWin
           ? {
-              text: "Onwards",
-              handler: () => {
-                window.location.hash = successPath;
-              },
-            }
+            text: "Onwards",
+            handler: () => {
+              window.location.hash = successPath;
+            },
+          }
           : {
-              text: "Try again",
-              handler: () => {
-                window.location.hash = failurePath;
-              },
-            }
+            text: "Try again",
+            handler: () => {
+              window.location.hash = failurePath;
+            },
+          }
       );
       alert.buttons = buttons;
 
@@ -378,15 +433,15 @@ export function startGameImpl({
         const column = intersects[0].instanceId;
         judge.judge(elapsedTime, column, (judgment) => {
           if (judgment === "perfect") {
-            uiState.playerScore += perfectScore;
+            addPlayerScore(perfectScore);
             uiState.judgment = "Perfect";
             uiState.needsUpdate = true;
           } else if (judgment === "near") {
-            uiState.playerScore += nearScore;
+            addPlayerScore(nearScore);
             uiState.judgment = "Near";
             uiState.needsUpdate = true;
           }
-          if (uiState.playerScore > scoreToWin && !uiState.didConfetti) {
+          if (scoreState.playerScore > scoreToWin && !uiState.didConfetti) {
             uiState.didConfetti = true;
             jsConfetti.addConfetti();
           }
@@ -401,7 +456,7 @@ export function startGameImpl({
   // SECTION END - THREE //
 
   // SECTION START - PUBNUB or NOT //
-  let unsubFromEffects = () => {};
+  let unsubFromEffects = () => { };
   userId = `${userId}-${Math.random()}`;
   const pubnub = new PubNub({
     publishKey: "pub-c-494ce265-0510-4bb9-8871-5039406a833a",
@@ -451,8 +506,7 @@ export function startGameImpl({
           case `${roomId}-nyaa-score`:
             {
               const { score } = messageEvent.message;
-              uiState.enemyScore = score.toString().padStart(7, "0");
-              uiState.needsUpdate = true;
+              addEnemyScore(scoreState.enemyScore - parseFloat(score));
               console.log(
                 "Setting latest score",
                 messageEvent.publisher,
@@ -529,7 +583,7 @@ export function startGameImpl({
         await pubnub.publish({
           channel: `${roomId}-nyaa-score`,
           message: {
-            score: uiState.playerScore,
+            score: scoreState.playerScore,
           },
         });
         await sleep(1000);
@@ -618,7 +672,7 @@ export function startGameImpl({
       reference.destroy();
       if (audioContext.state !== "closed") {
         audioTrack.stop();
-        audioContext.suspend();  
+        audioContext.suspend();
       }
       pubnub.unsubscribeAll();
       unsubFromEffects();

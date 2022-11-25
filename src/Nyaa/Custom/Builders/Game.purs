@@ -352,7 +352,7 @@ game
                       ( oneOf
                           [ id_ "judgment"
                           , klass_
-                              "text-white row-start-2 col-start-2 justify-self-center self-center text-2xl"
+                              "text-white row-start-2 col-start-2 justify-self-center self-end text-2xl"
                           ]
                       )
                       [ text_ "..."
