@@ -21,7 +21,7 @@ type ProfileSetter = Some Profile' -> Some Profile'
 
 data ProfileOp
   = ProfileSetter (Some Profile')
-  | ProfileTransaction (Effect (Promise Unit))
+  | ProfileTransaction (Aff Unit)
 
 doEndgameSuccessRitual
   :: EndgameRitual
@@ -30,12 +30,21 @@ doEndgameSuccessRitual
 doEndgameSuccessRitual (EndgameRitual j) i = do
   platform <- liftEffect getPlatform
   parSequence_
-    [ case j.modProfileAchievement of
+    [ -- firebase
+      case j.modProfileAchievement of
         ProfileSetter ps -> toAffE $ genericUpdate (Profile ps)
-        ProfileTransaction po -> toAffE po
+        ProfileTransaction po -> po
     , case j.modProfileScore i of
         ProfileSetter ps -> toAffE $ genericUpdate (Profile ps)
-        ProfileTransaction po -> toAffE po
+        ProfileTransaction po -> po
+    -- local
+    , case j.modProfileAchievement of
+        ProfileSetter ps -> toAffE $ genericUpdate (Profile ps)
+        ProfileTransaction po -> po
+    , case j.modProfileScore i of
+        ProfileSetter ps -> toAffE $ genericUpdate (Profile ps)
+        ProfileTransaction po -> po
+    -- platform
     , case platform of
         IOS -> toAffE j.iosAchievement
         Android -> toAffE j.androidAchievement
@@ -55,7 +64,7 @@ doScoreOnlyRitual (ScoreOnly j) i = do
   parSequence_
     [ case j.modProfileScore i of
         ProfileSetter ps -> toAffE $ genericUpdate (Profile ps)
-        ProfileTransaction po -> toAffE po
+        ProfileTransaction po -> po
     , case platform of
         IOS -> toAffE $ j.iosScore i
         Android -> toAffE $ j.androidScore i
@@ -71,7 +80,7 @@ doEndgameFailureRitual (EndgameRitual j) i = do
   parSequence_
     [ case j.modProfileScore i of
         ProfileSetter ps -> toAffE $ genericUpdate (Profile ps)
-        ProfileTransaction po -> toAffE po
+        ProfileTransaction po -> po
     , case platform of
         IOS -> toAffE $ j.iosScore i
         Android -> toAffE $ j.androidScore i
@@ -100,7 +109,7 @@ flatEndgameRitual = EndgameRitual
       }
   , androidAchievement: PG.unlockAchievement
       { achievementID: PGConstants.flatAchievement }
-  , modProfileScore: \i -> ProfileTransaction $ updateViaTransaction
+  , modProfileScore: \i -> ProfileTransaction $ toAffE $ updateViaTransaction
       ( Proxy
           :: Proxy
                "highScoreTrack1"
@@ -128,7 +137,7 @@ buzzEndgameRitual = EndgameRitual
       }
   , androidAchievement: PG.unlockAchievement
       { achievementID: PGConstants.buzzAchievement }
-  , modProfileScore: \i -> ProfileTransaction $ updateViaTransaction
+  , modProfileScore: \i -> ProfileTransaction $ toAffE $ updateViaTransaction
       ( Proxy
           :: Proxy
                "highScoreTrack1"
@@ -156,7 +165,7 @@ glideEndgameRitual = EndgameRitual
       }
   , androidAchievement: PG.unlockAchievement
       { achievementID: PGConstants.glideAchievement }
-  , modProfileScore: \i -> ProfileTransaction $ updateViaTransaction
+  , modProfileScore: \i -> ProfileTransaction $ toAffE $ updateViaTransaction
       ( Proxy
           :: Proxy
                "highScoreTrack1"
@@ -184,7 +193,7 @@ backEndgameRitual = EndgameRitual
       }
   , androidAchievement: PG.unlockAchievement
       { achievementID: PGConstants.backAchievement }
-  , modProfileScore: \i -> ProfileTransaction $ updateViaTransaction
+  , modProfileScore: \i -> ProfileTransaction $ toAffE $ updateViaTransaction
       ( Proxy
           :: Proxy
                "highScoreTrack1"
@@ -212,7 +221,7 @@ track2EndgameRitual = EndgameRitual
       }
   , androidAchievement: PG.unlockAchievement
       { achievementID: PGConstants.track2Achievement }
-  , modProfileScore: \i -> ProfileTransaction $ updateViaTransaction
+  , modProfileScore: \i -> ProfileTransaction $ toAffE $ updateViaTransaction
       ( Proxy
           :: Proxy
                "highScoreTrack1"
@@ -240,7 +249,7 @@ rotateEndgameRitual = EndgameRitual
       }
   , androidAchievement: PG.unlockAchievement
       { achievementID: PGConstants.rotateAchievement }
-  , modProfileScore: \i -> ProfileTransaction $ updateViaTransaction
+  , modProfileScore: \i -> ProfileTransaction $ toAffE $ updateViaTransaction
       ( Proxy
           :: Proxy
                "highScoreTrack2"
@@ -268,7 +277,7 @@ hideEndgameRitual = EndgameRitual
       }
   , androidAchievement: PG.unlockAchievement
       { achievementID: PGConstants.hideAchievement }
-  , modProfileScore: \i -> ProfileTransaction $ updateViaTransaction
+  , modProfileScore: \i -> ProfileTransaction $ toAffE $ updateViaTransaction
       ( Proxy
           :: Proxy
                "highScoreTrack2"
@@ -296,7 +305,7 @@ dazzleEndgameRitual = EndgameRitual
       }
   , androidAchievement: PG.unlockAchievement
       { achievementID: PGConstants.dazzleAchievement }
-  , modProfileScore: \i -> ProfileTransaction $ updateViaTransaction
+  , modProfileScore: \i -> ProfileTransaction $ toAffE $ updateViaTransaction
       ( Proxy
           :: Proxy
                "highScoreTrack2"
@@ -324,7 +333,7 @@ track3EndgameRitual = EndgameRitual
       }
   , androidAchievement: PG.unlockAchievement
       { achievementID: PGConstants.track3Achievement }
-  , modProfileScore: \i -> ProfileTransaction $ updateViaTransaction
+  , modProfileScore: \i -> ProfileTransaction $ toAffE $ updateViaTransaction
       ( Proxy
           :: Proxy
                "highScoreTrack2"
@@ -352,7 +361,7 @@ crushEndgameRitual = EndgameRitual
       }
   , androidAchievement: PG.unlockAchievement
       { achievementID: PGConstants.crushAchievement }
-  , modProfileScore: \i -> ProfileTransaction $ updateViaTransaction
+  , modProfileScore: \i -> ProfileTransaction $ toAffE $ updateViaTransaction
       ( Proxy
           :: Proxy
                "highScoreTrack3"
@@ -380,7 +389,7 @@ amplifyEndgameRitual = EndgameRitual
       }
   , androidAchievement: PG.unlockAchievement
       { achievementID: PGConstants.amplifyAchievement }
-  , modProfileScore: \i -> ProfileTransaction $ updateViaTransaction
+  , modProfileScore: \i -> ProfileTransaction $ toAffE $ updateViaTransaction
       ( Proxy
           :: Proxy
                "highScoreTrack3"
@@ -450,7 +459,7 @@ doScorelessAchievement (ScorelessAchievement j) = do
   parSequence_
     [ case j.modProfileAchievement of
         ProfileSetter ps -> toAffE $ genericUpdate (Profile ps)
-        ProfileTransaction po -> toAffE po
+        ProfileTransaction po -> po
     , case platform of
         IOS -> toAffE j.iosAchievement
         Android -> toAffE j.androidAchievement
