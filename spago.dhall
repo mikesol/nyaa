@@ -41,6 +41,7 @@
   , "strings"
   , "transformers"
   , "tuples"
+  , "typelevel-prelude"
   , "unsafe-coerce"
   , "untagged-union"
   , "web-dom"
