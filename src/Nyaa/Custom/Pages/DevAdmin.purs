@@ -2,11 +2,15 @@ module Nyaa.Custom.Pages.DevAdmin where
 
 import Prelude
 
-import Control.Parallel (parSequence_)
+import Control.Alt ((<|>))
+import Control.Parallel (parSequence_, parallel, sequential)
 import Control.Promise (Promise, toAffE)
+import Data.Maybe (Maybe(..))
+import Data.Symbol (class IsSymbol, reflectSymbol)
 import Effect (Effect)
 import Effect.Aff (Aff)
 import Effect.Class (liftEffect)
+import Nyaa.Capacitor.Preferences (getPreference, setPreference, setPreferencesFromSome)
 import Nyaa.Capacitor.Utils (Platform(..), getPlatform)
 import Nyaa.Constants.GameCenter as GCContants
 import Nyaa.Constants.PlayGames as PGConstants
@@ -15,6 +19,8 @@ import Nyaa.GameCenter (ReportableAchievement(..))
 import Nyaa.GameCenter as GC
 import Nyaa.PlayGames as PG
 import Nyaa.Some (Some, some)
+import Prim.Row (class Cons)
+import Simple.JSON as JSON
 import Type.Proxy (Proxy(..))
 
 type ProfileSetter = Some Profile' -> Some Profile'
@@ -24,7 +30,62 @@ data ProfileOp
   | ProfileTransaction (Aff Unit)
 
 updateViaSetter :: Some Profile' -> Aff Unit
-updateViaSetter ps = toAffE $ genericUpdate (Profile ps)
+updateViaSetter ps = sequential
+  ( (parallel $ toAffE $ genericUpdate (Profile ps)) <|>
+      (parallel $ setPreferencesFromSome ps)
+  )
+
+trackProfileTransaction
+  :: forall key67 r69 a70
+   . IsSymbol key67
+  => Cons key67 a70 r69 Profile'
+  => Ord a70
+  => JSON.WriteForeign a70
+  => JSON.ReadForeign a70
+  => Proxy key67
+  -> a70
+  -> ProfileOp
+trackProfileTransaction px i = ProfileTransaction $ sequential
+  ( ( parallel
+        ( toAffE $
+            updateViaTransaction
+              px
+              (max i)
+              i
+        )
+    ) <|>
+      ( parallel do
+          v <- toAffE $ getPreference (reflectSymbol px)
+          case v of
+            Nothing -> toAffE $ setPreference (reflectSymbol px) $
+              JSON.writeJSON i
+            Just y -> case JSON.readJSON_ y of
+              Nothing -> pure unit
+              Just y' -> toAffE $ setPreference (reflectSymbol px) $
+                JSON.writeJSON (max i y')
+      )
+  )
+
+track1ProfileTransaction :: Int -> ProfileOp
+track1ProfileTransaction = trackProfileTransaction
+  ( Proxy
+      :: Proxy
+           "highScoreTrack1"
+  )
+
+track2ProfileTransaction :: Int -> ProfileOp
+track2ProfileTransaction = trackProfileTransaction
+  ( Proxy
+      :: Proxy
+           "highScoreTrack2"
+  )
+
+track3ProfileTransaction :: Int -> ProfileOp
+track3ProfileTransaction = trackProfileTransaction
+  ( Proxy
+      :: Proxy
+           "highScoreTrack3"
+  )
 
 doEndgameSuccessRitual
   :: EndgameRitual
@@ -109,13 +170,7 @@ flatEndgameRitual = EndgameRitual
       }
   , androidAchievement: PG.unlockAchievement
       { achievementID: PGConstants.flatAchievement }
-  , modProfileScore: \i -> ProfileTransaction $ toAffE $ updateViaTransaction
-      ( Proxy
-          :: Proxy
-               "highScoreTrack1"
-      )
-      (max i)
-      i
+  , modProfileScore: track1ProfileTransaction
   , iosScore: \i -> GC.submitScore
       { leaderboardID: GCContants.track1LeaderboardID
       , points: i
@@ -137,13 +192,7 @@ buzzEndgameRitual = EndgameRitual
       }
   , androidAchievement: PG.unlockAchievement
       { achievementID: PGConstants.buzzAchievement }
-  , modProfileScore: \i -> ProfileTransaction $ toAffE $ updateViaTransaction
-      ( Proxy
-          :: Proxy
-               "highScoreTrack1"
-      )
-      (max i)
-      i
+  , modProfileScore: track1ProfileTransaction
   , iosScore: \i -> GC.submitScore
       { leaderboardID: GCContants.track1LeaderboardID
       , points: i
@@ -165,13 +214,7 @@ glideEndgameRitual = EndgameRitual
       }
   , androidAchievement: PG.unlockAchievement
       { achievementID: PGConstants.glideAchievement }
-  , modProfileScore: \i -> ProfileTransaction $ toAffE $ updateViaTransaction
-      ( Proxy
-          :: Proxy
-               "highScoreTrack1"
-      )
-      (max i)
-      i
+  , modProfileScore: track1ProfileTransaction
   , iosScore: \i -> GC.submitScore
       { leaderboardID: GCContants.track1LeaderboardID
       , points: i
@@ -193,13 +236,7 @@ backEndgameRitual = EndgameRitual
       }
   , androidAchievement: PG.unlockAchievement
       { achievementID: PGConstants.backAchievement }
-  , modProfileScore: \i -> ProfileTransaction $ toAffE $ updateViaTransaction
-      ( Proxy
-          :: Proxy
-               "highScoreTrack1"
-      )
-      (max i)
-      i
+  , modProfileScore: track1ProfileTransaction
   , iosScore: \i -> GC.submitScore
       { leaderboardID: GCContants.track1LeaderboardID
       , points: i
@@ -221,13 +258,7 @@ track2EndgameRitual = EndgameRitual
       }
   , androidAchievement: PG.unlockAchievement
       { achievementID: PGConstants.track2Achievement }
-  , modProfileScore: \i -> ProfileTransaction $ toAffE $ updateViaTransaction
-      ( Proxy
-          :: Proxy
-               "highScoreTrack1"
-      )
-      (max i)
-      i
+  , modProfileScore: track1ProfileTransaction
   , iosScore: \i -> GC.submitScore
       { leaderboardID: GCContants.track1LeaderboardID
       , points: i
@@ -249,13 +280,7 @@ rotateEndgameRitual = EndgameRitual
       }
   , androidAchievement: PG.unlockAchievement
       { achievementID: PGConstants.rotateAchievement }
-  , modProfileScore: \i -> ProfileTransaction $ toAffE $ updateViaTransaction
-      ( Proxy
-          :: Proxy
-               "highScoreTrack2"
-      )
-      (max i)
-      i
+  , modProfileScore: track2ProfileTransaction
   , iosScore: \i -> GC.submitScore
       { leaderboardID: GCContants.track2LeaderboardID
       , points: i
@@ -277,13 +302,7 @@ hideEndgameRitual = EndgameRitual
       }
   , androidAchievement: PG.unlockAchievement
       { achievementID: PGConstants.hideAchievement }
-  , modProfileScore: \i -> ProfileTransaction $ toAffE $ updateViaTransaction
-      ( Proxy
-          :: Proxy
-               "highScoreTrack2"
-      )
-      (max i)
-      i
+  , modProfileScore: track2ProfileTransaction
   , iosScore: \i -> GC.submitScore
       { leaderboardID: GCContants.track2LeaderboardID
       , points: i
@@ -305,13 +324,7 @@ dazzleEndgameRitual = EndgameRitual
       }
   , androidAchievement: PG.unlockAchievement
       { achievementID: PGConstants.dazzleAchievement }
-  , modProfileScore: \i -> ProfileTransaction $ toAffE $ updateViaTransaction
-      ( Proxy
-          :: Proxy
-               "highScoreTrack2"
-      )
-      (max i)
-      i
+  , modProfileScore: track2ProfileTransaction
   , iosScore: \i -> GC.submitScore
       { leaderboardID: GCContants.track2LeaderboardID
       , points: i
@@ -333,13 +346,7 @@ track3EndgameRitual = EndgameRitual
       }
   , androidAchievement: PG.unlockAchievement
       { achievementID: PGConstants.track3Achievement }
-  , modProfileScore: \i -> ProfileTransaction $ toAffE $ updateViaTransaction
-      ( Proxy
-          :: Proxy
-               "highScoreTrack2"
-      )
-      (max i)
-      i
+  , modProfileScore: track2ProfileTransaction
   , iosScore: \i -> GC.submitScore
       { leaderboardID: GCContants.track2LeaderboardID
       , points: i
@@ -361,13 +368,7 @@ crushEndgameRitual = EndgameRitual
       }
   , androidAchievement: PG.unlockAchievement
       { achievementID: PGConstants.crushAchievement }
-  , modProfileScore: \i -> ProfileTransaction $ toAffE $ updateViaTransaction
-      ( Proxy
-          :: Proxy
-               "highScoreTrack3"
-      )
-      (max i)
-      i
+  , modProfileScore: track3ProfileTransaction
   , iosScore: \i -> GC.submitScore
       { leaderboardID: GCContants.track3LeaderboardID
       , points: i
@@ -389,13 +390,7 @@ amplifyEndgameRitual = EndgameRitual
       }
   , androidAchievement: PG.unlockAchievement
       { achievementID: PGConstants.amplifyAchievement }
-  , modProfileScore: \i -> ProfileTransaction $ toAffE $ updateViaTransaction
-      ( Proxy
-          :: Proxy
-               "highScoreTrack3"
-      )
-      (max i)
-      i
+  , modProfileScore: track3ProfileTransaction
   , iosScore: \i -> GC.submitScore
       { leaderboardID: GCContants.track3LeaderboardID
       , points: i

@@ -49,6 +49,11 @@ set
   -> Some r
 set p = setImpl (reflectSymbol p)
 
+foreign import unsafeUnion :: forall r. Some r -> Some r -> Some r
+
+union :: forall r. Some r -> Some r -> Some r
+union = unsafeUnion
+
 toObject :: forall r k. Homogeneous r k => Some r -> Object k
 toObject = unsafeCoerce
 
