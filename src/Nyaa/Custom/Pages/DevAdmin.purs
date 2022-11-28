@@ -5,6 +5,7 @@ import Prelude
 import Control.Alt ((<|>))
 import Control.Parallel (parSequence_, parallel, sequential)
 import Control.Promise (Promise, toAffE)
+import Data.Foldable (for_, sequence_)
 import Data.Maybe (Maybe(..))
 import Data.Symbol (class IsSymbol, reflectSymbol)
 import Effect (Effect)
@@ -18,7 +19,7 @@ import Nyaa.Firebase.Firebase (Profile(..), Profile', genericUpdate, updateViaTr
 import Nyaa.GameCenter (ReportableAchievement(..))
 import Nyaa.GameCenter as GC
 import Nyaa.PlayGames as PG
-import Nyaa.Some (Some, some)
+import Nyaa.Some (Some, get,  some)
 import Prim.Row (class Cons)
 import Simple.JSON as JSON
 import Type.Proxy (Proxy(..))
@@ -86,6 +87,23 @@ track3ProfileTransaction = trackProfileTransaction
       :: Proxy
            "highScoreTrack3"
   )
+
+onlyDoAchievementForEndgameRitual
+  :: EndgameRitual
+  -> Aff Unit
+onlyDoAchievementForEndgameRitual (EndgameRitual j) = do
+  platform <- liftEffect getPlatform
+  parSequence_
+    [ -- firebase + local
+      case j.modProfileAchievement of
+        ProfileSetter ps -> updateViaSetter ps
+        ProfileTransaction po -> po
+    -- platform
+    , case platform of
+        IOS -> toAffE j.iosAchievement
+        Android -> toAffE j.androidAchievement
+        Web -> pure unit
+    ]
 
 doEndgameSuccessRitual
   :: EndgameRitual
@@ -461,3 +479,65 @@ doScorelessAchievement (ScorelessAchievement j) = do
         Web -> pure unit
     ]
 
+-- todo
+-- for now this treats updates as idempotent
+-- but it means that a high score will be written to pg and gc on every sign in
+-- do we care?
+-- was gonna be parSequence_, but as this is backgroundy we can let it run long
+updateAchievementsAndScoresFromProfile :: Profile -> Aff Unit
+updateAchievementsAndScoresFromProfile (Profile p) = sequence_
+  [ for_ (get (Proxy :: _ "hasCompletedTutorial") p)
+      (if _ then doScorelessAchievement tutorialAchievement else pure unit)
+  , for_ (get (Proxy :: _ "track1") p)
+      (if _ then doScorelessAchievement track1Achievement else pure unit)
+  , for_ (get (Proxy :: _ "flat") p)
+      ( if _ then onlyDoAchievementForEndgameRitual flatEndgameRitual
+        else pure unit
+      )
+  , for_ (get (Proxy :: _ "buzz") p)
+      ( if _ then onlyDoAchievementForEndgameRitual buzzEndgameRitual
+        else pure unit
+      )
+  , for_ (get (Proxy :: _ "glide") p)
+      ( if _ then onlyDoAchievementForEndgameRitual glideEndgameRitual
+        else pure unit
+      )
+  , for_ (get (Proxy :: _ "back") p)
+      ( if _ then onlyDoAchievementForEndgameRitual backEndgameRitual
+        else pure unit
+      )
+  , for_ (get (Proxy :: _ "track2") p)
+      ( if _ then onlyDoAchievementForEndgameRitual track2EndgameRitual
+        else pure unit
+      )
+  , for_ (get (Proxy :: _ "rotate") p)
+      ( if _ then onlyDoAchievementForEndgameRitual rotateEndgameRitual
+        else pure unit
+      )
+  , for_ (get (Proxy :: _ "hide") p)
+      ( if _ then onlyDoAchievementForEndgameRitual hideEndgameRitual
+        else pure unit
+      )
+  , for_ (get (Proxy :: _ "dazzle") p)
+      ( if _ then onlyDoAchievementForEndgameRitual dazzleEndgameRitual
+        else pure unit
+      )
+  , for_ (get (Proxy :: _ "track3") p)
+      ( if _ then onlyDoAchievementForEndgameRitual track3EndgameRitual
+        else pure unit
+      )
+  , for_ (get (Proxy :: _ "crush") p)
+      ( if _ then onlyDoAchievementForEndgameRitual crushEndgameRitual
+        else pure unit
+      )
+  , for_ (get (Proxy :: _ "amplify") p)
+      ( if _ then onlyDoAchievementForEndgameRitual amplifyEndgameRitual
+        else pure unit
+      )
+  , for_ (get (Proxy :: _ "highScoreTrack1") p)
+      (doScoreOnlyRitual (endgameRitualToScoreOnly backEndgameRitual))
+  , for_ (get (Proxy :: _ "highScoreTrack2") p)
+      (doScoreOnlyRitual (endgameRitualToScoreOnly dazzleEndgameRitual))
+  , for_ (get (Proxy :: _ "highScoreTrack3") p)
+      (doScoreOnlyRitual (endgameRitualToScoreOnly amplifyEndgameRitual))
+  ]
