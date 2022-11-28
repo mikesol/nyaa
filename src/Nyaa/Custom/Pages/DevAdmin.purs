@@ -23,6 +23,9 @@ data ProfileOp
   = ProfileSetter (Some Profile')
   | ProfileTransaction (Aff Unit)
 
+updateViaSetter :: Some Profile' -> Aff Unit
+updateViaSetter ps = toAffE $ genericUpdate (Profile ps)
+
 doEndgameSuccessRitual
   :: EndgameRitual
   -> Int
@@ -30,19 +33,12 @@ doEndgameSuccessRitual
 doEndgameSuccessRitual (EndgameRitual j) i = do
   platform <- liftEffect getPlatform
   parSequence_
-    [ -- firebase
+    [ -- firebase + local
       case j.modProfileAchievement of
-        ProfileSetter ps -> toAffE $ genericUpdate (Profile ps)
+        ProfileSetter ps -> updateViaSetter ps
         ProfileTransaction po -> po
     , case j.modProfileScore i of
-        ProfileSetter ps -> toAffE $ genericUpdate (Profile ps)
-        ProfileTransaction po -> po
-    -- local
-    , case j.modProfileAchievement of
-        ProfileSetter ps -> toAffE $ genericUpdate (Profile ps)
-        ProfileTransaction po -> po
-    , case j.modProfileScore i of
-        ProfileSetter ps -> toAffE $ genericUpdate (Profile ps)
+        ProfileSetter ps -> updateViaSetter ps
         ProfileTransaction po -> po
     -- platform
     , case platform of
@@ -62,9 +58,11 @@ doScoreOnlyRitual
 doScoreOnlyRitual (ScoreOnly j) i = do
   platform <- liftEffect getPlatform
   parSequence_
-    [ case j.modProfileScore i of
-        ProfileSetter ps -> toAffE $ genericUpdate (Profile ps)
+    [ -- firebase + local
+      case j.modProfileScore i of
+        ProfileSetter ps -> updateViaSetter ps
         ProfileTransaction po -> po
+    -- platform
     , case platform of
         IOS -> toAffE $ j.iosScore i
         Android -> toAffE $ j.androidScore i
@@ -78,9 +76,11 @@ doEndgameFailureRitual
 doEndgameFailureRitual (EndgameRitual j) i = do
   platform <- liftEffect getPlatform
   parSequence_
-    [ case j.modProfileScore i of
-        ProfileSetter ps -> toAffE $ genericUpdate (Profile ps)
+    [ -- firebase + local
+      case j.modProfileScore i of
+        ProfileSetter ps -> updateViaSetter ps
         ProfileTransaction po -> po
+    -- platform
     , case platform of
         IOS -> toAffE $ j.iosScore i
         Android -> toAffE $ j.androidScore i
@@ -458,7 +458,7 @@ doScorelessAchievement (ScorelessAchievement j) = do
   platform <- liftEffect getPlatform
   parSequence_
     [ case j.modProfileAchievement of
-        ProfileSetter ps -> toAffE $ genericUpdate (Profile ps)
+        ProfileSetter ps -> updateViaSetter ps
         ProfileTransaction po -> po
     , case platform of
         IOS -> toAffE j.iosAchievement
