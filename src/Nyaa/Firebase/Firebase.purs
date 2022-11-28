@@ -14,7 +14,7 @@ import Effect.Aff (launchAff_)
 import Effect.Class (liftEffect)
 import Effect.Ref as Ref
 import Effect.Uncurried (EffectFn1)
-import Nyaa.Capacitor.Preferences (getObject)
+import Nyaa.Capacitor.Preferences (getPreference)
 import Nyaa.Some (Some)
 import Prim.Row (class Cons)
 import Type.Proxy (Proxy)
@@ -107,7 +107,7 @@ reactToNewUser
   -> Effect Unit
 reactToNewUser { user, push, unsubProfileListener } = for_ user
   \usr -> launchAff_ do
-    hct <- toAffE $ getObject "hasCompletedTutorial"
+    hct <- toAffE $ getPreference "hasCompletedTutorial"
     unsub <- toAffE $ createOrUpdateProfileAndInitializeListener
       { username: usr.displayName
       , avatarUrl: usr.photoURL

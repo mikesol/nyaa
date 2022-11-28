@@ -23,24 +23,6 @@ data ProfileOp
   = ProfileSetter (Some Profile')
   | ProfileTransaction (Effect (Promise Unit))
 
-devAdminLogic
-  :: forall r
-   . Platform
-  -> { android :: Effect (Promise Unit)
-     , ios :: Effect (Promise Unit)
-     , modProfile :: ProfileOp
-     | r
-     }
-  -> Aff Unit
-devAdminLogic platform j = do
-  case j.modProfile of
-    ProfileSetter ps -> toAffE $ genericUpdate (Profile ps)
-    ProfileTransaction po -> toAffE po
-  case platform of
-    IOS -> toAffE j.ios
-    Android -> toAffE j.android
-    Web -> pure unit
-
 doEndgameSuccessRitual
   :: EndgameRitual
   -> Int
