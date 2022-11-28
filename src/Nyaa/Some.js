@@ -7,6 +7,8 @@ export const setImpl = (key) => (val) => (rec) => {
   return o;
 };
 
+export const hopHack = (k) => (v) => k in v;
+
 export const modifyImpl = (key) => (f) => (rec) => {
   const o = { ...rec };
   const rk = rec[key];
