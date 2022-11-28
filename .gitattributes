@@ -136,3 +136,10 @@ assets/lvl99Cover.png filter=lfs diff=lfs merge=lfs -text
 assets/tutorial_0.png filter=lfs diff=lfs merge=lfs -text
 assets/tutorial_1.png filter=lfs diff=lfs merge=lfs -text
 assets/tutorial_2.png filter=lfs diff=lfs merge=lfs -text
+assets/Cat1.png filter=lfs diff=lfs merge=lfs -text
+assets/Cat2.png filter=lfs diff=lfs merge=lfs -text
+assets/Cat3.png filter=lfs diff=lfs merge=lfs -text
+assets/ProfileCard.png filter=lfs diff=lfs merge=lfs -text
+assets/Cat4.png filter=lfs diff=lfs merge=lfs -text
+assets/guide.png filter=lfs diff=lfs merge=lfs -text
+assets/pinkbg.png filter=lfs diff=lfs merge=lfs -text

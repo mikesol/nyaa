@@ -150,7 +150,15 @@ questPage i = customComponent_ i.name {} questy
                       [ D.div (klass_ "grow") []
                       , ionButton
                           ( oneOf
-                              [ klass_ "", click_ startBattle ]
+                              [ klass_ ""
+                              , click_ do
+                                  refreshAudioContext i.audioContextRef
+                                  setHash
+                                    ( ( questToPath
+                                          i.quest
+                                      ) <> "/bot/true"
+                                    ) {-startBattle-}
+                              ]
                           )
                           [ text_ "Start the battle"
                           ]
