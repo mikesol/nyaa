@@ -92,7 +92,10 @@ introScreen opts = customComponent_ "intro-screen" {} \_ ->
                               true -> fixed (playGame "/buzz-quest" <> baseSignedIn)
                           | get (Proxy :: _ "track1") p == Just
                               true -> fixed (playGame "/flat-quest" <> baseSignedIn)
-                          | otherwise -> fixed baseSignedIn
+                          -- before, we didn't show play game if someone had not done the tutorial
+                          -- change that for now so that there's always the option
+                          -- change back if needed
+                          | otherwise -> fixed (playGame "/flat-quest" <> baseSignedIn) -- baseSignedIn
                   ]
               , D.div (oneOf [ klass_ "grow" ]) []
               ]

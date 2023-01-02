@@ -17,6 +17,7 @@ import FRP.Event (burning, create, createO)
 import Nyaa.App (app, storybookCC)
 import Nyaa.AppState (onBackgrounded)
 import Nyaa.Audio (newAudioContext, shutItDown)
+import Nyaa.Capacitor.Preferences (getSomeFromPreferneces)
 import Nyaa.Capacitor.Utils (Platform(..), getPlatform)
 import Nyaa.Custom.Pages.InformationPage (informationPage)
 import Nyaa.Custom.Pages.IntroScreen (introScreen)
@@ -53,11 +54,11 @@ import Nyaa.Custom.Pages.Quests.ShowMeHowQuest (showMeHowQuest)
 import Nyaa.Custom.Pages.Quests.YouWonQuest (youwonQuest)
 import Nyaa.Custom.Pages.TutorialPage (tutorialPage)
 import Nyaa.FRP.Dedup (dedup)
-import Nyaa.Firebase.Firebase (getCurrentUser, listenToAuthStateChange, reactToNewUser, setUserIdFromNullableUser, signInWithGameCenter, signInWithPlayGames)
+import Nyaa.Firebase.Firebase (Profile(..), Profile', getCurrentUser, listenToAuthStateChange, reactToNewUser, setUserIdFromNullableUser, signInWithGameCenter, signInWithPlayGames)
 import Nyaa.Fullscreen (androidFullScreen)
-import Nyaa.Ionic.Loading (brackedWithLoading)
 import Nyaa.Money as Money
 import Routing.Hash (getHash, setHash)
+import Type.Proxy (Proxy(..))
 
 foreign import prod :: Effect Boolean
 foreign import noStory :: Effect Boolean
@@ -154,6 +155,13 @@ main = do
           setHash "/"
       launchAff_ do
         cu <- liftEffect getCurrentUser
+        -- we get the profile from local storage and push it as the first profile
+        -- just to unlock stuff
+        -- that way, the app load is much shorter
+        -- there may be a slight change once the app goes online
+        -- if the change causes bumps, come back to fix this
+        initialProfile <- getSomeFromPreferneces (Proxy :: _ Profile')
+        liftEffect $ runEffectFn1 profileListener.push { profile: Just (Profile initialProfile) }
         liftEffect do
           setUserIdFromNullableUser cu
           runEffectFn1 authListener.push { user: cu }
@@ -174,7 +182,7 @@ main = do
               , unsubProfileListener
               }
           pure unit
-        apathize $ brackedWithLoading "Setting phasers on stun..." do
+        apathize do
           case platform of
             IOS -> toAffE signInWithGameCenter
             Android -> toAffE signInWithPlayGames

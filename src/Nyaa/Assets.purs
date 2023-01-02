@@ -11,3 +11,8 @@ foreign import tutorial0URL :: String
 foreign import tutorial1URL :: String
 foreign import tutorial2URL :: String
 foreign import logoURL :: String
+foreign import cat1URL :: String
+foreign import cat2URL :: String
+foreign import cat3URL :: String
+foreign import cat4URL :: String
+foreign import profileCardURL :: String

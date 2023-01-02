@@ -18,7 +18,7 @@ import Deku.Listeners (click_)
 import Effect (Effect)
 import Effect.Aff (catchError, launchAff_, makeAff)
 import FRP.Event (Event)
-import Nyaa.Assets (catURL)
+import Nyaa.Assets (cat1URL, cat2URL, cat3URL)
 import Nyaa.Firebase.Firebase (Profile(..), Profile', genericUpdate)
 import Nyaa.Ionic.Alert (alert)
 import Nyaa.Ionic.Attributes as I
@@ -75,7 +75,7 @@ lounge isWeb pfl@(Profile profile) (Lounge opts) = do
   let hasPaid = not hasntPaidYet
   ionCard
     ( oneOf
-        ( [ D.Disabled !:= profileNotUnlocked, klass_ "grow cursor-pointer" ]
+        ( [ D.Disabled !:= profileNotUnlocked, klass_ "grow cursor-pointer pt-2" ]
             <> guard
               ( (not opts.isBehindPaywall && profileUnlocked)
                   || (profileUnlocked && hasPaid)
@@ -203,7 +203,7 @@ lounges =
   [ Lounge
       { title: "HYPERSYNTHETIC"
       , index: 1
-      , img: catURL
+      , img: cat1URL
       , isBehindPaywall: false
       , unlocker: get (Proxy :: Proxy "track1")
       , path: pathToRealPath "/hypersyntheticdone-quest"
@@ -218,7 +218,7 @@ lounges =
   , Lounge
       { title: "LVL.99"
       , index: 2
-      , img: catURL
+      , img: cat2URL
       , isBehindPaywall: false
       , unlocker: get (Proxy :: Proxy "track2")
       , path: pathToRealPath "/lvlnndone-quest"
@@ -239,7 +239,7 @@ lounges =
       { title: "Show Me How"
       , index: 3
       , isBehindPaywall: true
-      , img: catURL
+      , img: cat3URL
       , unlocker: get (Proxy :: Proxy "track3")
       , path: pathToRealPath "/youwon-quest"
           ( (get (Proxy :: _ "flat") /\ "/equalize-quest")
@@ -277,7 +277,7 @@ loungePicker i = customComponent_ "lounge-picker" {}
     , ionContent (oneOf [ I.Fullscren !:= true ])
         [ flip switcher i.profileState \{ profile } -> do
             D.div
-              (oneOf [ klass_ "flex-col flex w-full h-full" ])
+              (oneOf [ klass_ "bg-pinkbg flex-col flex w-full h-full" ])
               [ D.div (klass_ "grow") []
               , D.div (klass_ "flex flex-row")
                   (lounges <#> lounge i.isWeb profile)

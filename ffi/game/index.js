@@ -13,6 +13,7 @@ import { Hits } from "./visuals/hits.js";
 import { Reference } from "./visuals/reference.js";
 import JSConfetti from "js-confetti";
 import { Capacitor } from "@capacitor/core";
+import { Indicator } from "./visuals/indicator.js";
 
 const jsConfetti = new JSConfetti();
 
@@ -107,6 +108,9 @@ export function startGameImpl({
 
   const reference = new Reference();
   reference.into(scene);
+
+  const indicator = new Indicator(hits);
+  indicator.into(scene);
 
   // SUBSECTION START - UI
 
@@ -216,6 +220,7 @@ export function startGameImpl({
       notes.animate(elapsedTime, 1.0);
       guides.animate(elapsedTime, 1.0);
       hits.animate(elapsedTime, 1.0);
+      indicator.animate(elapsedTime, 1.0);
       judge.checkMiss(elapsedTime, () => {
         updateJudgment("Miss!");
       });
@@ -235,6 +240,7 @@ export function startGameImpl({
       notes.activate(effect, startTime, duration, offset);
       guides.activate(effect, startTime, duration, offset);
       hits.activate(effect, startTime, duration, offset);
+      indicator.activate(effect, startTime, duration, offset);
     }
   };
   // SUBSECTION END - EFFECT RESPONDER
@@ -425,6 +431,7 @@ export function startGameImpl({
 
   const judge = new Judge(noteInfo, audioBuffer.duration);
   const pointerBuffer = new THREE.Vector2();
+  const touches = {};
   function handleTouch(event) {
     if (audioContext.state === "suspended") {
       return;
@@ -437,6 +444,8 @@ export function startGameImpl({
       const intersects = hits.intersect(raycaster);
       if (intersects.length > 0) {
         const column = intersects[0].instanceId;
+        indicator.on(column);
+        touches[touch.identifier] = column;
         judge.judge(elapsedTime, column, (judgment) => {
           if (judgment === "perfect") {
             addPlayerScore(perfectScore);
@@ -453,7 +462,18 @@ export function startGameImpl({
       }
     }
   }
+  function handleTouchOff(event) {
+    if (audioContext.state === "suspended") {
+      return;
+    }
+    for (const touch of event.changedTouches) {
+      if (touch.identifier in touches) {
+        indicator.off(touches[touch.identifier]);
+      }
+    }
+  }
   document.documentElement.addEventListener("touchstart", handleTouch);
+  document.documentElement.addEventListener("touchend", handleTouchOff);
 
   // SUBSECTION END - INPUT
 

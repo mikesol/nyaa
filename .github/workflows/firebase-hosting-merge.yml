@@ -26,6 +26,7 @@ jobs:
           key: >-
             ${{ hashFiles('package-lock.json') }}-
             ${{ hashFiles('spago.dhall') }}-
+            ${{ hashFiles('test.dhall') }}-
             ${{ hashFiles('packages.dhall') }}
       - uses: pnpm/action-setup@v2.2.4
         name: Install pnpm
@@ -47,6 +48,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
       - run: pnpm i && pnpm prod-build
+      - run: npx spago -x test.dhall test
 
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:

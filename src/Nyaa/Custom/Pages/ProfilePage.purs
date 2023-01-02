@@ -7,6 +7,7 @@ import Control.Plus (empty)
 import Control.Promise (toAffE)
 import Data.Compactable (compact)
 import Data.Foldable (oneOf)
+import Data.FunctorWithIndex (mapWithIndex)
 import Data.Maybe (Maybe(..))
 import Data.Newtype (unwrap)
 import Data.Tuple (Tuple(..))
@@ -23,7 +24,7 @@ import Effect.Aff (Aff, bracket, launchAff_)
 import Effect.Class (liftEffect)
 import Effect.Console (log)
 import FRP.Event (Event)
-import Nyaa.Assets (catURL)
+import Nyaa.Assets (cat1URL, cat2URL, cat3URL, cat4URL, catURL)
 import Nyaa.Capacitor.Camera (takePicture)
 import Nyaa.Capacitor.FriendsPlugin (sendFriendRequest)
 import Nyaa.Capacitor.Utils (Platform(..), getPlatformE)
@@ -78,13 +79,17 @@ changeAvatar = do
 
 achievement
   :: forall lock payload
-   . { earned :: Event Boolean, title :: String }
+   . Int -> { earned :: Event Boolean, title :: String }
   -> Domable lock payload
-achievement opts = ionCard (oneOf [ opts.earned <#> not <#> (D.Disabled := _) ])
+achievement i opts = ionCard (oneOf [ opts.earned <#> not <#> (D.Disabled := _) ])
   [ D.img
       ( oneOf
           [ D.Alt !:= "Silhouette of mountains"
-          , D.Src !:= catURL
+          , D.Src !:= case (i `mod` 4) of
+            0 -> cat1URL
+            1 -> cat2URL
+            2 -> cat3URL
+            _ -> cat4URL
           ]
       )
       []
@@ -325,7 +330,7 @@ profilePage opts = customComponent_ "profile-page" {} \_ ->
                                   ]
                               D.div
                                 (D.Class !:= "grid grid-cols-4 gap-4")
-                                ( store <#> \(earned /\ title) -> achievement
+                                ( store # mapWithIndex \i (earned /\ title) -> achievement i
                                     { earned: pure (earned == Just true)
                                     , title
                                     }
